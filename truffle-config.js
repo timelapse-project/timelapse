@@ -2,7 +2,7 @@ const path = require("path");
 const Web3 = require("web3");
 const net = require("net");
 require("dotenv").config();
-const HDWalletProvider = require("truffle-hdwallet-provider");
+const HDWalletProvider = require("@truffle/hdwallet-provider");
 
 module.exports = {
   // See <http://truffleframework.com/docs/advanced/configuration>
@@ -14,7 +14,11 @@ module.exports = {
     //   port: 7545, // Standard Ethereum port (default: none)
     //   network_id: "1337", // Any network (default: none)
     // },
-    development: {
+    develop: {
+      port: 7545
+    },
+
+    private: {
       provider: () =>
         new Web3.providers.IpcProvider(process.env.GETH_IPC_PATH, net),
       network_id: "1337",
