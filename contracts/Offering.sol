@@ -43,21 +43,21 @@ contract Offering is Ownable {
         ProductStatus status;
     }
 
-    struct Package {
+    struct Proposal {
         address id;
         uint8 minScoring;
         string description;
     }
 
     Offer[] public offers;
-    Package[] public packages;
+    Proposal[] public proposals;
     Product[] public products;
 
     mapping(address => uint256) public offerList;
-    mapping(address => uint256) public packageList;
+    mapping(address => uint256) public proposalList;
     mapping(address => uint256) public productList;
 
-    event PackageAdded(address id, uint8 minScoring, string description);
+    event ProposalAdded(address id, uint8 minScoring, string description);
     event LowBalanceReceived(address id, address phoneHash);
 
     event OfferSent(
@@ -95,44 +95,44 @@ contract Offering is Ownable {
 
     constructor() {
         // Init first (dummy) stake 0
-        Package memory packageData0;
-        packages.push(packageData0);
+        Proposal memory proposalData0;
+        proposals.push(proposalData0);
     }
 
-    function addPackage(
+    function addProposal(
         address _id,
         uint8 _minScoring,
         string memory _description
     ) public {
-        Package memory packageData;
-        packageData.id = _id;
-        packageData.minScoring = _minScoring;
-        packageData.description = _description;
-        packages.push(packageData);
-        packageList[packageData.id] = (packages.length - 1);
-        emit PackageAdded(
-            packageData.id,
-            packageData.minScoring,
-            packageData.description
+        Proposal memory proposalData;
+        proposalData.id = _id;
+        proposalData.minScoring = _minScoring;
+        proposalData.description = _description;
+        proposals.push(proposalData);
+        proposalList[proposalData.id] = (proposals.length - 1);
+        emit ProposalAdded(
+            proposalData.id,
+            proposalData.minScoring,
+            proposalData.description
         );
     }
 
-    function updatePackage(
+    function updateProposal(
         address _id,
         uint8 _minScoring,
         string memory _description
     ) public {
-        //TODO: manage update package
-        packages[packageList[_id]].minScoring = _minScoring;
-        packages[packageList[_id]].description = _description;
+        //TODO: manage update proposal
+        proposals[proposalList[_id]].minScoring = _minScoring;
+        proposals[proposalList[_id]].description = _description;
     }
 
-    function deletePackage(address _id) public {
-        //TODO: manage delete package
+    function deleteProposal(address _id) public {
+        //TODO: manage delete proposal
     }
 
-    function packagesCount() public view returns (uint256) {
-        return packages.length;
+    function proposalsCount() public view returns (uint256) {
+        return proposals.length;
     }
 
     function lowBalance(address _id, address _phoneHash) public {
@@ -233,10 +233,10 @@ contract Offering is Ownable {
         }
         for (
             uint256 i = 1;
-            (i < packages.length && offerProposalsIndex < 3);
+            (i < proposals.length && offerProposalsIndex < 3);
             i++
         ) {
-            if (_scoring >= packages[i].minScoring) {
+            if (_scoring >= proposals[i].minScoring) {
                 offerProposals[offerProposalsIndex] = i;
                 offerProposalsIndex++;
             }

@@ -19,7 +19,7 @@ app.use(
 
 app.use(express.json());
 
-addPackage = async (data) => {
+addProposal = async (data) => {
   const accounts = await web3.eth.getAccounts();
   const networkId = await web3.eth.net.getId();
   const deployedNetwork = OfferingContract.networks[networkId];
@@ -29,7 +29,7 @@ addPackage = async (data) => {
   );
 
   await contract.methods
-    .addPackage(data.id, data.minScoring, data.description)
+    .addProposal(data.id, data.minScoring, data.description)
     .send({
       from: accounts[0],
     });
@@ -79,9 +79,9 @@ topUp = async (data) => {
     });
 };
 
-app.post("/addPackage", function (req, res) {
-  LOG_LEVEL > 0 && console.log("### addPackage");
-  this.addPackage(req.body);
+app.post("/addProposal", function (req, res) {
+  LOG_LEVEL > 0 && console.log("### addProposal");
+  this.addProposal(req.body);
   res.end(
     JSON.stringify({
       result: "OK",

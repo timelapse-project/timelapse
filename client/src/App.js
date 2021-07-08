@@ -12,10 +12,10 @@ class App extends Component {
     accounts: null,
     contract: null,
     contractOwner: null,
-    packagesCount: null,
-    packageList: null,
+    proposalsCount: null,
+    proposalList: null,
     eventLog: [],
-    packageDescriptionError: null,
+    proposalDescriptionError: null,
   };
 
   componentWillMount = async () => {
@@ -121,14 +121,14 @@ class App extends Component {
 
     const { contract } = this.state;
     const contractOwner = await contract.methods.owner().call();
-    const packagesCount = await contract.methods.packagesCount().call();
+    const proposalsCount = await contract.methods.proposalsCount().call();
 
-    let packageList = [];
-    for (let packageId = 1; packageId < packagesCount; packageId++) {
-      let packageItem = await contract.methods.packages(packageId).call();
-      //packageItem["id"] = packageId;
-      console.log("package", packageItem);
-      packageList.push(packageItem);
+    let proposalList = [];
+    for (let proposalId = 1; proposalId < proposalsCount; proposalId++) {
+      let proposalItem = await contract.methods.proposals(proposalId).call();
+      //proposalItem["id"] = proposalId;
+      console.log("proposal", proposalItem);
+      proposalList.push(proposalItem);
     }
 
     //const { accounts, contract } = this.state;
@@ -147,9 +147,9 @@ class App extends Component {
 
     this.setState({
       contractOwner: contractOwner,
-      packagesCount: packagesCount,
-      packageList: packageList,
-      packageDescriptionError: null,
+      proposalsCount: proposalsCount,
+      proposalList: proposalList,
+      proposalDescriptionError: null,
     });
   };
 
@@ -239,7 +239,7 @@ class App extends Component {
   };
 
   getPastEvents = async () => {
-    console.log("handleAddPackage");
+    console.log("handleAddProposal");
     const { accounts, contract } = this.state;
     contract
       .getPastEvents("allEvents", {
@@ -250,20 +250,20 @@ class App extends Component {
       .catch((err) => console.error(err));
   };
 
-  handleAddPackage = async () => {
-    console.log("handleAddPackage");
+  handleAddProposal = async () => {
+    console.log("handleAddProposal");
     const { accounts, contract } = this.state;
-    const packageMinScoring = this.packageMinScoring.value;
-    const packageDescription = this.packageDescription.value;
+    const proposalMinScoring = this.proposalMinScoring.value;
+    const proposalDescription = this.proposalDescription.value;
 
-    if (packageDescription == null || packageDescription === "") {
+    if (proposalDescription == null || proposalDescription === "") {
       this.setState({
-        packageDescriptionError: "Please, enter a description",
+        proposalDescriptionError: "Please, enter a description",
       });
       return;
     }
     await contract.methods
-      .addPackage(packageMinScoring, packageDescription)
+      .addProposal(proposalMinScoring, proposalDescription)
       .send({
         from: accounts[0],
       });
@@ -293,9 +293,10 @@ class App extends Component {
     );
   }
 
-  renderPackageAdmin() {
-    console.log("==> renderPackages");
-    const { packagesCount, packageList, packageDescriptionError } = this.state;
+  renderProposalAdmin() {
+    console.log("==> renderProposals");
+    const { proposalsCount, proposalList, proposalDescriptionError } =
+      this.state;
     return (
       <React.Fragment>
         <br></br>
@@ -303,9 +304,9 @@ class App extends Component {
           <div className="col-sm-12">
             <div className="card text-center">
               <div className="card-header">
-                <strong>Packages</strong>
+                <strong>Proposals</strong>
               </div>
-              {packagesCount > 0 ? (
+              {proposalsCount > 0 ? (
                 <div className="card-body">
                   <div className="row">
                     <table className="table table-striped">
@@ -317,8 +318,8 @@ class App extends Component {
                         </tr>
                       </thead>
                       <tbody>
-                        {packageList !== null &&
-                          packageList.map((a) => (
+                        {proposalList !== null &&
+                          proposalList.map((a) => (
                             <tr>
                               <td>{a["id"]}</td>
                               <td>{a["minScoring"]}</td>
@@ -331,7 +332,7 @@ class App extends Component {
                 </div>
               ) : (
                 <div className="card-body">
-                  <p>No Package</p>
+                  <p>No Proposal</p>
                 </div>
               )}
             </div>
@@ -394,7 +395,7 @@ class App extends Component {
 
           <div className="row">
             <div className="col-8 offset-2 text-center">
-              {this.renderPackageAdmin()}
+              {this.renderProposalAdmin()}
             </div>
           </div>
           <div className="row">

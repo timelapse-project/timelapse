@@ -41,22 +41,22 @@ while [ TRUE ];do
            curl --header "Content-Type: application/json" \
                 --request POST \
                 --data '{"id":"'${generatedID}'","minScoring":8,"description":"10€ + 0.5€"}' \
-                ${serverURL}/addPackage
+                ${serverURL}/addProposal
            generateRandomId
            curl --header "Content-Type: application/json" \
                 --request POST \
                 --data '{"id":"'${generatedID}'","minScoring":6,"description":"8€ + 0.5€"}' \
-                ${serverURL}/addPackage
+                ${serverURL}/addProposal
            generateRandomId
            curl --header "Content-Type: application/json" \
                 --request POST \
                 --data '{"id":"'${generatedID}'","minScoring":4,"description":"5€ + 0.5€"}' \
-                ${serverURL}/addPackage
+                ${serverURL}/addProposal
            generateRandomId
            curl --header "Content-Type: application/json" \
                 --request POST \
                 --data '{"id":"'${generatedID}'","minScoring":2,"description":"2€ + 0.5€"}' \
-                ${serverURL}/addPackage
+                ${serverURL}/addProposal
            echo " "
            read -p "Press any key to continue"
         elif [ ${choice} -eq 10 ];then

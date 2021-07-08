@@ -9,8 +9,8 @@ const OfferingContract = require("../client/src/contracts/Offering.json");
 let LOG_LEVEL = 1;
 let WS_SERVER = "http://httpbin.org/post";
 let contract = null;
-let packagesCount = 0;
-let packageList = [];
+let proposalsCount = 0;
+let proposalList = [];
 
 runInit = async () => {
   //const accounts = await web3.eth.getAccounts();
@@ -29,7 +29,7 @@ runInit = async () => {
     .on("data", (event) => doWhenEvent(event))
     .on("error", console.error);
 
-  getPackages();
+  getProposals();
 
   console.log("Watcher started...");
 };
@@ -38,8 +38,8 @@ doWhenEvent = async (data) => {
   //console.log("==> doWhenEvent", data.event);
 
   switch (data.event) {
-    case "PackageAdded":
-      addPackage(data.returnValues);
+    case "ProposalAdded":
+      addProposal(data.returnValues);
       break;
     case "LowBalanceReceived":
       LOG_LEVEL > 1 &&
@@ -133,29 +133,29 @@ doWhenEvent = async (data) => {
   }
 };
 
-getPackages = async () => {
-  LOG_LEVEL > 0 && console.log("### getPackages");
+getProposals = async () => {
+  LOG_LEVEL > 0 && console.log("### getProposals");
 
-  packagesCount = await contract.methods.packagesCount().call();
+  proposalsCount = await contract.methods.proposalsCount().call();
 
-  packageList = [];
-  for (let packageId = 0; packageId < packagesCount; packageId++) {
-    let packageItem = await contract.methods.packages(packageId).call();
-    packageList.push(packageItem);
+  proposalList = [];
+  for (let proposalId = 0; proposalId < proposalsCount; proposalId++) {
+    let proposalItem = await contract.methods.proposals(proposalId).call();
+    proposalList.push(proposalItem);
   }
 };
 
-addPackage = async (data) => {
-  LOG_LEVEL > 0 && console.log("### addPackage");
+addProposal = async (data) => {
+  LOG_LEVEL > 0 && console.log("### addProposal");
 
-  let packageItem = [];
-  packageItem.id = data.id;
-  packageItem.minScoring = data.minScoring;
-  packageItem.description = data.description;
+  let proposalItem = [];
+  proposalItem.id = data.id;
+  proposalItem.minScoring = data.minScoring;
+  proposalItem.description = data.description;
 
-  packageList.push(packageItem);
+  proposalList.push(proposalItem);
 
-  packagesCount++;
+  proposalsCount++;
 };
 
 sendOffer = async (data) => {
@@ -190,8 +190,8 @@ sendOffer = async (data) => {
   for (let i = 0; i < data.proposals.length; i++) {
     if (data.proposals[i] != 0) {
       let proposal = {
-        id: packageList[data.proposals[i]]["id"],
-        description: packageList[data.proposals[i]]["description"],
+        id: proposalList[data.proposals[i]]["id"],
+        description: proposalList[data.proposals[i]]["description"],
       };
       responseBody["proposals"].push(proposal);
       proposalsCount++;
