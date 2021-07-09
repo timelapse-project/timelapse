@@ -4,7 +4,7 @@
 
 # Timelapse
 
-> TODO test
+> TODO
 
 ## Features
 
