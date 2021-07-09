@@ -35,6 +35,7 @@ contract Offering is Ownable {
         EligibilityReason reason;
         uint256[] proposals;
         OfferStatus status;
+        string ref;
     }
 
     struct Product {
@@ -57,7 +58,7 @@ contract Offering is Ownable {
     Product[] public products;
 
     event ProposalAdded(uint256 id, uint8 minScoring, string description);
-    event LowBalanceReceived(address phoneHash);
+    event LowBalanceReceived(address phoneHash, string ref);
 
     event OfferSent(
         uint256 id,
@@ -79,17 +80,30 @@ contract Offering is Ownable {
         uint256 timestamp
     );
     event TopUpReceived(
-        uint256 id,
         address phoneHash,
         uint256 productId,
         uint256 amount
     );
     event AcknowledgeSent(
-        uint256 id,
         address phoneHash,
         uint256 productId,
         uint256 amount
     );
+
+    modifier existProposal(uint256 id) {
+        require(id < proposals.length, "Proposal doesn't exist");
+        _;
+    }
+
+    modifier existOffer(uint256 id) {
+        require(id < offers.length, "Offer doesn't exist");
+        _;
+    }
+
+    modifier existProduct(uint256 id) {
+        require(id < products.length, "Product doesn't exist");
+        _;
+    }
 
     constructor() {}
 
@@ -111,12 +125,16 @@ contract Offering is Ownable {
         );
     }
 
+    function closedProposal(uint256 _id) public onlyOwner existProposal(_id) {
+        proposals[_id].status = ProposalStatus.Closed;
+    }
+
     function proposalsCount() public view returns (uint256) {
         return proposals.length;
     }
 
-    function lowBalance(address _phoneHash) public {
-        emit LowBalanceReceived(_phoneHash);
+    function lowBalance(address _phoneHash, string memory ref) public {
+        emit LowBalanceReceived(_phoneHash, ref);
 
         uint8 scoring;
         EligibilityReason eligibilityReason;
@@ -129,6 +147,7 @@ contract Offering is Ownable {
         offerData.reason = eligibilityReason;
         offerData.status = OfferStatus.New;
         offerData.proposals = getOfferProposals(scoring);
+        offerData.ref = ref;
         offers.push(offerData);
 
         emit OfferSent(
@@ -166,18 +185,17 @@ contract Offering is Ownable {
     }
 
     function topUp(
-        uint256 _id,
         address _phoneHash,
         uint256 _productId,
         uint256 _amount
     ) public {
-        emit TopUpReceived(_id, _phoneHash, _productId, _amount);
+        emit TopUpReceived(_phoneHash, _productId, _amount);
 
         products[_productId].status = ProductStatus.Closed;
         //TODO: Manage check topUpAmount
         products[_productId].topUpAmount = _amount;
 
-        emit AcknowledgeSent(_id, _phoneHash, _productId, _amount);
+        emit AcknowledgeSent(_phoneHash, _productId, _amount);
     }
 
     function eligibility(address _phoneHash)
@@ -211,7 +229,7 @@ contract Offering is Ownable {
             (i < proposals.length && offerProposalsIndex < 3);
             i++
         ) {
-            if (_scoring >= proposals[i].minScoring) {
+            if (proposals[i].status == ProposalStatus.Active && _scoring >= proposals[i].minScoring) {
                 offerProposals[offerProposalsIndex] = i;
                 offerProposalsIndex++;
             }

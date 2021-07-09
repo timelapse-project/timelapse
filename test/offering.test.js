@@ -23,7 +23,6 @@ contract("Offering", function(accounts) {
             });
 
             it("Event : ProposalAdded", async function() {
-                ;
                 expectEvent(await this.OfferingInstance.addProposal(minScore, description, {from:owner}),
                 "ProposalAdded",
                 {id: new BN(0), minScoring: minScore, description: description});
