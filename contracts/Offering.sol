@@ -66,7 +66,8 @@ contract Offering is Ownable {
         uint256 timestamp,
         EligibilityReason reason,
         uint256[] proposals,
-        uint256 scoring
+        uint256 scoring,
+        string ref
     );
     event AcceptanceReceived(
         address phoneHash,
@@ -134,7 +135,7 @@ contract Offering is Ownable {
     }
 
     function lowBalance(address _phoneHash, string memory ref) public {
-        emit LowBalanceReceived(_phoneHash, ref);
+        emit LowBalanceReceived(_phoneHash, _ref);
 
         uint8 scoring;
         EligibilityReason eligibilityReason;
@@ -147,7 +148,7 @@ contract Offering is Ownable {
         offerData.reason = eligibilityReason;
         offerData.status = OfferStatus.New;
         offerData.proposals = getOfferProposals(scoring);
-        offerData.ref = ref;
+        offerData.ref = _ref;
         offers.push(offerData);
 
         emit OfferSent(
@@ -156,7 +157,8 @@ contract Offering is Ownable {
             offerData.timestamp,
             offerData.reason,
             offerData.proposals,
-            scoring
+            scoring,
+            _ref
         );
     }
 

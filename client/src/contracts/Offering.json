@@ -255,7 +255,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [],
@@ -268,7 +269,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -312,7 +314,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -341,7 +344,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [],
@@ -405,7 +409,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -493,7 +498,8 @@
         }
       ],
       "stateMutability": "pure",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -512,7 +518,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [],
@@ -27728,15 +27735,85 @@
           ],
           "name": "TopUpReceived",
           "type": "event"
+        },
+        "0x86df561c035f1d98da81b75467ad3e7b09a98da6f2a88802d99a10a21439de7a": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "phoneHash",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "productId",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "AcknowledgeSent",
+          "type": "event"
+        },
+        "0x251fc0df7e56c36cfc4f618ef67296b8e2c41ce1ce473e5187bfec66743b38d3": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "phoneHash",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "ref",
+              "type": "string"
+            }
+          ],
+          "name": "LowBalanceReceived",
+          "type": "event"
+        },
+        "0xd38c4fe5b0a3cb3196c58af9fa89da00b028573ffb3fd8f08d41a4b5966c52e9": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "phoneHash",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "productId",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "TopUpReceived",
+          "type": "event"
         }
       },
       "links": {},
-      "address": "0x3d19C520F08ACFE5b826E5152ffb5A329CaEC27a",
-      "transactionHash": "0xd73bdad4e3b5cbc7e9951f094f9acc33bb28809016dca074cb668da5b954a405"
+      "address": "0x3737fF56dA8270882095e4Be388Ea17e70E92a35",
+      "transactionHash": "0xd45ef10a48d96579359085db5860a9889b6685000a6cb5ee9b3d9796114f0c7a"
     }
   },
   "schemaVersion": "3.4.1",
-  "updatedAt": "2021-07-09T10:18:30.592Z",
+  "updatedAt": "2021-07-09T15:19:08.802Z",
+  "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",
     "methods": {
