@@ -45,9 +45,9 @@ doWhenEvent = async (data) => {
       LOG_LEVEL > 1 &&
         console.log(
           "==> Event LowBalanceReceived [" +
-            data.returnValues.id +
-            "][" +
             data.returnValues.phoneHash +
+            "][" +
+            data.returnValues.ref +
             "]"
         );
       break;
@@ -141,15 +141,16 @@ getProposals = async () => {
   proposalList = [];
   for (let proposalId = 0; proposalId < proposalsCount; proposalId++) {
     let proposalItem = await contract.methods.proposals(proposalId).call();
+    proposalItem["id"] = proposalId;
     proposalList.push(proposalItem);
   }
 };
 
 addProposal = async (data) => {
-  LOG_LEVEL > 0 && console.log("### addProposal");
+  LOG_LEVEL > 0 && console.log("<-- addProposal");
 
   let proposalItem = [];
-  proposalItem.id = data.id;
+  proposalItem.id = parseInt(data.proposalId);
   proposalItem.minScoring = data.minScoring;
   proposalItem.description = data.description;
 
@@ -159,12 +160,12 @@ addProposal = async (data) => {
 };
 
 sendOffer = async (data) => {
-  LOG_LEVEL > 0 && console.log("### sendOffer");
+  LOG_LEVEL > 0 && console.log("<-- sendOffer");
   var responseBody = {
     type: 1,
-    id: data.id,
-    timeStamp: data.timestamp,
     phoneHash: data.phoneHash,
+    offerId: parseInt(data.offerId),
+    timeStamp: data.timestamp,
     proposals: [],
   };
   switch (data.reason) {
@@ -217,12 +218,12 @@ sendOffer = async (data) => {
 };
 
 sendConfirmation = async (data) => {
-  LOG_LEVEL > 0 && console.log("### sendConfirmation");
+  LOG_LEVEL > 0 && console.log("<-- sendConfirmation");
   var responseBody = {
     type: 3,
-    id: data.id,
-    offerId: data.offerId,
     phoneHash: data.phoneHash,
+    productId: parseInt(data.productId),
+    offerId: parseInt(data.offerId),
     timestamp: data.timestamp,
   };
 
@@ -244,12 +245,11 @@ sendConfirmation = async (data) => {
 };
 
 sendAcknowledge = async (data) => {
-  LOG_LEVEL > 0 && console.log("### sendAcknowledge");
+  LOG_LEVEL > 0 && console.log("<-- sendAcknowledge");
   var responseBody = {
     type: 5,
-    id: data.id,
-    productId: data.productId,
     phoneHash: data.phoneHash,
+    productId: data.productId,
     amount: parseInt(data.amount),
   };
 

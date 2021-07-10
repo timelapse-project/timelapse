@@ -29,7 +29,7 @@ addProposal = async (data) => {
   );
 
   await contract.methods
-    .addProposal(data.id, data.minScoring, data.description)
+    .addProposal(data.minScoring, data.description)
     .send({
       from: accounts[0],
     });
@@ -44,7 +44,7 @@ lowBalance = async (data) => {
     deployedNetwork && deployedNetwork.address
   );
 
-  await contract.methods.lowBalance(data.id, data.phoneHash).send({
+  await contract.methods.lowBalance(data.phoneHash,data.ref).send({
     from: accounts[0],
   });
 };
@@ -58,7 +58,7 @@ acceptance = async (data) => {
     deployedNetwork && deployedNetwork.address
   );
   await contract.methods
-    .acceptance(data.id, data.phoneHash, data.offerId, data.proposalId)
+    .acceptance(data.phoneHash, data.offerId, data.proposalId)
     .send({
       from: accounts[0],
     });
@@ -73,14 +73,14 @@ topUp = async (data) => {
     deployedNetwork && deployedNetwork.address
   );
   await contract.methods
-    .topUp(data.id, data.phoneHash, data.productId, data.amount)
+    .topUp(data.phoneHash, data.productId, data.amount)
     .send({
       from: accounts[0],
     });
 };
 
 app.post("/addProposal", function (req, res) {
-  LOG_LEVEL > 0 && console.log("### addProposal");
+  LOG_LEVEL > 0 && console.log("--> addProposal");
   this.addProposal(req.body);
   res.end(
     JSON.stringify({
@@ -90,7 +90,7 @@ app.post("/addProposal", function (req, res) {
 });
 
 app.post("/lowBalance", function (req, res) {
-  LOG_LEVEL > 0 && console.log("### lowBalance");
+  LOG_LEVEL > 0 && console.log("--> lowBalance");
   LOG_LEVEL > 0 && console.log(req.body);
   this.lowBalance(req.body);
   res.end(
@@ -101,7 +101,7 @@ app.post("/lowBalance", function (req, res) {
 });
 
 app.post("/acceptance", function (req, res) {
-  LOG_LEVEL > 0 && console.log("### acceptance");
+  LOG_LEVEL > 0 && console.log("--> acceptance");
   LOG_LEVEL > 0 && console.log(req.body);
   this.acceptance(req.body);
   res.end(
@@ -112,7 +112,7 @@ app.post("/acceptance", function (req, res) {
 });
 
 app.post("/topUp", function (req, res) {
-  LOG_LEVEL > 0 && console.log("### topUp");
+  LOG_LEVEL > 0 && console.log("--> topUp");
   LOG_LEVEL > 0 && console.log(req.body);
   this.topUp(req.body);
   res.end(

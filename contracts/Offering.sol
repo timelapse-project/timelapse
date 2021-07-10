@@ -57,11 +57,11 @@ contract Offering is Ownable {
     Proposal[] public proposals;
     Product[] public products;
 
-    event ProposalAdded(uint256 id, uint8 minScoring, string description);
+    event ProposalAdded(uint256 proposalId, uint8 minScoring, string description);
     event LowBalanceReceived(address phoneHash, string ref);
 
     event OfferSent(
-        uint256 id,
+        uint256 offerId,
         address phoneHash,
         uint256 timestamp,
         EligibilityReason reason,
@@ -75,7 +75,7 @@ contract Offering is Ownable {
         uint256 proposalId
     );
     event ConfirmationSent(
-        uint256 id,
+        uint256 productId,
         uint256 offerId,
         address phoneHash,
         uint256 timestamp
@@ -134,7 +134,7 @@ contract Offering is Ownable {
         return proposals.length;
     }
 
-    function lowBalance(address _phoneHash, string memory ref) public {
+    function lowBalance(address _phoneHash, string memory _ref) public {
         emit LowBalanceReceived(_phoneHash, _ref);
 
         uint8 scoring;

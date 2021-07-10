@@ -160,16 +160,16 @@ class App extends Component {
       case "LowBalanceReceived":
         this.addEventLog(
           "Event LowBalanceReceived [" +
-            data.returnValues.id +
-            "][" +
             data.returnValues.phoneHash +
+            "][" +
+            data.returnValues.ref +
             "]"
         );
         break;
       case "OfferSent":
         this.addEventLog(
           "Event OfferSent [" +
-            data.returnValues.id +
+            data.returnValues.offerId +
             "][" +
             data.returnValues.phoneHash +
             "][" +
@@ -184,20 +184,18 @@ class App extends Component {
       case "AcceptanceReceived":
         this.addEventLog(
           "Event AcceptanceReceived [" +
-            data.returnValues.id +
-            "][" +
             data.returnValues.phoneHash +
             "][" +
             data.returnValues.offerId +
             "][" +
-            data.returnValues.phoneHash +
+            data.returnValues.proposalId +
             "]"
         );
         break;
       case "ConfirmationSent":
         this.addEventLog(
           "Event ConfirmationSent [" +
-            data.returnValues.id +
+            data.returnValues.productId +
             "][" +
             data.returnValues.offerId +
             "][" +
@@ -210,8 +208,6 @@ class App extends Component {
       case "TopUpReceived":
         this.addEventLog(
           "Event TopUpReceived [" +
-            data.returnValues.id +
-            "][" +
             data.returnValues.phoneHash +
             "][" +
             data.returnValues.productId +
@@ -223,8 +219,6 @@ class App extends Component {
       case "AcknowledgeSent":
         this.addEventLog(
           "Event AcknowledgeSent [" +
-            data.returnValues.id +
-            "][" +
             data.returnValues.phoneHash +
             "][" +
             data.returnValues.productId +
@@ -240,7 +234,7 @@ class App extends Component {
 
   getPastEvents = async () => {
     console.log("handleAddProposal");
-    const { accounts, contract } = this.state;
+    const { contract } = this.state;
     contract
       .getPastEvents("allEvents", {
         fromBlock: 0,
@@ -295,7 +289,7 @@ class App extends Component {
 
   renderProposalAdmin() {
     console.log("==> renderProposals");
-    const { proposalsCount, proposalList, proposalDescriptionError } =
+    const { proposalsCount, proposalList } =
       this.state;
     return (
       <React.Fragment>
@@ -312,7 +306,6 @@ class App extends Component {
                     <table className="table table-striped">
                       <thead>
                         <tr>
-                          <th scope="col">ID</th>
                           <th scope="col">Min Scoring</th>
                           <th scope="col">Description</th>
                         </tr>
@@ -321,7 +314,6 @@ class App extends Component {
                         {proposalList !== null &&
                           proposalList.map((a) => (
                             <tr>
-                              <td>{a["id"]}</td>
                               <td>{a["minScoring"]}</td>
                               <td>{a["description"]}</td>
                             </tr>
