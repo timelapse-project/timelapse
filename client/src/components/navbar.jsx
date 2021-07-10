@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 
+import { Link } from "react-router-dom";
+
 class NavBar extends Component {
   //state = {  }
 
@@ -32,11 +34,19 @@ class NavBar extends Component {
 
   render() {
     return (
-      <nav className="navbar navbar-light bg-light">
+      <nav className="navbar navbar-expand-lg navbar-light bg-light">
         <div className="container-fluid">
-          <span className="navbar-brand mb-0 h1">
-            <strong>Timelapse Dapp</strong>
-          </span>
+          <Link className="navbar-brand" to="/">
+            <img
+              src="/images/timelapse_logo100.png"
+              width="30"
+              height="30"
+              className="d-inline-block align-top"
+              style={{ marginRight: 10 }}
+              alt=""
+            />
+            Timelapse dApp
+          </Link>
           {this.renderUserAccount()}
         </div>
       </nav>
