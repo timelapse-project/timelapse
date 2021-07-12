@@ -152,6 +152,8 @@ addProposal = async (data) => {
   let proposalItem = [];
   proposalItem.id = parseInt(data.proposalId);
   proposalItem.minScoring = data.minScoring;
+  proposalItem.capital = data.capital;
+  proposalItem.interest = data.interest;
   proposalItem.description = data.description;
 
   proposalList.push(proposalItem);

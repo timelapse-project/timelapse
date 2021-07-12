@@ -29,7 +29,7 @@ addProposal = async (data) => {
   );
 
   await contract.methods
-    .addProposal(data.minScoring, data.description)
+    .addProposal(data.minScoring, data.capital, data.interest, data.description)
     .send({
       from: accounts[0],
     });
@@ -44,7 +44,7 @@ lowBalance = async (data) => {
     deployedNetwork && deployedNetwork.address
   );
 
-  await contract.methods.lowBalance(data.phoneHash,data.ref).send({
+  await contract.methods.lowBalance(data.phoneHash, data.ref).send({
     from: accounts[0],
   });
 };

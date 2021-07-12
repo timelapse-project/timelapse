@@ -49,6 +49,9 @@ contract Offering is Ownable {
 
     struct Proposal {
         uint8 minScoring;
+        uint256 capital;
+        uint256 interest;
+        uint256 validityPeriod;
         string description;
         ProposalStatus status;
     }
@@ -57,7 +60,13 @@ contract Offering is Ownable {
     Proposal[] public proposals;
     Product[] public products;
 
-    event ProposalAdded(uint256 proposalId, uint8 minScoring, string description);
+    event ProposalAdded(
+        uint256 proposalId,
+        uint8 minScoring,
+        uint256 capital,
+        uint256 interest,
+        string description
+    );
     event LowBalanceReceived(address phoneHash, string ref);
 
     event OfferSent(
@@ -80,16 +89,8 @@ contract Offering is Ownable {
         address phoneHash,
         uint256 timestamp
     );
-    event TopUpReceived(
-        address phoneHash,
-        uint256 productId,
-        uint256 amount
-    );
-    event AcknowledgeSent(
-        address phoneHash,
-        uint256 productId,
-        uint256 amount
-    );
+    event TopUpReceived(address phoneHash, uint256 productId, uint256 amount);
+    event AcknowledgeSent(address phoneHash, uint256 productId, uint256 amount);
 
     modifier existProposal(uint256 id) {
         require(id < proposals.length, "Proposal doesn't exist");
@@ -110,11 +111,15 @@ contract Offering is Ownable {
 
     function addProposal(
         uint8 _minScoring,
+        uint256 _capital,
+        uint256 _interest,
         string memory _description
     ) public onlyOwner {
         Proposal memory proposalData;
 
         proposalData.minScoring = _minScoring;
+        proposalData.capital = _capital;
+        proposalData.interest = _interest;
         proposalData.description = _description;
         proposalData.status = ProposalStatus.Active;
         proposals.push(proposalData);
@@ -122,6 +127,8 @@ contract Offering is Ownable {
         emit ProposalAdded(
             (proposals.length - 1),
             proposalData.minScoring,
+            proposalData.capital,
+            proposalData.interest,
             proposalData.description
         );
     }
@@ -231,7 +238,10 @@ contract Offering is Ownable {
             (i < proposals.length && offerProposalsIndex < 3);
             i++
         ) {
-            if (proposals[i].status == ProposalStatus.Active && _scoring >= proposals[i].minScoring) {
+            if (
+                proposals[i].status == ProposalStatus.Active &&
+                _scoring >= proposals[i].minScoring
+            ) {
                 offerProposals[offerProposalsIndex] = i;
                 offerProposalsIndex++;
             }

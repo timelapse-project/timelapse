@@ -44,19 +44,15 @@ while [ TRUE ];do
            echo " "
            curl --header "Content-Type: application/json" \
                 --request POST \
-                --data '{"minScoring":8,"description":"10€ + 0.5€"}' \
+                --data '{"minScoring":4,"capital":200,"interest":40,"description":"2€ + 0.4€"}' \
                 ${serverURL}/addProposal
            curl --header "Content-Type: application/json" \
                 --request POST \
-                --data '{"minScoring":6,"description":"8€ + 0.5€"}' \
+                --data '{"minScoring":6,"capital":400,"interest":80,"description":"4€ + 0.8€"}' \
                 ${serverURL}/addProposal
            curl --header "Content-Type: application/json" \
                 --request POST \
-                --data '{"minScoring":4,"description":"5€ + 0.5€"}' \
-                ${serverURL}/addProposal
-           curl --header "Content-Type: application/json" \
-                --request POST \
-                --data '{"minScoring":2,"description":"2€ + 0.5€"}' \
+                --data '{"minScoring":8,"capital":600,"interest":120,"description":"6€ + 1.2€"}' \
                 ${serverURL}/addProposal
            echo " "
            read -p "Press any key to continue"
