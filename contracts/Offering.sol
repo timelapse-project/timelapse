@@ -169,6 +169,7 @@ contract Offering is Ownable {
         );
     }
 
+/*
     function acceptance(
         address _phoneHash,
         uint256 _offerId,
@@ -206,6 +207,7 @@ contract Offering is Ownable {
 
         emit AcknowledgeSent(_phoneHash, _productId, _amount);
     }
+*/
 
     function eligibility(address _phoneHash)
         public
