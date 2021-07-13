@@ -1,5 +1,5 @@
-var Offering = artifacts.require("./Offering.sol");
+var Timelapse = artifacts.require("./Timelapse.sol");
 
 module.exports = function (deployer) {
-  deployer.deploy(Offering);
+  deployer.deploy(Timelapse);
 };

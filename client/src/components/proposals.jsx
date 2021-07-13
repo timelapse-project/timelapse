@@ -68,7 +68,7 @@ class Proposals extends Component {
     var proposalInterest = this.proposalInterest.value;
     var proposalDescription = this.proposalDescription.value;
 
-    if (proposalMinScoring == null || proposalMinScoring == 0) {
+    if (proposalMinScoring == null || parseInt(proposalMinScoring) === 0) {
       proposalMinScoringError = "Please, enter a minimum scoring";
     }
     if (proposalCapital == null || proposalCapital === "") {

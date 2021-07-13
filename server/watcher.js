@@ -4,7 +4,7 @@
  */
 var Request = require("request");
 const { web3 } = require("./getWeb3");
-const OfferingContract = require("../client/src/contracts/Offering.json");
+const TimelapseContract = require("../client/src/contracts/Timelapse.json");
 
 let LOG_LEVEL = 1;
 let WS_SERVER = "http://httpbin.org/post";
@@ -18,9 +18,9 @@ runInit = async () => {
   // console.log("Account: " + accounts);
 
   const networkId = await web3.eth.net.getId();
-  const deployedNetwork = OfferingContract.networks[networkId];
+  const deployedNetwork = TimelapseContract.networks[networkId];
   contract = new web3.eth.Contract(
-    OfferingContract.abi,
+    TimelapseContract.abi,
     deployedNetwork && deployedNetwork.address
   );
 

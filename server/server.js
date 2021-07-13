@@ -7,7 +7,7 @@ const { web3 } = require("./getWeb3");
 var app = express();
 var fs = require("fs");
 
-const OfferingContract = require("../client/src/contracts/Offering.json");
+const TimelapseContract = require("../client/src/contracts/Timelapse.json");
 
 let LOG_LEVEL = 1;
 
@@ -22,9 +22,9 @@ app.use(express.json());
 addProposal = async (data) => {
   const accounts = await web3.eth.getAccounts();
   const networkId = await web3.eth.net.getId();
-  const deployedNetwork = OfferingContract.networks[networkId];
+  const deployedNetwork = TimelapseContract.networks[networkId];
   const contract = new web3.eth.Contract(
-    OfferingContract.abi,
+    TimelapseContract.abi,
     deployedNetwork && deployedNetwork.address
   );
 
@@ -38,9 +38,9 @@ addProposal = async (data) => {
 lowBalance = async (data) => {
   const accounts = await web3.eth.getAccounts();
   const networkId = await web3.eth.net.getId();
-  const deployedNetwork = OfferingContract.networks[networkId];
+  const deployedNetwork = TimelapseContract.networks[networkId];
   const contract = new web3.eth.Contract(
-    OfferingContract.abi,
+    TimelapseContract.abi,
     deployedNetwork && deployedNetwork.address
   );
 
@@ -52,9 +52,9 @@ lowBalance = async (data) => {
 acceptance = async (data) => {
   const accounts = await web3.eth.getAccounts();
   const networkId = await web3.eth.net.getId();
-  const deployedNetwork = OfferingContract.networks[networkId];
+  const deployedNetwork = TimelapseContract.networks[networkId];
   const contract = new web3.eth.Contract(
-    OfferingContract.abi,
+    TimelapseContract.abi,
     deployedNetwork && deployedNetwork.address
   );
   await contract.methods
@@ -67,9 +67,9 @@ acceptance = async (data) => {
 topUp = async (data) => {
   const accounts = await web3.eth.getAccounts();
   const networkId = await web3.eth.net.getId();
-  const deployedNetwork = OfferingContract.networks[networkId];
+  const deployedNetwork = TimelapseContract.networks[networkId];
   const contract = new web3.eth.Contract(
-    OfferingContract.abi,
+    TimelapseContract.abi,
     deployedNetwork && deployedNetwork.address
   );
   await contract.methods

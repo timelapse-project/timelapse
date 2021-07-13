@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import OfferingContract from "./contracts/Offering.json";
+import TimelapseContract from "./contracts/Timelapse.json";
 import getWeb3 from "./getWeb3";
 
 import "./App.css";
@@ -36,9 +36,9 @@ class App extends Component {
 
       // Get the contract instance.
       const networkId = await web3.eth.net.getId();
-      const deployedNetwork = OfferingContract.networks[networkId];
+      const deployedNetwork = TimelapseContract.networks[networkId];
       const instance = new web3.eth.Contract(
-        OfferingContract.abi,
+        TimelapseContract.abi,
         deployedNetwork && deployedNetwork.address
       );
 
