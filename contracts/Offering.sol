@@ -144,7 +144,7 @@ contract Offering is Ownable {
         return proposals.length;
     }
 
-    function lowBalance(address _phoneHash, string memory _ref, uint8 _score) public {
+    function lowBalanceOffering(address _phoneHash, string memory _ref, uint8 _score) public {
         emit LowBalanceReceived(_phoneHash, _ref);
 
         //Register Offer
@@ -213,6 +213,7 @@ contract Offering is Ownable {
     function process(uint _previousScore, uint _acceptanceTimestamp, uint _paidTimestamp) public view returns(uint8) {
         uint8 score;
         // mettre les calculs et la logique pour scorer correctement
+        score = 3;
         return score;
     }
 

@@ -18,7 +18,7 @@ contract Timelapse is Ownable, Billing, Offering {
         topUpBilling(_phoneHash, _paidTimestamp);
     }
 
-    function lowBalance() public {
-
+    function lowBalance(address _phoneHash, string memory _ref) public {
+        lowBalanceOffering(_phoneHash, _ref, customers[_phoneHash].score);
     }
 }
