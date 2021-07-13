@@ -2,11 +2,10 @@
 pragma solidity ^0.8.6;
 
 import "./Billing.sol";
-import "./Scoring.sol";
 import "./Offering.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract Timelapse is Ownable, Billing, Offering, Scoring {
+contract Timelapse is Ownable, Billing, Offering {
 
     constructor() {}
 
@@ -17,5 +16,9 @@ contract Timelapse is Ownable, Billing, Offering, Scoring {
     function topUp(address _phoneHash, uint _paidTimestamp) public onlyOwner {
         addToScore(_phoneHash, customers[_phoneHash].history[customers[_phoneHash].history.length - 1].acceptanceTimestamp, _paidTimestamp);
         topUpBilling(_phoneHash, _paidTimestamp);
+    }
+
+    function lowBalance() public {
+
     }
 }

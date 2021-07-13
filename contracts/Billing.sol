@@ -23,15 +23,16 @@ contract Billing is Ownable {
 
     struct Customer {
         CustomerStatus status;
-        uint score;
+        uint8 score;
         History[] history;
     }
 
-    event ScoreChange(address phoneHash, uint score);
+    event ScoreChange(address phoneHash, uint8 score);
     event CustomerIsDeleted(address phoneHash);
     event AcceptanceReceived(address phoneHash, string ref, uint acceptanceTimestamp);
     event Confirmation(address phoneHash, string ref, uint acceptanceTimestamp);
     event TopUpReceived(address phoneHash, string ref);
+    event Acknowledge(address phoneHash, string ref);
 
     mapping(address => Customer) public customers;
 
@@ -46,7 +47,7 @@ contract Billing is Ownable {
         return (customers[_phoneHash].status == CustomerStatus.Active ? true : false);
     }
 
-    function changeScore(address _phoneHash, uint _score) public onlyOwner {
+    function changeScore(address _phoneHash, uint8 _score) public onlyOwner {
         customers[_phoneHash].score = _score;
         emit ScoreChange(_phoneHash, customers[_phoneHash].score);
     }
@@ -56,13 +57,14 @@ contract Billing is Ownable {
         require(customers[_phoneHash].history.length > 0, "Phone is not registered");
         require(customers[_phoneHash].history[index].status == HistoryStatus.Active, "The customer has no product to refund");
 
+        emit TopUpReceived(_phoneHash, customers[_phoneHash].history[index].ref);
         customers[_phoneHash].history[index].paidTimestamp = _paidTimestamp;
         customers[_phoneHash].history[index].status = HistoryStatus.Closed;
-        emit TopUpReceived(_phoneHash, customers[_phoneHash].history[index].ref);
-        if(customers[_phoneHash].score == 0) {
+        if(customers[_phoneHash].score == 0) { // On mettra ca ailleur
             customers[_phoneHash].status = CustomerStatus.Closed;
             emit CustomerIsDeleted(_phoneHash);
         }
+        emit Acknowledge(_phoneHash, customers[_phoneHash].history[index].ref);
     }
 
     function acceptance(address _phoneHash, string memory _ref, uint _acceptanceTimestamp) public activeCustomer(_phoneHash) {

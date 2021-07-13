@@ -78,17 +78,20 @@ contract Offering is Ownable {
         uint256 scoring,
         string ref
     );
+
     event AcceptanceReceived(
         address phoneHash,
         uint256 offerId,
         uint256 proposalId
     );
+
     event ConfirmationSent(
         uint256 productId,
         uint256 offerId,
         address phoneHash,
         uint256 timestamp
     );
+    
     event TopUpReceived(address phoneHash, uint256 productId, uint256 amount);
     event AcknowledgeSent(address phoneHash, uint256 productId, uint256 amount);
 
@@ -141,20 +144,15 @@ contract Offering is Ownable {
         return proposals.length;
     }
 
-    function lowBalance(address _phoneHash, string memory _ref) public {
+    function lowBalance(address _phoneHash, string memory _ref, uint8 _score) public {
         emit LowBalanceReceived(_phoneHash, _ref);
-
-        uint8 scoring;
-        EligibilityReason eligibilityReason;
-        (scoring, eligibilityReason) = eligibility(_phoneHash);
 
         //Register Offer
         Offer memory offerData;
         offerData.phoneHash = _phoneHash;
         offerData.timestamp = block.timestamp;
-        offerData.reason = eligibilityReason;
         offerData.status = OfferStatus.New;
-        offerData.proposals = getOfferProposals(scoring);
+        offerData.proposals = getOfferProposals(_score);
         offerData.ref = _ref;
         offers.push(offerData);
 
@@ -164,51 +162,12 @@ contract Offering is Ownable {
             offerData.timestamp,
             offerData.reason,
             offerData.proposals,
-            scoring,
+            _score,
             _ref
         );
     }
 
 /*
-    function acceptance(
-        address _phoneHash,
-        uint256 _offerId,
-        uint256 _proposalId
-    ) public {
-        emit AcceptanceReceived(_phoneHash, _offerId, _proposalId);
-        offers[_offerId].status = OfferStatus.Accepted;
-
-        Product memory productData;
-        productData.offerId = _offerId;
-        productData.proposalId = _proposalId;
-        productData.phoneHash = _phoneHash;
-        productData.timestamp = block.timestamp;
-        productData.status = ProductStatus.Active;
-        products.push(productData);
-
-        emit ConfirmationSent(
-            (products.length - 1),
-            productData.offerId,
-            productData.phoneHash,
-            productData.timestamp
-        );
-    }
-
-    function topUp(
-        address _phoneHash,
-        uint256 _productId,
-        uint256 _amount
-    ) public {
-        emit TopUpReceived(_phoneHash, _productId, _amount);
-
-        products[_productId].status = ProductStatus.Closed;
-        //TODO: Manage check topUpAmount
-        products[_productId].topUpAmount = _amount;
-
-        emit AcknowledgeSent(_phoneHash, _productId, _amount);
-    }
-*/
-
     function eligibility(address _phoneHash)
         public
         pure
@@ -223,7 +182,7 @@ contract Offering is Ownable {
             return (0, EligibilityReason.DoubleSpent);
         }
     }
-
+*/
     function getOfferProposals(uint8 _scoring)
         public
         view
@@ -249,6 +208,12 @@ contract Offering is Ownable {
             }
         }
         return offerProposals;
+    }
+
+    function process(uint _previousScore, uint _acceptanceTimestamp, uint _paidTimestamp) public view returns(uint8) {
+        uint8 score;
+        // mettre les calculs et la logique pour scorer correctement
+        return score;
     }
 
     function getUniqueId() public returns (address) {
