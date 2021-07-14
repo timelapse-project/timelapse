@@ -44,7 +44,7 @@ while [ TRUE ];do
            echo " "
            curl --header "Content-Type: application/json" \
                 --request POST \
-                --data '{"minScoring":4,"capital":200,"interest":40,"description":"2€ + 0.4€"}' \
+                --data '{"minScoring":2,"capital":200,"interest":40,"description":"2€ + 0.4€"}' \
                 ${serverURL}/addProposal
            curl --header "Content-Type: application/json" \
                 --request POST \

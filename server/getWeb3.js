@@ -7,12 +7,13 @@ let web3;
 
 if (typeof web3 === "undefined") {
   console.log("Initializing Web3 instance...");
+  // web3 = new Web3(
+  //   new Web3.providers.IpcProvider(process.env.GETH_IPC_PATH, net)
+  // );
+  //web3 = new Web3(new Web3.providers.HttpProvider(process.env.GETH_IPC_URL));
   web3 = new Web3(
-    new Web3.providers.IpcProvider(process.env.GETH_IPC_PATH, net)
+    new Web3.providers.WebsocketProvider(process.env.GETH_IPC_WS)
   );
-  //   const web3 = new Web3(
-  //     new Web3.providers.HttpProvider("http://127.0.0.1:7545")
-  //   );
 
   //resolve(web3);
 

@@ -15,9 +15,15 @@ module.exports = {
     //   network_id: "1337", // Any network (default: none)
     // },
     develop: {
-      port: 7545
+      port: 7545,
     },
-
+    timelapse: {
+      host: process.env.GETH_IPC_HOST,
+      port: process.env.GETH_IPC_PORT,
+      network_id: process.env.GETH_IPC_ID,
+      gas: 0,
+      gasPrice: 20000000000,
+    },
     private: {
       provider: () =>
         new Web3.providers.IpcProvider(process.env.GETH_IPC_PATH, net),

@@ -13,10 +13,6 @@ let proposalsCount = 0;
 let proposalList = [];
 
 runInit = async () => {
-  //const accounts = await web3.eth.getAccounts();
-  // console.log("Account: " + accounts[0]);
-  // console.log("Account: " + accounts);
-
   const networkId = await web3.eth.net.getId();
   const deployedNetwork = TimelapseContract.networks[networkId];
   contract = new web3.eth.Contract(
