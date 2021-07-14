@@ -41,9 +41,8 @@ contract Offering is Ownable {
     struct Product {
         address phoneHash;
         uint256 timestamp;
-        uint256 offerId;
-        uint256 proposalId;
-        uint256 topUpAmount;
+        uint256 idOffer;
+        uint256 idProposal;
         ProductStatus status;
     }
 
@@ -61,7 +60,7 @@ contract Offering is Ownable {
     Product[] public products;
 
     event ProposalAdded(
-        uint256 proposalId,
+        uint256 idProposal,
         uint8 minScoring,
         uint256 capital,
         uint256 interest,
@@ -70,7 +69,7 @@ contract Offering is Ownable {
     event LowBalanceReceived(address phoneHash, string ref);
 
     event OfferSent(
-        uint256 offerId,
+        uint256 idOffer,
         address phoneHash,
         uint256 timestamp,
         EligibilityReason reason,
@@ -81,13 +80,13 @@ contract Offering is Ownable {
 
     event AcceptanceReceived(
         address phoneHash,
-        uint256 offerId,
-        uint256 proposalId
+        uint256 idOffer,
+        uint256 idProposal
     );
 
     event ConfirmationSent(
         uint256 productId,
-        uint256 offerId,
+        uint256 idOffer,
         address phoneHash,
         uint256 timestamp
     );
@@ -112,6 +111,7 @@ contract Offering is Ownable {
 
     constructor() {}
 
+    //Proposal
     function addProposal(
         uint8 _minScoring,
         uint256 _capital,
@@ -143,6 +143,18 @@ contract Offering is Ownable {
     function proposalsCount() public view returns (uint256) {
         return proposals.length;
     }
+
+    //Offer
+
+    //Product
+
+    function createProduct(address _phoneHash, uint _acceptanceTimestamp, uint256 _idOffer, uint256 _idProposal) public onlyOwner returns(uint256) {
+        Product memory product = Product(_phoneHash, _acceptanceTimestamp, _idOffer, _idProposal, ProductStatus.Active);
+        products.push(product);
+        return (products.length - 1);
+    }
+
+    //Function
 
     function lowBalanceOffering(address _phoneHash, string memory _ref, uint8 _score) public {
         emit LowBalanceReceived(_phoneHash, _ref);
@@ -208,13 +220,6 @@ contract Offering is Ownable {
             }
         }
         return offerProposals;
-    }
-
-    function process(uint _previousScore, uint _acceptanceTimestamp, uint _paidTimestamp) public view returns(uint8) {
-        uint8 score;
-        // mettre les calculs et la logique pour scorer correctement
-        score = 3;
-        return score;
     }
 
     function getUniqueId() public returns (address) {

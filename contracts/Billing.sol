@@ -19,20 +19,22 @@ contract Billing is Ownable {
         uint acceptanceTimestamp;
         uint paidTimestamp;
         HistoryStatus status;
-        uint256 idOffer; // Pas mieux d'avoir juste l'ID du produit du coup ? ya tout dedans
-        uint256 idProposal;
+        uint256 idProduct; // Pas mieux d'avoir juste l'ID du produit du coup ? ya tout dedans
     }
 
     struct Customer {
         CustomerStatus status;
         uint8 score;
+        uint256 nbTopUp;
+        uint256 amount;
+        uint firstTopUp;
         History[] history;
     }
 
     event ScoreChange(address phoneHash, uint8 score);
     event CustomerIsDeleted(address phoneHash);
-    event AcceptanceReceived(address phoneHash, string ref, uint acceptanceTimestamp, uint256 idOffer, uint256 idProposal);
-    event Confirmation(address phoneHash, string ref, uint acceptanceTimestamp, uint256 idOffer, uint256 idProposal);
+    event AcceptanceReceived(address phoneHash, string ref, uint acceptanceTimestamp, uint256 idProduct);
+    event Confirmation(address phoneHash, string ref, uint acceptanceTimestamp, uint256 idProduct);
     event TopUpReceived(address phoneHash, string ref);
     event Acknowledge(address phoneHash, string ref);   
 
@@ -69,9 +71,9 @@ contract Billing is Ownable {
         emit Acknowledge(_phoneHash, customers[_phoneHash].history[index].ref);
     }
 
-    function acceptance(address _phoneHash, string memory _ref, uint _acceptanceTimestamp, uint256 idOffer, uint256 idProposal) public activeCustomer(_phoneHash) {
-        emit AcceptanceReceived(_phoneHash, _ref, _acceptanceTimestamp, idOffer, idProposal);
-        customers[_phoneHash].history.push(History( _ref, _acceptanceTimestamp, 0, HistoryStatus.Active, idOffer, idProposal));
-        emit Confirmation(_phoneHash, _ref, _acceptanceTimestamp, idOffer, idProposal);
+    function acceptanceBilling(address _phoneHash, string memory _ref, uint _acceptanceTimestamp, uint256 idProduct) public activeCustomer(_phoneHash) {
+        emit AcceptanceReceived(_phoneHash, _ref, _acceptanceTimestamp, idProduct);
+        customers[_phoneHash].history.push(History( _ref, _acceptanceTimestamp, 0, HistoryStatus.Active, idProduct));
+        emit Confirmation(_phoneHash, _ref, _acceptanceTimestamp, idProduct);
      }
 }
