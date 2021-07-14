@@ -10,11 +10,10 @@ contract Timelapse is Ownable, Billing, Offering {
     constructor() {}
 
     function addToScore(address _phoneHash) public onlyOwner activeCustomer(_phoneHash) {
-        Customer memory customer = customers[_phoneHash];
-        if(customer.firstTopUp == 0)
-            customer.firstTopUp = block.timestamp;
-        customer.nbTopUp++;
-        changeScore(_phoneHash, process(customer));
+        if (customers[_phoneHash].firstTopUp == 0)
+            customers[_phoneHash].firstTopUp = block.timestamp;
+        customers[_phoneHash].nbTopUp++;
+        changeScore(_phoneHash, process(customers[_phoneHash]));
     }
 
     function acceptance(address _phoneHash, string memory _ref, uint _acceptanceTimestamp, uint256 _idOffer, uint256 _idProposal) public activeCustomer(_phoneHash) {
@@ -35,9 +34,45 @@ contract Timelapse is Ownable, Billing, Offering {
 
     function process(Customer memory _customer) public view returns(uint8) {
         uint8 score;
-        // mettre les calculs et la logique pour scorer correctement
-        // 
-        score = 3;
+        uint8 topupAmountPoints;
+        uint8 firstTopUpAgePoints;
+        uint8 nbTopUpPoints;
+        if (_customer.amount >= 0 && _customer.amount <= 40) {
+            topupAmountPoints = 1;
+        } else if (_customer.amount > 40 && _customer.amount <= 150) {
+            topupAmountPoints = 2;
+        } else {
+            topupAmountPoints = 3;
+        }
+        if (_customer.firstTopUp >= (block.timestamp - 90 days)) {
+            firstTopUpAgePoints = 0;
+        } else if (
+            _customer.firstTopUp < (block.timestamp - 90 days) &&
+            _customer.firstTopUp >= (block.timestamp - 180 days)
+        ) {
+            firstTopUpAgePoints = 2;
+        } else if (
+            _customer.firstTopUp < (block.timestamp - 180 days) &&
+            _customer.firstTopUp >= (block.timestamp - 330 days)
+        ) {
+            firstTopUpAgePoints = 6;
+        } else {
+            firstTopUpAgePoints = 15;
+        }
+        if (_customer.nbTopUp == 0) {
+            nbTopUpPoints = 0;
+        } else if (_customer.nbTopUp > 0 && _customer.nbTopUp <= 10) {
+            nbTopUpPoints = 1;
+        } else if (_customer.nbTopUp > 10 && _customer.nbTopUp <= 20) {
+            nbTopUpPoints = 5;
+        } else {
+            nbTopUpPoints = 15;
+        }
+
+        score =
+            (topupAmountPoints * 4) +
+            (firstTopUpAgePoints * 6) +
+            (nbTopUpPoints * 8);
         return score;
     }
 }

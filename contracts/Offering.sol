@@ -206,8 +206,9 @@ contract Offering is Ownable {
         if (_scoring == 0) {
             return offerProposals;
         }
+        
         for (
-            uint256 i = 1;
+            uint256 i = 0;
             (i < proposals.length && offerProposalsIndex < 3);
             i++
         ) {

@@ -31,97 +31,29 @@ runInit = async () => {
 };
 
 doWhenEvent = async (data) => {
-  //console.log("==> doWhenEvent", data.event);
+  LOG_LEVEL > 1 &&
+    console.log(
+      "==> doWhenEvent - ",
+      data.event + " - " + JSON.stringify(data.returnValues)
+    );
 
   switch (data.event) {
     case "ProposalAdded":
       addProposal(data.returnValues);
       break;
     case "LowBalanceReceived":
-      LOG_LEVEL > 1 &&
-        console.log(
-          "==> Event LowBalanceReceived [" +
-            data.returnValues.phoneHash +
-            "][" +
-            data.returnValues.ref +
-            "]"
-        );
       break;
     case "OfferSent":
-      LOG_LEVEL > 1 &&
-        console.log(
-          "==> Event OfferSent [" +
-            data.returnValues.id +
-            "][" +
-            data.returnValues.phoneHash +
-            "][" +
-            data.returnValues.timestamp +
-            "][" +
-            data.returnValues.reason +
-            "][" +
-            data.returnValues.proposals +
-            "][" +
-            data.returnValues.scoring +
-            "]"
-        );
       sendOffer(data.returnValues);
       break;
     case "AcceptanceReceived":
-      LOG_LEVEL > 1 &&
-        console.log(
-          "==> Event AcceptanceReceived [" +
-            data.returnValues.id +
-            "][" +
-            data.returnValues.phoneHash +
-            "][" +
-            data.returnValues.offerId +
-            "][" +
-            data.returnValues.phoneHash +
-            "]"
-        );
       break;
-    case "ConfirmationSent":
-      LOG_LEVEL > 1 &&
-        console.log(
-          "==> Event ConfirmationSent [" +
-            data.returnValues.id +
-            "][" +
-            data.returnValues.offerId +
-            "][" +
-            data.returnValues.phoneHash +
-            "][" +
-            data.returnValues.timestamp +
-            "]"
-        );
+    case "Confirmation":
       sendConfirmation(data.returnValues);
       break;
     case "TopUpReceived":
-      LOG_LEVEL > 1 &&
-        console.log(
-          "==> Event TopUpReceived [" +
-            data.returnValues.id +
-            "][" +
-            data.returnValues.phoneHash +
-            "][" +
-            data.returnValues.productId +
-            "][" +
-            data.returnValues.amount +
-            "]"
-        );
       break;
-    case "AcknowledgeSent":
-      LOG_LEVEL > 1 &&
-        console.log(
-          "==> Event AcknowledgeSent [" +
-            data.returnValues.id +
-            "][" +
-            data.returnValues.phoneHash +
-            "][" +
-            data.returnValues.productId +
-            "][" +
-            data.returnValues.amount +
-            "]"
-        );
+    case "Acknowledge":
       sendAcknowledge(data.returnValues);
       break;
     default:
@@ -140,13 +72,15 @@ getProposals = async () => {
     proposalItem["id"] = proposalId;
     proposalList.push(proposalItem);
   }
+
+  LOG_LEVEL > 1 && console.log("proposalList", JSON.stringify(proposalList));
 };
 
 addProposal = async (data) => {
   LOG_LEVEL > 0 && console.log("<-- addProposal");
 
   let proposalItem = [];
-  proposalItem.id = parseInt(data.proposalId);
+  proposalItem.id = parseInt(data.idProposal);
   proposalItem.minScoring = data.minScoring;
   proposalItem.capital = data.capital;
   proposalItem.interest = data.interest;
@@ -162,14 +96,11 @@ sendOffer = async (data) => {
   var responseBody = {
     type: 1,
     phoneHash: data.phoneHash,
-    offerId: parseInt(data.offerId),
+    offerId: parseInt(data.idOffer),
     timeStamp: data.timestamp,
     proposals: [],
   };
   switch (data.reason) {
-    // case "0":
-    //   responseBody["reason"] = "None";
-    //   break;
     case "1":
       responseBody["reason"] = "UnknowUser";
       break;
@@ -182,8 +113,6 @@ sendOffer = async (data) => {
     case "4":
       responseBody["reason"] = "Other";
       break;
-    // default:
-    //   responseBody["reason"] = "None";
   }
   let proposalsCount = 0;
   for (let i = 0; i < data.proposals.length; i++) {
@@ -220,9 +149,8 @@ sendConfirmation = async (data) => {
   var responseBody = {
     type: 3,
     phoneHash: data.phoneHash,
-    productId: parseInt(data.productId),
-    offerId: parseInt(data.offerId),
-    timestamp: data.timestamp,
+    productId: parseInt(data.idProduct),
+    timestamp: data.acceptanceTimestamp,
   };
 
   LOG_LEVEL > 0 && console.log(responseBody);
@@ -247,8 +175,6 @@ sendAcknowledge = async (data) => {
   var responseBody = {
     type: 5,
     phoneHash: data.phoneHash,
-    productId: data.productId,
-    amount: parseInt(data.amount),
   };
 
   LOG_LEVEL > 0 && console.log(responseBody);

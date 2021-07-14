@@ -10,6 +10,7 @@ var fs = require("fs");
 const TimelapseContract = require("../client/src/contracts/Timelapse.json");
 
 let LOG_LEVEL = 1;
+let PARTNER_CODE = "TL";
 
 app.use(
   express.urlencoded({
@@ -58,7 +59,7 @@ acceptance = async (data) => {
     deployedNetwork && deployedNetwork.address
   );
   await contract.methods
-    .acceptance(data.phoneHash, data.offerId, data.proposalId)
+    .acceptance(data.phoneHash, data.ref, data.timestamp, data.offerId, data.proposalId)
     .send({
       from: accounts[0],
     });
@@ -72,11 +73,15 @@ topUp = async (data) => {
     TimelapseContract.abi,
     deployedNetwork && deployedNetwork.address
   );
-  await contract.methods
-    .topUp(data.phoneHash, data.productId, data.amount)
-    .send({
+  if (data.partner != null && data.partner === PARTNER_CODE) {
+    await contract.methods.topUp(data.phoneHash, data.timestamp).send({
       from: accounts[0],
     });
+  } else {
+    await contract.methods.addToScore(data.phoneHash).send({
+      from: accounts[0],
+    });
+  }
 };
 
 app.post("/addProposal", function (req, res) {
