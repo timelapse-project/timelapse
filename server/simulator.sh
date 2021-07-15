@@ -39,6 +39,8 @@ while [ TRUE ];do
     echo "11: Send lowBalance"
     echo "12: Send acceptance"
     echo "13: Send topUp"
+    echo ""
+    echo "Scenario B"
     echo "110: Send lowBalance (" ${phoneHash2} ")"
     echo "120: Send lowBalance (" ${phoneHash3} ")"
     echo "200: Send acceptance (" ${phoneHash1} ")"
@@ -54,20 +56,19 @@ while [ TRUE ];do
            echo " "
            curl --header "Content-Type: application/json" \
                 --request POST \
-                --data '{"minScoring":0,"capital":0,"interest":0,"description":"dummy"}' \
-                ${serverURL}/addProposal
-           curl --header "Content-Type: application/json" \
-                --request POST \
                 --data '{"minScoring":49,"capital":200,"interest":50,"description":"2€ + 0.5€"}' \
                 ${serverURL}/addProposal
+           sleep 1
            curl --header "Content-Type: application/json" \
                 --request POST \
                 --data '{"minScoring":118,"capital":400,"interest":100,"description":"4€ + 1€"}' \
                 ${serverURL}/addProposal
+           sleep 1
            curl --header "Content-Type: application/json" \
                 --request POST \
                 --data '{"minScoring":185,"capital":600,"interest":150,"description":"6€ + 1.5€"}' \
                 ${serverURL}/addProposal
+           sleep 1
            echo " "
            read -p "Press any key to continue"
         elif [ ${choice} -eq 10 ];then

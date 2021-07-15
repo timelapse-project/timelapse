@@ -5,10 +5,23 @@ import "./Billing.sol";
 import "./Offering.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
+/**
+ * @title This Smart Contract is the entry point of Timelapse.
+ * @notice Communicate with API(server/watcher) part and dApp
+ * @author Keeymon, DavidRochus
+ */
 contract Timelapse is Ownable, Billing, Offering {
 
+    /**
+     * @dev Smart Contract constructor
+     */
     constructor() {}
 
+    /**
+      * @notice Increase scoring information of a customer
+      * @param _phoneHash The address that identifies to the customer
+      * @dev This function is directly called when API receives a topUp for a customer (identified with `_phoneHash`) with a target other than Timelapse
+      */
     function addToScore(address _phoneHash) public onlyOwner activeCustomer(_phoneHash) {
         if (customers[_phoneHash].firstTopUp == 0)
             customers[_phoneHash].firstTopUp = block.timestamp;
@@ -16,10 +29,25 @@ contract Timelapse is Ownable, Billing, Offering {
         changeScore(_phoneHash, process(customers[_phoneHash]));
     }
 
+    /**
+      * @notice Accept the offer
+      * @param _phoneHash The address that identifies to the customer
+      * @param _ref Reference of the telecom provider
+      * @param _acceptanceTimestamp Timestamp of the acceptance
+      * @param _idOffer ID of the offer
+      * @param _idProposal ID of the proposal
+      * @dev Accept the offer `_idOffer` (By choosing proposal `_idProposal`) of a customer (identified with `_phoneHash`) with reference `_ref` at timestamp `_acceptanceTimestamp`
+      */
     function acceptance(address _phoneHash, string memory _ref, uint _acceptanceTimestamp, uint256 _idOffer, uint256 _idProposal) public activeCustomer(_phoneHash) {
         acceptanceBilling(_phoneHash, _ref, _acceptanceTimestamp, createProduct(_phoneHash, _acceptanceTimestamp, _idOffer, _idProposal));
     }
 
+     /**
+      * @notice TopUp the last product of a customer
+      * @param _phoneHash The address that identifies to the customer
+      * @param _paidTimestamp Timestamp of the acceptance
+      * @dev TopUp the last product of a customer (identified with `_phoneHash`) at timestamp `_paidTimestamp`
+      */
     function topUp(address _phoneHash, uint _paidTimestamp) public onlyOwner activeCustomer(_phoneHash) {
         customers[_phoneHash].nbTopUp++;
         customers[_phoneHash].amount += proposals[products[customers[_phoneHash].history[customers[_phoneHash].history.length - 1].idProduct].idProposal].capital +
@@ -28,10 +56,22 @@ contract Timelapse is Ownable, Billing, Offering {
         topUpBilling(_phoneHash, _paidTimestamp);
     }
 
+    /**
+      * @notice Manage the "low balances" received and generate an offer
+      * @param _phoneHash The address that identifies to the customer
+      * @param _ref Reference of the telecom provider
+      * @dev Manage lowBalance (with reference `_ref`) of a customer (identified with `_phoneHash`)
+      */
     function lowBalance(address _phoneHash, string memory _ref) public {
         lowBalanceOffering(_phoneHash, _ref, customers[_phoneHash].score);
     }
 
+    /**
+      * @notice Compute the score of a customer
+      * @param _customer The customer
+      * @return Score The computed customer score 
+      * @dev Compute the score of a customer `_customer`
+      */
     function process(Customer memory _customer) public view returns(uint8) {
         uint8 score;
         uint8 topupAmountPoints;

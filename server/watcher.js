@@ -116,14 +116,12 @@ sendOffer = async (data) => {
   }
   let proposalsCount = 0;
   for (let i = 0; i < data.proposals.length; i++) {
-    if (data.proposals[i] != 0) {
-      let proposal = {
-        id: proposalList[data.proposals[i]]["id"],
-        description: proposalList[data.proposals[i]]["description"],
-      };
-      responseBody["proposals"].push(proposal);
-      proposalsCount++;
-    }
+    let proposal = {
+      id: proposalList[data.proposals[i]]["id"],
+      description: proposalList[data.proposals[i]]["description"],
+    };
+    responseBody["proposals"].push(proposal);
+    proposalsCount++;
   }
   responseBody["proposalsCount"] = proposalsCount;
 

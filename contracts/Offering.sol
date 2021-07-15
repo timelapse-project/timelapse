@@ -3,24 +3,39 @@ pragma solidity ^0.8.6;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 
+/**
+ * @title This Smart Contract is responsible to generate the offers for customers.
+ * @notice Manage all aspects related to offering (proposals, customers and products management)
+ * @author Keeymon, DavidRochus
+ */
 contract Offering is Ownable {
-    uint256 private nonce = 0;
-
+    /**
+     * @dev Offer status
+     */
     enum OfferStatus {
         New,
         Accepted
     }
 
+    /**
+     * @dev Product status
+     */
     enum ProductStatus {
         Active,
         Closed
     }
 
+    /**
+     * @dev Proposal status
+     */
     enum ProposalStatus {
         Active,
         Closed
     }
 
+    /**
+     * @dev Eligibility reasons
+     */
     enum EligibilityReason {
         None,
         UnknowUser,
@@ -29,6 +44,9 @@ contract Offering is Ownable {
         Other
     }
 
+    /**
+     * @dev Offer information
+     */
     struct Offer {
         address phoneHash;
         uint256 timestamp;
@@ -38,6 +56,9 @@ contract Offering is Ownable {
         string ref;
     }
 
+    /**
+     * @dev Product information
+     */
     struct Product {
         address phoneHash;
         uint256 timestamp;
@@ -46,6 +67,9 @@ contract Offering is Ownable {
         ProductStatus status;
     }
 
+    /**
+     * @dev Proposal information
+     */
     struct Proposal {
         uint8 minScoring;
         uint256 capital;
@@ -55,10 +79,22 @@ contract Offering is Ownable {
         ProposalStatus status;
     }
 
+    /**
+     * @dev Offers table
+     */
     Offer[] public offers;
+    /**
+     * @dev Proposals table
+     */
     Proposal[] public proposals;
+    /**
+     * @dev Products table
+     */
     Product[] public products;
 
+    /**
+     * @dev Triggered when a proposal is added
+     */
     event ProposalAdded(
         uint256 idProposal,
         uint8 minScoring,
@@ -66,8 +102,13 @@ contract Offering is Ownable {
         uint256 interest,
         string description
     );
+    /**
+     * @dev Triggered when a lowBalance is received
+     */
     event LowBalanceReceived(address phoneHash, string ref);
-
+    /**
+     * @dev Triggered when an offer has to be sent
+     */
     event OfferSent(
         uint256 idOffer,
         address phoneHash,
@@ -77,41 +118,67 @@ contract Offering is Ownable {
         uint256 scoring,
         string ref
     );
-
+    /**
+     * @dev Triggered when an acceptance is received
+     */
     event AcceptanceReceived(
         address phoneHash,
         uint256 idOffer,
         uint256 idProposal
     );
-
+    /**
+     * @dev Triggered when a confirmation has to be sent
+     */
     event ConfirmationSent(
         uint256 productId,
         uint256 idOffer,
         address phoneHash,
         uint256 timestamp
     );
-    
+    /**
+     * @dev Triggered when a topUp is received
+     */
     event TopUpReceived(address phoneHash, uint256 productId, uint256 amount);
+    /**
+     * @dev Triggered when an acknowledge has to be sent
+     */
     event AcknowledgeSent(address phoneHash, uint256 productId, uint256 amount);
 
+    /**
+     * @dev Check if proposal exists
+     */
     modifier existProposal(uint256 id) {
         require(id < proposals.length, "Proposal doesn't exist");
         _;
     }
-
+    /**
+     * @dev Check if offer exists
+     */
     modifier existOffer(uint256 id) {
         require(id < offers.length, "Offer doesn't exist");
         _;
     }
-
+    /**
+     * @dev Check if product exists
+     */
     modifier existProduct(uint256 id) {
         require(id < products.length, "Product doesn't exist");
         _;
     }
 
+    /**
+     * @dev Smart Contract constructor
+     */
     constructor() {}
 
-    //Proposal
+    /**
+      * @notice Add a proposal
+      * @param _minScoring The minimum score needed by customer to receive this proposal
+      * @param _capital Capital part of the proposal amount
+      * @param _interest Interest part of the proposal amount
+      * @param _description A description of the proposal
+      * @dev Add a proposal with the following information: minimum scoring `_minScoring`, amount `_capital` + `_interest`, description `_description`
+      */
     function addProposal(
         uint8 _minScoring,
         uint256 _capital,
@@ -136,26 +203,44 @@ contract Offering is Ownable {
         );
     }
 
+    /**
+      * @notice Close a proposal
+      * @param _id ID of the proposal to close
+      * @dev Close the proposal with the ID `_id`
+      */
     function closedProposal(uint256 _id) public onlyOwner existProposal(_id) {
         proposals[_id].status = ProposalStatus.Closed;
     }
 
+    /**
+      * @notice Number of proposals
+      * @dev Return the number of proposals
+      */
     function proposalsCount() public view returns (uint256) {
         return proposals.length;
     }
 
-    //Offer
-
-    //Product
-
+    /**
+      * @notice Create a product
+      * @param _phoneHash The address that identifies to the customer
+      * @param _acceptanceTimestamp Timestamp of the acceptance
+      * @param _idOffer ID of the offer
+      * @param _idProposal ID of the proposal
+      * @dev Create a product with the following information: a customer (identified with `_phoneHash`), an offer ID `_idOffer`, a proposal ID `_idProposal` and a timestamp `_acceptanceTimestamp` 
+      */
     function createProduct(address _phoneHash, uint _acceptanceTimestamp, uint256 _idOffer, uint256 _idProposal) public onlyOwner returns(uint256) {
         Product memory product = Product(_phoneHash, _acceptanceTimestamp, _idOffer, _idProposal, ProductStatus.Active);
         products.push(product);
         return (products.length - 1);
     }
 
-    //Function
-
+    /**
+      * @notice Manage the "low balances" received and generate an offer
+      * @param _phoneHash The address that identifies to the customer
+      * @param _ref Reference of the telecom provider
+      * @param _score score of the customer
+      * @dev Manage lowBalance (with reference `_ref`) of a customer (identified with `_phoneHash`) and generate an offer based on the score `_score` 
+      */
     function lowBalanceOffering(address _phoneHash, string memory _ref, uint8 _score) public {
         emit LowBalanceReceived(_phoneHash, _ref);
 
@@ -179,36 +264,26 @@ contract Offering is Ownable {
         );
     }
 
-/*
-    function eligibility(address _phoneHash)
-        public
-        pure
-        returns (uint8, EligibilityReason)
-    {
-        //TODO: Manage eligibility (scoring)
-        if (_phoneHash == 0x718CEA3706787aa03Bd936b76303fA00660C5f42) {
-            return (3, EligibilityReason.None);
-        } else if (_phoneHash == 0x3ad53d26D15A658A84Fe8cA9FFc8aA3a7240C1a0) {
-            return (6, EligibilityReason.None);
-        } else {
-            return (0, EligibilityReason.DoubleSpent);
-        }
-    }
-*/
+    /**
+      * @notice Get the proposals corresponding to the scoring
+      * @param _scoring score of the customer
+      * @return Proposals
+      * @dev Return the proposals that correspond to the given scoring `_scoring` 
+      */
     function getOfferProposals(uint8 _scoring)
         public
         view
         returns (uint256[] memory)
     {
         uint256[] memory offerProposals = new uint256[](3);
-        uint256 offerProposalsIndex = 0;
+        uint8 offerProposalsIndex = 0;
 
         if (_scoring == 0) {
             return offerProposals;
         }
         
         for (
-            uint256 i = 0;
+            uint8 i = 0;
             (i < proposals.length && offerProposalsIndex < 3);
             i++
         ) {
@@ -220,18 +295,26 @@ contract Offering is Ownable {
                 offerProposalsIndex++;
             }
         }
+        return trimOfferProposals(offerProposals,offerProposalsIndex);
+    }
+
+    /**
+      * @notice Create a trimmed table of the proposals
+      * @param _offerProposals Initial proposals table
+      * @param _offerProposalsCount Number of proposals to retrieve in the initial table
+      * @return Proposals
+      * @dev Return a proposals based on table `_offerProposals` with only the first `_offerProposalsCount` proposals
+      */
+    function trimOfferProposals(uint256[] memory _offerProposals, uint8 _offerProposalsCount)
+        public
+        pure
+        returns (uint256[] memory)
+    {
+        uint256[] memory offerProposals = new uint256[](_offerProposalsCount);
+        for (uint8 i = 0; i < _offerProposalsCount; i++) {
+            offerProposals[i]=_offerProposals[i];
+        }
         return offerProposals;
     }
 
-    function getUniqueId() public returns (address) {
-        nonce++;
-        return
-            address(
-                bytes20(
-                    keccak256(
-                        abi.encodePacked(block.timestamp, msg.sender, nonce)
-                    )
-                )
-            );
-    }
 }
