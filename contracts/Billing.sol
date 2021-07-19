@@ -29,25 +29,29 @@ contract Billing is Ownable {
      * @dev Customer product history
      */
     struct History {
-        string ref;
-        uint acceptanceTimestamp;
-        uint paidTimestamp;
-        HistoryStatus status;
-        uint256 idProduct; // Pas mieux d'avoir juste l'ID du produit du coup ? ya tout dedans
+        string          ref;
+        uint            acceptanceTimestamp;
+        uint            paidTimestamp;
+        HistoryStatus   status;
+        uint256         idProduct; // Pas mieux d'avoir juste l'ID du produit du coup ? ya tout dedans
     }
 
     /**
      * @dev Customer information
      */
     struct Customer {
-        CustomerStatus status;
-        uint8 score;
-        uint256 nbTopUp;
-        uint256 amount;
-        uint firstTopUp;
-        History[] history;
+        CustomerStatus  status;
+        uint8           score;
+        uint256         nbTopUp;
+        uint256         amount;
+        uint            firstTopUp;
+        uint256         lastAcceptanceID;
     }
 
+    /**
+     * @dev Triggered when status of a customer has changed
+     */
+    event CustomerStatusChange(address phoneHash, CustomerStatus status);
     /**
      * @dev Triggered when score of a customer has changed 
      */
@@ -77,6 +81,11 @@ contract Billing is Ownable {
      * @dev Mapping to access customer information with a phoneHash
      */
     mapping(address => Customer) public customers;
+    
+    /**
+     * @dev Mapping to access history information with a phoneHash
+     */
+    mapping(address => History[]) public histories;
 
     /**
      * @dev Check that the customer is still active
@@ -101,6 +110,17 @@ contract Billing is Ownable {
     }
 
     /**
+      * @notice Change the customer status
+      * @param _phoneHash The address that identifies to the customer
+      * @param _status The new state for the customer
+      * @dev This function change the customer's status (using CustomerStatus `_status`) ofr a customer (identified with `_phoneHash`)
+      */
+    function changeCustomerStatus(address _phoneHash, CustomerStatus _status) public onlyOwner {
+        customers[_phoneHash].status = _status;
+        emit CustomerStatusChange(_phoneHash, customers[_phoneHash].status);
+    }
+
+    /**
       * @notice Change the score of a customer
       * @param _phoneHash The address that identifies to the customer
       * @dev This function informs if the customer (identified with `_phoneHash`) is active
@@ -111,27 +131,6 @@ contract Billing is Ownable {
     }
 
     /**
-      * @notice TopUp the last product of a customer
-      * @param _phoneHash The address that identifies to the customer
-      * @param _paidTimestamp Timestamp of the acceptance
-      * @dev TopUp the last product of a customer (identified with `_phoneHash`) at timestamp `_paidTimestamp`
-      */
-    function topUpBilling(address _phoneHash, uint _paidTimestamp) public onlyOwner activeCustomer(_phoneHash) {
-        uint index = customers[_phoneHash].history.length - 1;
-        require(customers[_phoneHash].history.length > 0, "Phone is not registered");
-        require(customers[_phoneHash].history[index].status == HistoryStatus.Active, "The customer has no product to refund");
-
-        emit TopUpReceived(_phoneHash, customers[_phoneHash].history[index].ref);
-        customers[_phoneHash].history[index].paidTimestamp = _paidTimestamp;
-        customers[_phoneHash].history[index].status = HistoryStatus.Closed;
-        if(customers[_phoneHash].score == 0) { // On mettra ca ailleur
-            customers[_phoneHash].status = CustomerStatus.Closed;
-            emit CustomerIsDeleted(_phoneHash);
-        }
-        emit Acknowledge(_phoneHash, customers[_phoneHash].history[index].ref);
-    }
-
-    /**
       * @notice Add an acceptance in the customer history
       * @param _phoneHash The address that identifies to the customer
       * @param _ref Reference of the telecom provider
@@ -139,9 +138,35 @@ contract Billing is Ownable {
       * @param _idProduct ID of the product
       * @dev Add a customer product history (using reference `_ref`, product `_idProduct`, timestamp `_acceptanceTimestamp`) for a customer (identified with `_phoneHash`)
       */
-    function acceptanceBilling(address _phoneHash, string memory _ref, uint _acceptanceTimestamp, uint256 _idProduct) public activeCustomer(_phoneHash) {
+    function acceptanceBilling(address _phoneHash, string memory _ref, uint _acceptanceTimestamp, uint256 _idProduct) public onlyOwner activeCustomer(_phoneHash) {
         emit AcceptanceReceived(_phoneHash, _ref, _acceptanceTimestamp, _idProduct);
-        customers[_phoneHash].history.push(History( _ref, _acceptanceTimestamp, 0, HistoryStatus.Active, _idProduct));
-        emit Confirmation(_phoneHash, _ref, _acceptanceTimestamp, _idProduct);
-     }
+        histories[_phoneHash].push(History( _ref, _acceptanceTimestamp, 0, HistoryStatus.Active, _idProduct));
+        Customer memory customer = customers[_phoneHash];
+        customer.lastAcceptanceID = (histories[_phoneHash].length - 1);
+        History memory lastAcceptance = histories[_phoneHash][customer.lastAcceptanceID];
+        emit Confirmation(_phoneHash, lastAcceptance.ref, lastAcceptance.acceptanceTimestamp, lastAcceptance.idProduct);
+    }
+
+    /**
+      * @notice TopUp the last product of a customer
+      * @param _phoneHash The address that identifies to the customer
+      * @param _paidTimestamp Timestamp of the acceptance
+      * @dev TopUp the last product of a customer (identified with `_phoneHash`) at timestamp `_paidTimestamp`
+      */
+    function topUpBilling(address _phoneHash, uint _paidTimestamp) public onlyOwner {
+        require(histories[_phoneHash].length > 0, "Phone is not registered");
+        uint index = (histories[_phoneHash].length - 1);
+        require(histories[_phoneHash][index].status == HistoryStatus.Active, "The customer has no product to refund");
+
+        emit TopUpReceived(_phoneHash, histories[_phoneHash][index].ref);
+        histories[_phoneHash][index].paidTimestamp = _paidTimestamp;
+        histories[_phoneHash][index].status = HistoryStatus.Closed;
+        /*
+        if(customers[_phoneHash].score == 0) { // On mettra ca ailleur
+            customers[_phoneHash].status = CustomerStatus.Closed;
+            emit CustomerIsDeleted(_phoneHash);
+        }
+        */
+        emit Acknowledge(_phoneHash, histories[_phoneHash][index].ref);
+    }
 }

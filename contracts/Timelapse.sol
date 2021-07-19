@@ -50,8 +50,8 @@ contract Timelapse is Ownable, Billing, Offering {
       */
     function topUp(address _phoneHash, uint _paidTimestamp) public onlyOwner activeCustomer(_phoneHash) {
         customers[_phoneHash].nbTopUp++;
-        customers[_phoneHash].amount += proposals[products[customers[_phoneHash].history[customers[_phoneHash].history.length - 1].idProduct].idProposal].capital +
-                                        proposals[products[customers[_phoneHash].history[customers[_phoneHash].history.length - 1].idProduct].idProposal].interest;
+        customers[_phoneHash].amount += proposals[products[histories[_phoneHash][customers[_phoneHash].lastAcceptanceID].idProduct].idProposal].capital +
+                                        proposals[products[histories[_phoneHash][customers[_phoneHash].lastAcceptanceID].idProduct].idProposal].interest;
         addToScore(_phoneHash);
         topUpBilling(_phoneHash, _paidTimestamp);
     }
