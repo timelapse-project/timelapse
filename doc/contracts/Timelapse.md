@@ -47,4 +47,11 @@ Compute the score of a customer
 
 Compute the score of a customer `_customer`
 
+### `getCustomerActivitiesLog(address _phoneHash, uint256 _startTimestamp, uint256 _endTimestamp) → struct Timelapse.CustomerActivity[]` (public)
+
+Get customer activities log
+
+
+Get activities log of a customer (identified with `_phoneHash`)
+
 
