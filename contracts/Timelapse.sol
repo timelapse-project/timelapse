@@ -13,6 +13,15 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 contract Timelapse is Ownable, Billing, Offering {
 
     /**
+     * @dev Customer Activity
+     */
+    struct CustomerActivity {
+        string log;
+        uint256 timestamp;
+        string status;
+    }
+
+    /**
      * @dev Smart Contract constructor
      */
     constructor() {}
@@ -115,4 +124,58 @@ contract Timelapse is Ownable, Billing, Offering {
             (nbTopUpPoints * 8);
         return score;
     }
+
+    /**
+      * @notice Get customer activities log
+      * @param _phoneHash The address that identifies to the customer
+      * @param _startTimestamp Start of the search timeframe
+      * @param _endTimestamp End of the search timeframe
+      * @return Score The computed customer score 
+      * @dev Get activities log of a customer (identified with `_phoneHash`)
+      */
+    function getCustomerActivitiesLog(address _phoneHash, uint256 _startTimestamp, uint256 _endTimestamp) public view returns(CustomerActivity[] memory) {
+         uint256 customerActivitiesSize = 0;
+         uint256 customerActivitiesIndex = 0;
+
+         for (uint8 i = 0; i < customers[_phoneHash].history.length; i++) {
+            if(offers[products[customers[_phoneHash].history[i].idProduct].idOffer].timestamp >= _startTimestamp && offers[products[customers[_phoneHash].history[i].idProduct].idOffer].timestamp <= _endTimestamp) {
+                customerActivitiesSize++;
+            }
+            if(customers[_phoneHash].history[i].acceptanceTimestamp >= _startTimestamp && customers[_phoneHash].history[i].acceptanceTimestamp <= _endTimestamp) {
+                customerActivitiesSize++;
+            }
+            if(customers[_phoneHash].history[i].paidTimestamp >= _startTimestamp && customers[_phoneHash].history[i].paidTimestamp <= _endTimestamp) {
+                customerActivitiesSize++;
+            }
+        }
+        CustomerActivity[] memory customerActivities = new CustomerActivity[](customerActivitiesSize);
+        for (uint8 i = 0; i < customers[_phoneHash].history.length; i++) {
+            if(offers[products[customers[_phoneHash].history[i].idProduct].idOffer].timestamp >= _startTimestamp && offers[products[customers[_phoneHash].history[i].idProduct].idOffer].timestamp <= _endTimestamp) {
+                if(offers[products[customers[_phoneHash].history[i].idProduct].idOffer].proposals.length == 1){
+                    customerActivities[customerActivitiesIndex].log=string(abi.encodePacked("Offer: ", proposals[offers[products[customers[_phoneHash].history[i].idProduct].idOffer].proposals[0]].description));
+                } else if (offers[products[customers[_phoneHash].history[i].idProduct].idOffer].proposals.length == 2){
+                    customerActivities[customerActivitiesIndex].log=string(abi.encodePacked("Offer: ", proposals[offers[products[customers[_phoneHash].history[i].idProduct].idOffer].proposals[0]].description,"/",proposals[offers[products[customers[_phoneHash].history[i].idProduct].idOffer].proposals[1]].description));
+                } else if (offers[products[customers[_phoneHash].history[i].idProduct].idOffer].proposals.length == 3){
+                    customerActivities[customerActivitiesIndex].log=string(abi.encodePacked("Offer: ", proposals[offers[products[customers[_phoneHash].history[i].idProduct].idOffer].proposals[0]].description,"/",proposals[offers[products[customers[_phoneHash].history[i].idProduct].idOffer].proposals[1]].description,"/",proposals[offers[products[customers[_phoneHash].history[i].idProduct].idOffer].proposals[2]].description));
+                }
+                customerActivities[customerActivitiesIndex].timestamp=offers[products[customers[_phoneHash].history[i].idProduct].idOffer].timestamp;
+                customerActivities[customerActivitiesIndex].status="Offer";
+                customerActivitiesIndex++;
+            }
+            if(customers[_phoneHash].history[i].acceptanceTimestamp >= _startTimestamp && customers[_phoneHash].history[i].acceptanceTimestamp <= _endTimestamp) {
+                customerActivities[customerActivitiesIndex].log=string(abi.encodePacked("Accepted: ", proposals[products[customers[_phoneHash].history[i].idProduct].idProposal].description));
+                customerActivities[customerActivitiesIndex].timestamp=customers[_phoneHash].history[i].acceptanceTimestamp;
+                customerActivities[customerActivitiesIndex].status="Accepted";
+                customerActivitiesIndex++;
+            }
+            if(customers[_phoneHash].history[i].paidTimestamp >= _startTimestamp && customers[_phoneHash].history[i].paidTimestamp <= _endTimestamp) {
+                customerActivities[customerActivitiesIndex].log="Topup";
+                customerActivities[customerActivitiesIndex].timestamp=customers[_phoneHash].history[i].paidTimestamp;
+                customerActivities[customerActivitiesIndex].status="Closed";
+                customerActivitiesIndex++;
+            }
+        }
+        return customerActivities;
+    }
+    
 }
