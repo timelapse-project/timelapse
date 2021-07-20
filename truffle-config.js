@@ -8,6 +8,7 @@ module.exports = {
   // See <http://truffleframework.com/docs/advanced/configuration>
   // to customize your Truffle configuration!
   contracts_build_directory: path.join(__dirname, "client/src/contracts"),
+  plugins: ["truffle-contract-size"],
   networks: {
     // development: {
     //   host: "127.0.0.1", // Localhost (default: none)

@@ -68,10 +68,8 @@ contract Timelapse is Ownable, Offering {
         billing.customers(_phoneHash);
         billing.getCustomer(_phoneHash).nbTopUp++;
 
-        uint lastAcceptanceID;
-        (,,,,,lastAcceptanceID) = billing.customers(_phoneHash);
-        uint idProduct;
-        (,,,,idProduct) = billing.histories(_phoneHash, lastAcceptanceID);
+        (,,,,,uint256 lastAcceptanceID) = billing.customers(_phoneHash);
+        (,,,,uint256 idProduct) = billing.histories(_phoneHash, lastAcceptanceID);
         billing.addToCustomerAmount(_phoneHash, proposals[products[idProduct].idProposal].capital+proposals[products[idProduct].idProposal].interest);
 
         billing.histories(_phoneHash,0);
@@ -104,41 +102,46 @@ contract Timelapse is Ownable, Offering {
          uint256 customerActivitiesIndex = 0;
 
         for (uint8 i = 0; i < billing.getHistorySize(_phoneHash); i++) {
-            if(offers[products[billing.getHistoryIdProduct(_phoneHash, i)].idOffer].timestamp >= _startTimestamp && offers[products[billing.getHistoryIdProduct(_phoneHash, i)].idOffer].timestamp <= _endTimestamp) {
+            (,uint256 acceptanceTimestamp, uint256 paidTimestamp,,uint256 idProduct) = billing.histories(_phoneHash, i);
+            
+            if(offers[products[idProduct].idOffer].timestamp >= _startTimestamp && offers[products[idProduct].idOffer].timestamp <= _endTimestamp) {
                 customerActivitiesSize++;
             }
-            if(billing.getHistoryAcceptanceTimestamp(_phoneHash, i) >= _startTimestamp && billing.getHistoryAcceptanceTimestamp(_phoneHash, i)<= _endTimestamp) {
+            if(acceptanceTimestamp >= _startTimestamp && acceptanceTimestamp <= _endTimestamp) {
                 customerActivitiesSize++;
             }
-            if(billing.getHistoryPaidTimestamp(_phoneHash, i) >= _startTimestamp && billing.getHistoryPaidTimestamp(_phoneHash, i) <= _endTimestamp) {
+            if(paidTimestamp >= _startTimestamp && paidTimestamp <= _endTimestamp) {
                 customerActivitiesSize++;
             }
         }
         CustomerActivity[] memory customerActivities = new CustomerActivity[](customerActivitiesSize);
-        for (uint8 i = 0; i < billing.getHistorySize(_phoneHash); i++) {
-            if(offers[products[billing.getHistoryIdProduct(_phoneHash, i)].idOffer].timestamp >= _startTimestamp && offers[products[billing.getHistoryIdProduct(_phoneHash, i)].idOffer].timestamp <= _endTimestamp) {
-                if(offers[products[billing.getHistoryIdProduct(_phoneHash, i)].idOffer].proposals.length == 1){
-                    customerActivities[customerActivitiesIndex].log =  string(abi.encodePacked("Offer: ", proposals[offers[products[billing.getHistoryIdProduct(_phoneHash, i)].idOffer].proposals[0]].description));
-                } else if (offers[products[billing.getHistoryIdProduct(_phoneHash, i)].idOffer].proposals.length == 2){
-                    customerActivities[customerActivitiesIndex].log = string(abi.encodePacked("Offer: ", proposals[offers[products[billing.getHistoryIdProduct(_phoneHash, i)].idOffer].proposals[0]].description,"/",proposals[offers[products[billing.getHistoryIdProduct(_phoneHash, i)].idOffer].proposals[1]].description));
-                } else if (offers[products[billing.getHistoryIdProduct(_phoneHash, i)].idOffer].proposals.length == 3){
-                    customerActivities[customerActivitiesIndex].log = string(abi.encodePacked("Offer: ", proposals[offers[products[billing.getHistoryIdProduct(_phoneHash, i)].idOffer].proposals[0]].description,"/",proposals[offers[products[billing.getHistoryIdProduct(_phoneHash, i)].idOffer].proposals[1]].description,"/",proposals[offers[products[billing.getHistoryIdProduct(_phoneHash, i)].idOffer].proposals[2]].description));
+        for (uint256 i = 0; i < billing.getHistorySize(_phoneHash); i++) {
+            (,uint256 acceptanceTimestamp, uint256 paidTimestamp,,uint256 idProduct) = billing.histories(_phoneHash, i);
+            if(offers[products[idProduct].idOffer].timestamp >= _startTimestamp && offers[products[idProduct].idOffer].timestamp <= _endTimestamp) {
+                customerActivities[customerActivitiesIndex].log = "Offer: ";
+                for (uint256 j = 0; j < offers[products[idProduct].idOffer].proposals.length; j++){
+                    if(j == 0) { 
+                        customerActivities[customerActivitiesIndex].log = string(abi.encodePacked(customerActivities[customerActivitiesIndex].log, proposals[offers[products[idProduct].idOffer].proposals[j]].description));
+                    } else {
+                        customerActivities[customerActivitiesIndex].log = string(abi.encodePacked(customerActivities[customerActivitiesIndex].log, " / ", proposals[offers[products[idProduct].idOffer].proposals[j]].description));
+                    }
                 }
-                customerActivities[customerActivitiesIndex].timestamp = offers[products[billing.getHistoryIdProduct(_phoneHash, i)].idOffer].timestamp;
+
+                customerActivities[customerActivitiesIndex].timestamp = offers[products[idProduct].idOffer].timestamp;
                 customerActivities[customerActivitiesIndex].status = "Offer";
                 customerActivitiesIndex++;
             }
 
-            if(billing.getHistoryAcceptanceTimestamp(_phoneHash, i) >= _startTimestamp && billing.getHistoryAcceptanceTimestamp(_phoneHash, i)<= _endTimestamp) {
-                customerActivities[customerActivitiesIndex].log = string(abi.encodePacked("Accepted: ", proposals[products[billing.getHistoryIdProduct(_phoneHash, i)].idProposal].description));
-                customerActivities[customerActivitiesIndex].timestamp = billing.getHistoryAcceptanceTimestamp(_phoneHash, i);
+            if(acceptanceTimestamp >= _startTimestamp && acceptanceTimestamp <= _endTimestamp) {
+                customerActivities[customerActivitiesIndex].log = string(abi.encodePacked("Accepted: ", proposals[products[idProduct].idProposal].description));
+                customerActivities[customerActivitiesIndex].timestamp = acceptanceTimestamp;
                 customerActivities[customerActivitiesIndex].status = "Accepted";
                 customerActivitiesIndex++;
             }
 
-            if(billing.getHistoryPaidTimestamp(_phoneHash, i) >= _startTimestamp && billing.getHistoryPaidTimestamp(_phoneHash, i) <= _endTimestamp) {
+            if(paidTimestamp >= _startTimestamp && paidTimestamp <= _endTimestamp) {
                 customerActivities[customerActivitiesIndex].log = "Topup";
-                customerActivities[customerActivitiesIndex].timestamp = billing.getHistoryPaidTimestamp(_phoneHash, i);
+                customerActivities[customerActivitiesIndex].timestamp = paidTimestamp;
                 customerActivities[customerActivitiesIndex].status = "Closed";
                 customerActivitiesIndex++;
             }

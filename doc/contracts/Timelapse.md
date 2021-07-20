@@ -6,7 +6,7 @@ Communicate with API(server/watcher) part and dApp
 
 
 
-### `constructor()` (public)
+### `constructor(address _billingAddress)` (public)
 
 
 
@@ -39,13 +39,6 @@ Manage the "low balances" received and generate an offer
 
 
 Manage lowBalance (with reference `_ref`) of a customer (identified with `_phoneHash`)
-
-### `process(struct Billing.Customer _customer) → uint8` (public)
-
-Compute the score of a customer
-
-
-Compute the score of a customer `_customer`
 
 ### `getCustomerActivitiesLog(address _phoneHash, uint256 _startTimestamp, uint256 _endTimestamp) → struct Timelapse.CustomerActivity[]` (public)
 

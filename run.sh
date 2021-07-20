@@ -8,5 +8,6 @@ rm -rf doc/contracts/*.md
 truffle migrate --network timelapse --reset
 npm run doc
 npm --prefix client/ install
+truffle run contract-size
 rm -rf ./node_modules/webpack
 npm --prefix client/ run start

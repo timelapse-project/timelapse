@@ -164,27 +164,23 @@ contract Billing is Ownable {
         emit ScoreChange(_phoneHash, customers[_phoneHash].score);
     }
 
-    /* TO REVIEW --> */
+    /**
+      * @notice Get the size of the history of a customer
+      * @param _phoneHash The address that identifies to the customer
+      * @dev Get the size of the history of a customer (identified with `_phoneHash`)
+      */
     function getHistorySize(address _phoneHash) public view onlyOwner returns (uint256) {
         return histories[_phoneHash].length;
     }
 
-    function getHistoryPaidTimestamp(address _phoneHash, uint256 _index) public view onlyOwner returns (uint256) {
-        return histories[_phoneHash][_index].paidTimestamp;
-    }
-
-    function getHistoryAcceptanceTimestamp(address _phoneHash, uint256 _index) public view onlyOwner returns (uint256) {
-        return histories[_phoneHash][_index].acceptanceTimestamp;
-    }
-
-    function getHistoryIdProduct(address _phoneHash, uint256 _index) public view onlyOwner returns (uint256) {
-        return histories[_phoneHash][_index].idProduct;
-    }
-
+    /**
+      * @notice Add amount to customer total amount
+      * @param _phoneHash The address that identifies to the customer
+      * @dev Add amount to customer (identified with `_phoneHash`) total amount
+      */
     function addToCustomerAmount(address _phoneHash, uint _amount) public onlyOwner activeCustomer(_phoneHash) {
         customers[_phoneHash].amount += _amount;
     }
-    /* <-- TO REVIEW */
 
     /**
       * @notice Add an acceptance in the customer history

@@ -51,19 +51,19 @@ Number of proposals
 
 Return the number of proposals
 
-### `createProduct(address _phoneHash, uint256 _acceptanceTimestamp, uint256 _idOffer, uint256 _idProposal) → uint256` (public)
-
-Create a product
-
-
-Create a product with the following information: a customer (identified with `_phoneHash`), an offer ID `_idOffer`, a proposal ID `_idProposal` and a timestamp `_acceptanceTimestamp`
-
 ### `lowBalanceOffering(address _phoneHash, string _ref, uint8 _score)` (public)
 
 Manage the "low balances" received and generate an offer
 
 
 Manage lowBalance (with reference `_ref`) of a customer (identified with `_phoneHash`) and generate an offer based on the score `_score`
+
+### `createProduct(address _phoneHash, uint256 _acceptanceTimestamp, uint256 _idOffer, uint256 _idProposal) → uint256` (public)
+
+Create a product
+
+
+Create a product with the following information: a customer (identified with `_phoneHash`), an offer ID `_idOffer`, a proposal ID `_idProposal` and a timestamp `_acceptanceTimestamp`
 
 ### `getOfferProposals(uint8 _scoring) → uint256[]` (public)
 
@@ -85,6 +85,18 @@ Return a proposals based on table `_offerProposals` with only the first `_offerP
 
 
 Triggered when a proposal is added
+
+### `ClosedProposal(uint256 idProposal)`
+
+
+
+Triggered when a proposal is closed
+
+### `ProductCreated(address phoneHash, uint256 timestamp, uint256 idOffer, uint256 idProposal)`
+
+
+
+Triggered when a product is created
 
 ### `LowBalanceReceived(address phoneHash, string ref)`
 
