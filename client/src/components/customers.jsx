@@ -149,7 +149,7 @@ class Customers extends Component {
                 </div>
                 <br></br>
                 <div className="form-group row">
-                <label for="phoneHash" className="col-sm-2 offset-sm-3 col-form-label">Period:</label>
+                <label htmlFor="phoneHash" className="col-sm-2 offset-sm-3 col-form-label">Period:</label>
                   <div className="col-sm-2">
                   <DatePicker
                     selected={startDate}
@@ -157,7 +157,7 @@ class Customers extends Component {
                     onChange={(date) => this.handeStartDateChange(date)}
                     dateFormat="MMMM d, yyyy h:mm aa"
                   />
-                  <small id="startDateHelp" class="form-text text-muted">Start Date</small>
+                  <small id="startDateHelp" className="form-text text-muted">Start Date</small>
                   </div>
                   <div className="col-sm-2">
                   <DatePicker
@@ -166,7 +166,7 @@ class Customers extends Component {
                     onChange={(date) => this.handeEndDateChange(date)}
                     dateFormat="MMMM d, yyyy h:mm aa"
                   />
-                  <small id="endDateHelp" class="form-text text-muted">End Date</small>
+                  <small id="endDateHelp" className="form-text text-muted">End Date</small>
                   </div>
                 </div>
                 <br></br>
