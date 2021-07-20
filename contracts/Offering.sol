@@ -49,7 +49,7 @@ contract Offering is Ownable {
      */
     struct Offer {
         address phoneHash;
-        uint256 timestamp;
+        uint timestamp;
         EligibilityReason reason;
         uint256[] proposals;
         OfferStatus status;
@@ -61,7 +61,7 @@ contract Offering is Ownable {
      */
     struct Product {
         address phoneHash;
-        uint256 timestamp;
+        uint timestamp;
         uint256 idOffer;
         uint256 idProposal;
         ProductStatus status;
@@ -103,6 +103,14 @@ contract Offering is Ownable {
         string description
     );
     /**
+     * @dev Triggered when a proposal is closed
+     */
+    event ClosedProposal(uint256 idProposal);
+    /**
+     * @dev Triggered when a product is created
+     */
+    event ProductCreated(address phoneHash, uint timestamp, uint256 idOffer, uint256 idProposal);
+    /**
      * @dev Triggered when a lowBalance is received
      */
     event LowBalanceReceived(address phoneHash, string ref);
@@ -112,7 +120,7 @@ contract Offering is Ownable {
     event OfferSent(
         uint256 idOffer,
         address phoneHash,
-        uint256 timestamp,
+        uint timestamp,
         EligibilityReason reason,
         uint256[] proposals,
         uint256 scoring,
@@ -133,7 +141,7 @@ contract Offering is Ownable {
         uint256 productId,
         uint256 idOffer,
         address phoneHash,
-        uint256 timestamp
+        uint timestamp
     );
     /**
      * @dev Triggered when a topUp is received
@@ -210,6 +218,7 @@ contract Offering is Ownable {
       */
     function closedProposal(uint256 _id) public onlyOwner existProposal(_id) {
         proposals[_id].status = ProposalStatus.Closed;
+        emit ClosedProposal(_id);
     }
 
     /**
@@ -221,27 +230,13 @@ contract Offering is Ownable {
     }
 
     /**
-      * @notice Create a product
-      * @param _phoneHash The address that identifies to the customer
-      * @param _acceptanceTimestamp Timestamp of the acceptance
-      * @param _idOffer ID of the offer
-      * @param _idProposal ID of the proposal
-      * @dev Create a product with the following information: a customer (identified with `_phoneHash`), an offer ID `_idOffer`, a proposal ID `_idProposal` and a timestamp `_acceptanceTimestamp` 
-      */
-    function createProduct(address _phoneHash, uint _acceptanceTimestamp, uint256 _idOffer, uint256 _idProposal) public onlyOwner returns(uint256) {
-        Product memory product = Product(_phoneHash, _acceptanceTimestamp, _idOffer, _idProposal, ProductStatus.Active);
-        products.push(product);
-        return (products.length - 1);
-    }
-
-    /**
       * @notice Manage the "low balances" received and generate an offer
       * @param _phoneHash The address that identifies to the customer
       * @param _ref Reference of the telecom provider
       * @param _score score of the customer
       * @dev Manage lowBalance (with reference `_ref`) of a customer (identified with `_phoneHash`) and generate an offer based on the score `_score` 
       */
-    function lowBalanceOffering(address _phoneHash, string memory _ref, uint8 _score) public {
+    function lowBalanceOffering(address _phoneHash, string memory _ref, uint8 _score) public onlyOwner {
         emit LowBalanceReceived(_phoneHash, _ref);
 
         //Register Offer
@@ -265,10 +260,25 @@ contract Offering is Ownable {
     }
 
     /**
+      * @notice Create a product
+      * @param _phoneHash The address that identifies to the customer
+      * @param _acceptanceTimestamp Timestamp of the acceptance
+      * @param _idOffer ID of the offer
+      * @param _idProposal ID of the proposal
+      * @dev Create a product with the following information: a customer (identified with `_phoneHash`), an offer ID `_idOffer`, a proposal ID `_idProposal` and a timestamp `_acceptanceTimestamp` 
+      */
+    function createProduct(address _phoneHash, uint _acceptanceTimestamp, uint256 _idOffer, uint256 _idProposal) public onlyOwner existProposal(_idProposal) existOffer(_idOffer) returns(uint256) {
+        Product memory product = Product(_phoneHash, _acceptanceTimestamp, _idOffer, _idProposal, ProductStatus.Active);
+        products.push(product);
+        emit ProductCreated(_phoneHash, _acceptanceTimestamp, _idOffer, _idProposal);
+        return (products.length - 1);
+    }
+
+    /**
       * @notice Get the proposals corresponding to the scoring
       * @param _scoring score of the customer
       * @return Proposals
-      * @dev Return the proposals that correspond to the given scoring `_scoring` 
+      * @dev Return the proposals that correspond to the given scoring `_scoring`
       */
     function getOfferProposals(uint8 _scoring)
         public
