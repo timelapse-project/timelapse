@@ -1,5 +1,5 @@
 var Billing = artifacts.require("./Billing.sol");
-var Offering = artifact.require("./Offering.sol");
+var Offering = artifacts.require("./Offering.sol");
 var Timelapse = artifacts.require("./Timelapse.sol");
 
 module.exports = async function (deployer) {
