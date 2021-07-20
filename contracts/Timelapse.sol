@@ -10,7 +10,12 @@ import "@openzeppelin/contracts/access/Ownable.sol";
  * @notice Communicate with API(server/watcher) part and dApp
  * @author Keeymon, DavidRochus
  */
-contract Timelapse is Ownable, Billing, Offering {
+contract Timelapse is Ownable, Offering {
+
+    /**
+     * @dev Customer Activity
+     */
+     Billing billing;
 
     /**
      * @dev Customer Activity
@@ -24,18 +29,18 @@ contract Timelapse is Ownable, Billing, Offering {
     /**
      * @dev Smart Contract constructor
      */
-    constructor() {}
+    constructor(address _billingAddress) {
+        billing = Billing(_billingAddress);
+        //billing = new Billing();
+    }
 
     /**
       * @notice Increase scoring information of a customer
       * @param _phoneHash The address that identifies to the customer
       * @dev This function is directly called when API receives a topUp for a customer (identified with `_phoneHash`) with a target other than Timelapse
       */
-    function addToScore(address _phoneHash) public onlyOwner activeCustomer(_phoneHash) {
-        if (customers[_phoneHash].firstTopUp == 0)
-            customers[_phoneHash].firstTopUp = block.timestamp;
-        customers[_phoneHash].nbTopUp++;
-        changeScore(_phoneHash, process(customers[_phoneHash]));
+    function addToScore(address _phoneHash) public onlyOwner {
+        billing.addToScore(_phoneHash);
     }
 
     /**
@@ -47,8 +52,9 @@ contract Timelapse is Ownable, Billing, Offering {
       * @param _idProposal ID of the proposal
       * @dev Accept the offer `_idOffer` (By choosing proposal `_idProposal`) of a customer (identified with `_phoneHash`) with reference `_ref` at timestamp `_acceptanceTimestamp`
       */
-    function acceptance(address _phoneHash, string memory _ref, uint _acceptanceTimestamp, uint256 _idOffer, uint256 _idProposal) public activeCustomer(_phoneHash) {
-        acceptanceBilling(_phoneHash, _ref, _acceptanceTimestamp, createProduct(_phoneHash, _acceptanceTimestamp, _idOffer, _idProposal));
+    //function acceptance(address _phoneHash, string memory _ref, uint _acceptanceTimestamp, uint256 _idOffer, uint256 _idProposal) public activeCustomer(_phoneHash) {
+    function acceptance(address _phoneHash, string memory _ref, uint _acceptanceTimestamp, uint256 _idOffer, uint256 _idProposal) public {
+        billing.acceptanceBilling(_phoneHash, _ref, _acceptanceTimestamp, createProduct(_phoneHash, _acceptanceTimestamp, _idOffer, _idProposal));
     }
 
      /**
@@ -57,12 +63,22 @@ contract Timelapse is Ownable, Billing, Offering {
       * @param _paidTimestamp Timestamp of the acceptance
       * @dev TopUp the last product of a customer (identified with `_phoneHash`) at timestamp `_paidTimestamp`
       */
-    function topUp(address _phoneHash, uint _paidTimestamp) public onlyOwner activeCustomer(_phoneHash) {
-        customers[_phoneHash].nbTopUp++;
-        customers[_phoneHash].amount += proposals[products[histories[_phoneHash][customers[_phoneHash].lastAcceptanceID].idProduct].idProposal].capital +
-                                        proposals[products[histories[_phoneHash][customers[_phoneHash].lastAcceptanceID].idProduct].idProposal].interest;
-        addToScore(_phoneHash);
-        topUpBilling(_phoneHash, _paidTimestamp);
+    //function topUp(address _phoneHash, uint _paidTimestamp) public onlyOwner activeCustomer(_phoneHash) {
+    function topUp(address _phoneHash, uint _paidTimestamp) public onlyOwner {
+        billing.customers(_phoneHash);
+        billing.getCustomer(_phoneHash).nbTopUp++;
+
+        uint lastAcceptanceID;
+        (,,,,,lastAcceptanceID) = billing.customers(_phoneHash);
+        uint idProduct;
+        (,,,,idProduct) = billing.histories(_phoneHash, lastAcceptanceID);
+        billing.addToCustomerAmount(_phoneHash, proposals[products[idProduct].idProposal].capital+proposals[products[idProduct].idProposal].interest);
+
+        billing.histories(_phoneHash,0);
+        billing.customers(_phoneHash);
+
+        billing.addToScore(_phoneHash);
+        billing.topUpBilling(_phoneHash, _paidTimestamp);
     }
 
     /**
@@ -72,57 +88,7 @@ contract Timelapse is Ownable, Billing, Offering {
       * @dev Manage lowBalance (with reference `_ref`) of a customer (identified with `_phoneHash`)
       */
     function lowBalance(address _phoneHash, string memory _ref) public {
-        lowBalanceOffering(_phoneHash, _ref, customers[_phoneHash].score);
-    }
-
-    /**
-      * @notice Compute the score of a customer
-      * @param _customer The customer
-      * @return Score The computed customer score 
-      * @dev Compute the score of a customer `_customer`
-      */
-    function process(Customer memory _customer) public view returns(uint8) {
-        uint8 score;
-        uint8 topupAmountPoints;
-        uint8 firstTopUpAgePoints;
-        uint8 nbTopUpPoints;
-        if (_customer.amount >= 0 && _customer.amount <= 40) {
-            topupAmountPoints = 1;
-        } else if (_customer.amount > 40 && _customer.amount <= 150) {
-            topupAmountPoints = 2;
-        } else {
-            topupAmountPoints = 3;
-        }
-        if (_customer.firstTopUp >= (block.timestamp - 90 days)) {
-            firstTopUpAgePoints = 0;
-        } else if (
-            _customer.firstTopUp < (block.timestamp - 90 days) &&
-            _customer.firstTopUp >= (block.timestamp - 180 days)
-        ) {
-            firstTopUpAgePoints = 2;
-        } else if (
-            _customer.firstTopUp < (block.timestamp - 180 days) &&
-            _customer.firstTopUp >= (block.timestamp - 330 days)
-        ) {
-            firstTopUpAgePoints = 6;
-        } else {
-            firstTopUpAgePoints = 15;
-        }
-        if (_customer.nbTopUp == 0) {
-            nbTopUpPoints = 0;
-        } else if (_customer.nbTopUp > 0 && _customer.nbTopUp <= 10) {
-            nbTopUpPoints = 1;
-        } else if (_customer.nbTopUp > 10 && _customer.nbTopUp <= 20) {
-            nbTopUpPoints = 5;
-        } else {
-            nbTopUpPoints = 15;
-        }
-
-        score =
-            (topupAmountPoints * 4) +
-            (firstTopUpAgePoints * 6) +
-            (nbTopUpPoints * 8);
-        return score;
+        lowBalanceOffering(_phoneHash, _ref, billing.getScore(_phoneHash));
     }
 
     /**
@@ -137,42 +103,42 @@ contract Timelapse is Ownable, Billing, Offering {
          uint256 customerActivitiesSize = 0;
          uint256 customerActivitiesIndex = 0;
 
-         for (uint8 i = 0; i < histories[_phoneHash].length; i++) {
-            if(offers[products[histories[_phoneHash][i].idProduct].idOffer].timestamp >= _startTimestamp && offers[products[histories[_phoneHash][i].idProduct].idOffer].timestamp <= _endTimestamp) {
+        for (uint8 i = 0; i < billing.getHistorySize(_phoneHash); i++) {
+            if(offers[products[billing.getHistoryIdProduct(_phoneHash, i)].idOffer].timestamp >= _startTimestamp && offers[products[billing.getHistoryIdProduct(_phoneHash, i)].idOffer].timestamp <= _endTimestamp) {
                 customerActivitiesSize++;
             }
-            if(histories[_phoneHash][i].acceptanceTimestamp >= _startTimestamp && histories[_phoneHash][i].acceptanceTimestamp <= _endTimestamp) {
+            if(billing.getHistoryAcceptanceTimestamp(_phoneHash, i) >= _startTimestamp && billing.getHistoryAcceptanceTimestamp(_phoneHash, i)<= _endTimestamp) {
                 customerActivitiesSize++;
             }
-            if(histories[_phoneHash][i].paidTimestamp >= _startTimestamp && histories[_phoneHash][i].paidTimestamp <= _endTimestamp) {
+            if(billing.getHistoryPaidTimestamp(_phoneHash, i) >= _startTimestamp && billing.getHistoryPaidTimestamp(_phoneHash, i) <= _endTimestamp) {
                 customerActivitiesSize++;
             }
         }
         CustomerActivity[] memory customerActivities = new CustomerActivity[](customerActivitiesSize);
-        for (uint8 i = 0; i < histories[_phoneHash].length; i++) {
-            if(offers[products[histories[_phoneHash][i].idProduct].idOffer].timestamp >= _startTimestamp && offers[products[histories[_phoneHash][i].idProduct].idOffer].timestamp <= _endTimestamp) {
-                if(offers[products[histories[_phoneHash][i].idProduct].idOffer].proposals.length == 1){
-                    customerActivities[customerActivitiesIndex].log =  string(abi.encodePacked("Offer: ", proposals[offers[products[histories[_phoneHash][i].idProduct].idOffer].proposals[0]].description));
-                } else if (offers[products[histories[_phoneHash][i].idProduct].idOffer].proposals.length == 2){
-                    customerActivities[customerActivitiesIndex].log = string(abi.encodePacked("Offer: ", proposals[offers[products[histories[_phoneHash][i].idProduct].idOffer].proposals[0]].description,"/",proposals[offers[products[histories[_phoneHash][i].idProduct].idOffer].proposals[1]].description));
-                } else if (offers[products[histories[_phoneHash][i].idProduct].idOffer].proposals.length == 3){
-                    customerActivities[customerActivitiesIndex].log = string(abi.encodePacked("Offer: ", proposals[offers[products[histories[_phoneHash][i].idProduct].idOffer].proposals[0]].description,"/",proposals[offers[products[histories[_phoneHash][i].idProduct].idOffer].proposals[1]].description,"/",proposals[offers[products[histories[_phoneHash][i].idProduct].idOffer].proposals[2]].description));
+        for (uint8 i = 0; i < billing.getHistorySize(_phoneHash); i++) {
+            if(offers[products[billing.getHistoryIdProduct(_phoneHash, i)].idOffer].timestamp >= _startTimestamp && offers[products[billing.getHistoryIdProduct(_phoneHash, i)].idOffer].timestamp <= _endTimestamp) {
+                if(offers[products[billing.getHistoryIdProduct(_phoneHash, i)].idOffer].proposals.length == 1){
+                    customerActivities[customerActivitiesIndex].log =  string(abi.encodePacked("Offer: ", proposals[offers[products[billing.getHistoryIdProduct(_phoneHash, i)].idOffer].proposals[0]].description));
+                } else if (offers[products[billing.getHistoryIdProduct(_phoneHash, i)].idOffer].proposals.length == 2){
+                    customerActivities[customerActivitiesIndex].log = string(abi.encodePacked("Offer: ", proposals[offers[products[billing.getHistoryIdProduct(_phoneHash, i)].idOffer].proposals[0]].description,"/",proposals[offers[products[billing.getHistoryIdProduct(_phoneHash, i)].idOffer].proposals[1]].description));
+                } else if (offers[products[billing.getHistoryIdProduct(_phoneHash, i)].idOffer].proposals.length == 3){
+                    customerActivities[customerActivitiesIndex].log = string(abi.encodePacked("Offer: ", proposals[offers[products[billing.getHistoryIdProduct(_phoneHash, i)].idOffer].proposals[0]].description,"/",proposals[offers[products[billing.getHistoryIdProduct(_phoneHash, i)].idOffer].proposals[1]].description,"/",proposals[offers[products[billing.getHistoryIdProduct(_phoneHash, i)].idOffer].proposals[2]].description));
                 }
-                customerActivities[customerActivitiesIndex].timestamp = offers[products[histories[_phoneHash][i].idProduct].idOffer].timestamp;
+                customerActivities[customerActivitiesIndex].timestamp = offers[products[billing.getHistoryIdProduct(_phoneHash, i)].idOffer].timestamp;
                 customerActivities[customerActivitiesIndex].status = "Offer";
                 customerActivitiesIndex++;
             }
 
-            if(histories[_phoneHash][i].acceptanceTimestamp >= _startTimestamp && histories[_phoneHash][i].acceptanceTimestamp <= _endTimestamp) {
-                customerActivities[customerActivitiesIndex].log = string(abi.encodePacked("Accepted: ", proposals[products[histories[_phoneHash][i].idProduct].idProposal].description));
-                customerActivities[customerActivitiesIndex].timestamp = histories[_phoneHash][i].acceptanceTimestamp;
+            if(billing.getHistoryAcceptanceTimestamp(_phoneHash, i) >= _startTimestamp && billing.getHistoryAcceptanceTimestamp(_phoneHash, i)<= _endTimestamp) {
+                customerActivities[customerActivitiesIndex].log = string(abi.encodePacked("Accepted: ", proposals[products[billing.getHistoryIdProduct(_phoneHash, i)].idProposal].description));
+                customerActivities[customerActivitiesIndex].timestamp = billing.getHistoryAcceptanceTimestamp(_phoneHash, i);
                 customerActivities[customerActivitiesIndex].status = "Accepted";
                 customerActivitiesIndex++;
             }
 
-            if(histories[_phoneHash][i].paidTimestamp >= _startTimestamp && histories[_phoneHash][i].paidTimestamp <= _endTimestamp) {
+            if(billing.getHistoryPaidTimestamp(_phoneHash, i) >= _startTimestamp && billing.getHistoryPaidTimestamp(_phoneHash, i) <= _endTimestamp) {
                 customerActivities[customerActivitiesIndex].log = "Topup";
-                customerActivities[customerActivitiesIndex].timestamp = histories[_phoneHash][i].paidTimestamp;
+                customerActivities[customerActivitiesIndex].timestamp = billing.getHistoryPaidTimestamp(_phoneHash, i);
                 customerActivities[customerActivitiesIndex].status = "Closed";
                 customerActivitiesIndex++;
             }

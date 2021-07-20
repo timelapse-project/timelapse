@@ -49,6 +49,15 @@ contract Billing is Ownable {
     }
 
     /**
+     * @dev Activity log
+     */
+    struct ActivityLog {
+        string log;
+        uint256 timestamp;
+        string status;
+    }
+
+    /**
      * @dev Triggered when status of a customer has changed
      */
     event CustomerStatusChange(address phoneHash, CustomerStatus status);
@@ -100,6 +109,10 @@ contract Billing is Ownable {
      */
     constructor() {}
 
+    function test() public {
+        emit Acknowledge(0x3ad53d26D15A658A84Fe8cA9FFc8aA3a7240C1a0, "test");
+    }
+
     /**
       * @notice Inform if the customer is active
       * @param _phoneHash The address that identifies to the customer
@@ -121,6 +134,27 @@ contract Billing is Ownable {
     }
 
     /**
+      * @notice Increase scoring information of a customer
+      * @param _phoneHash The address that identifies to the customer
+      * @dev This function is directly called when API receives a topUp for a customer (identified with `_phoneHash`) with a target other than Timelapse
+      */
+    function getScore(address _phoneHash) external view onlyOwner activeCustomer(_phoneHash) returns(uint8) {
+        return customers[_phoneHash].score;
+    }
+
+    /**
+      * @notice Increase scoring information of a customer
+      * @param _phoneHash The address that identifies to the customer
+      * @dev This function is directly called when API receives a topUp for a customer (identified with `_phoneHash`) with a target other than Timelapse
+      */
+    function addToScore(address _phoneHash) public onlyOwner activeCustomer(_phoneHash) {
+            if (customers[_phoneHash].firstTopUp == 0)
+            customers[_phoneHash].firstTopUp = block.timestamp;
+        customers[_phoneHash].nbTopUp++;
+        changeScore(_phoneHash, process(customers[_phoneHash]));
+    }
+
+    /**
       * @notice Change the score of a customer
       * @param _phoneHash The address that identifies to the customer
       * @dev This function informs if the customer (identified with `_phoneHash`) is active
@@ -129,6 +163,28 @@ contract Billing is Ownable {
         customers[_phoneHash].score = _score;
         emit ScoreChange(_phoneHash, customers[_phoneHash].score);
     }
+
+    /* TO REVIEW --> */
+    function getHistorySize(address _phoneHash) public view onlyOwner returns (uint256) {
+        return histories[_phoneHash].length;
+    }
+
+    function getHistoryPaidTimestamp(address _phoneHash, uint256 _index) public view onlyOwner returns (uint256) {
+        return histories[_phoneHash][_index].paidTimestamp;
+    }
+
+    function getHistoryAcceptanceTimestamp(address _phoneHash, uint256 _index) public view onlyOwner returns (uint256) {
+        return histories[_phoneHash][_index].acceptanceTimestamp;
+    }
+
+    function getHistoryIdProduct(address _phoneHash, uint256 _index) public view onlyOwner returns (uint256) {
+        return histories[_phoneHash][_index].idProduct;
+    }
+
+    function addToCustomerAmount(address _phoneHash, uint _amount) public onlyOwner activeCustomer(_phoneHash) {
+        customers[_phoneHash].amount += _amount;
+    }
+    /* <-- TO REVIEW */
 
     /**
       * @notice Add an acceptance in the customer history
@@ -169,4 +225,59 @@ contract Billing is Ownable {
         */
         emit Acknowledge(_phoneHash, histories[_phoneHash][index].ref);
     }
+
+    function getCustomer(address _phoneHash) public view returns(Customer memory) {
+        return customers[_phoneHash];
+    }
+
+    /**
+      * @notice Compute the score of a customer
+      * @param _customer The customer
+      * @return Score The computed customer score 
+      * @dev Compute the score of a customer `_customer`
+      */
+    function process(Customer memory _customer) public view returns(uint8) {
+        uint8 score;
+        uint8 topupAmountPoints;
+        uint8 firstTopUpAgePoints;
+        uint8 nbTopUpPoints;
+        if (_customer.amount >= 0 && _customer.amount <= 40) {
+            topupAmountPoints = 1;
+        } else if (_customer.amount > 40 && _customer.amount <= 150) {
+            topupAmountPoints = 2;
+        } else {
+            topupAmountPoints = 3;
+        }
+        if (_customer.firstTopUp >= (block.timestamp - 90 days)) {
+            firstTopUpAgePoints = 0;
+        } else if (
+            _customer.firstTopUp < (block.timestamp - 90 days) &&
+            _customer.firstTopUp >= (block.timestamp - 180 days)
+        ) {
+            firstTopUpAgePoints = 2;
+        } else if (
+            _customer.firstTopUp < (block.timestamp - 180 days) &&
+            _customer.firstTopUp >= (block.timestamp - 330 days)
+        ) {
+            firstTopUpAgePoints = 6;
+        } else {
+            firstTopUpAgePoints = 15;
+        }
+        if (_customer.nbTopUp == 0) {
+            nbTopUpPoints = 0;
+        } else if (_customer.nbTopUp > 0 && _customer.nbTopUp <= 10) {
+            nbTopUpPoints = 1;
+        } else if (_customer.nbTopUp > 10 && _customer.nbTopUp <= 20) {
+            nbTopUpPoints = 5;
+        } else {
+            nbTopUpPoints = 15;
+        }
+
+        score =
+            (topupAmountPoints * 4) +
+            (firstTopUpAgePoints * 6) +
+            (nbTopUpPoints * 8);
+        return score;
+    }
+
 }
