@@ -4,7 +4,8 @@ class Proposals extends Component {
   state = {
     web3: null,
     accounts: null,
-    contract: null,
+    timelapseInstance: null,
+    offeringInstance: null,
     proposalsCount: null,
     proposalList: null,
   };
@@ -13,25 +14,31 @@ class Proposals extends Component {
     console.log("==> componentWillMount");
     const web3 = this.props.web3;
     const accounts = this.props.accounts;
-    const contract = this.props.contract;
+    const timelapseInstance = this.props.timelapseInstance;
+    const offeringInstance = this.props.offeringInstance;
 
-    contract.events
+    timelapseInstance.events
       .allEvents()
       .on("data", (event) => this.doWhenEvent(event))
       .on("error", console.error);
 
-    this.setState({ web3, accounts, contract }, this.runInit);
+    offeringInstance.events
+      .allEvents()
+      .on("data", (event) => this.doWhenEvent(event))
+      .on("error", console.error);
+
+    this.setState({ web3, accounts, timelapseInstance, offeringInstance }, this.runInit);
   };
 
   runInit = async () => {
     console.log("==> runInit");
 
-    const { contract } = this.state;
-    const proposalsCount = await contract.methods.proposalsCount().call();
+    const { timelapseInstance, offeringInstance } = this.state;
+    const proposalsCount = await offeringInstance.methods.proposalsCount().call();
 
     let proposalList = [];
     for (let proposalId = 0; proposalId < proposalsCount; proposalId++) {
-      let proposalItem = await contract.methods.proposals(proposalId).call();
+      let proposalItem = await offeringInstance.methods.proposals(proposalId).call();
       proposalList.push(proposalItem);
     }
 
@@ -57,7 +64,7 @@ class Proposals extends Component {
 
   handleAddProposal = async () => {
     console.log("handleAddProposal");
-    const { accounts, contract } = this.state;
+    const { accounts, timelapseInstance } = this.state;
     var proposalMinScoringError = null;
     var proposalCapitalError = null;
     var proposalInterestError = null;
@@ -104,7 +111,7 @@ class Proposals extends Component {
       });
       return;
     }
-    await contract.methods
+    await timelapseInstance.methods
       .addProposal(
         proposalMinScoring,
         proposalCapital,
@@ -123,8 +130,8 @@ class Proposals extends Component {
 
   handleCloseProposal = async (index) => {
     console.log("==> handleCloseProposal", index);
-    const { accounts, contract } = this.state;
-    await contract.methods.closedProposal(index).send({
+    const { accounts, timelapseInstance } = this.state;
+    await timelapseInstance.methods.closedProposal(index).send({
       from: accounts[0],
     });
     this.runInit();

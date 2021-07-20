@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import TimelapseContract from "./contracts/Timelapse.json";
+import OfferingContract from "./contracts/Offering.json";
+import BillingContract from "./contracts/Billing.json";
 import getWeb3 from "./getWeb3";
 
 import "./App.css";
@@ -17,7 +19,8 @@ class App extends Component {
     storageValue: 0,
     web3: null,
     accounts: null,
-    contract: null,
+    timelapseInstance: null,
+    offeringInstance: null,
     contractOwner: null,
     proposalsCount: null,
     proposalList: null,
@@ -36,10 +39,22 @@ class App extends Component {
 
       // Get the contract instance.
       const networkId = await web3.eth.net.getId();
-      const deployedNetwork = TimelapseContract.networks[networkId];
-      const instance = new web3.eth.Contract(
+      const timelapseNetwork = TimelapseContract.networks[networkId];
+      const timelapseInstance = new web3.eth.Contract(
         TimelapseContract.abi,
-        deployedNetwork && deployedNetwork.address
+        timelapseNetwork && timelapseNetwork.address
+      );
+
+      const offeringNetwork = OfferingContract.networks[networkId];
+      const offeringInstance = new web3.eth.Contract(
+        OfferingContract.abi,
+        offeringNetwork && offeringNetwork.address
+      );
+
+      const billingNetwork = BillingContract.networks[networkId];
+      const billingInstance = new web3.eth.Contract(
+        BillingContract.abi,
+        billingNetwork && billingNetwork.address
       );
 
       // Set a timer to refresh the page every 10 seconds
@@ -47,7 +62,7 @@ class App extends Component {
 
       // Set web3, accounts, and contract to the state, and then proceed with an
       // example of interacting with the contract's methods.
-      this.setState({ web3, accounts, contract: instance }, this.runInit);
+      this.setState({ web3, accounts, timelapseInstance, offeringInstance, billingInstance }, this.runInit);
     } catch (error) {
       // Catch any errors for any of the above operations.
       alert(
@@ -64,8 +79,8 @@ class App extends Component {
   runInit = async () => {
     console.log("==> runInit");
 
-    const { contract } = this.state;
-    const contractOwner = await contract.methods.owner().call();
+    const { timelapseInstance } = this.state;
+    const contractOwner = await timelapseInstance.methods.owner().call();
 
     this.setState({
       contractOwner: contractOwner,
@@ -88,42 +103,43 @@ class App extends Component {
             <Home
               web3={this.state.web3}
               accounts={this.state.accounts}
-              contract={this.state.contract}
+              timelapseInstance={this.state.timelapseInstance}
             />
           </Route>
           <Route path="/proposals" exact>
             <Proposals
               web3={this.state.web3}
               accounts={this.state.accounts}
-              contract={this.state.contract}
+              timelapseInstance={this.state.timelapseInstance}
+              offeringInstance={this.state.offeringInstance}
             />
           </Route>
           <Route path="/events" exact>
             <Events
               web3={this.state.web3}
               accounts={this.state.accounts}
-              contract={this.state.contract}
+              conttimelapseInstanceract={this.state.timelapseInstance}
             />
           </Route>
           <Route path="/customers" exact>
             <Customers
               web3={this.state.web3}
               accounts={this.state.accounts}
-              contract={this.state.contract}
+              timelapseInstance={this.state.timelapseInstance}
             />
           </Route>
           <Route path="/reporting" exact>
             <Reporting
               web3={this.state.web3}
               accounts={this.state.accounts}
-              contract={this.state.contract}
+              timelapseInstance={this.state.timelapseInstance}
             />
           </Route>
           <Route path="/invoicing" exact>
             <Invoicing
               web3={this.state.web3}
               accounts={this.state.accounts}
-              contract={this.state.contract}
+              timelapseInstance={this.state.timelapseInstance}
             />
           </Route>
         </Router>

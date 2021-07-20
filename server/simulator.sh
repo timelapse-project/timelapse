@@ -79,6 +79,7 @@ while [ TRUE ];do
                     --request POST \
                     --data '{"type":4,"phoneHash":"'${phoneHash1}'","ref":"'$(printf "%010d" $reference)'","timestamp":'$(timestamp)',"partner":"XX"}' \
                     ${serverURL}/topUp
+                sleep 1
                 echo " "
             done
             read -p "Press any key to continue"

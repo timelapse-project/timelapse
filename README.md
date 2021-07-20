@@ -18,7 +18,7 @@
 
 ## Architecture
 
-Bet-no-loss software is composed of 2 parts:
+Timelapse software is composed of 3 parts:
 - **Back-End**:  
 The **Ethereum smart-contracts** deployed on the testnets. They are written in Solidity.
 - **Front-End** (DApp):  

@@ -8,9 +8,11 @@ var app = express();
 var fs = require("fs");
 
 const TimelapseContract = require("../client/src/contracts/Timelapse.json");
+const OfferingContract = require("../client/src/contracts/Offering.json");
+const BillingContract = require("../client/src/contracts/Billing.json");
 
-let LOG_LEVEL = 1;
-let PARTNER_CODE = "TL";
+var LOG_LEVEL = 1;
+var PARTNER_CODE = "TL";
 
 app.use(
   express.urlencoded({
@@ -23,13 +25,13 @@ app.use(express.json());
 addProposal = async (data) => {
   const accounts = await web3.eth.getAccounts();
   const networkId = await web3.eth.net.getId();
-  const deployedNetwork = TimelapseContract.networks[networkId];
-  const contract = new web3.eth.Contract(
+  const timelapseNetwork = TimelapseContract.networks[networkId];
+  const timelapseInstance = new web3.eth.Contract(
     TimelapseContract.abi,
-    deployedNetwork && deployedNetwork.address
+    timelapseNetwork && timelapseNetwork.address
   );
 
-  await contract.methods
+  await timelapseInstance.methods
     .addProposal(data.minScoring, data.capital, data.interest, data.description)
     .send({
       from: accounts[0],
@@ -39,13 +41,13 @@ addProposal = async (data) => {
 lowBalance = async (data) => {
   const accounts = await web3.eth.getAccounts();
   const networkId = await web3.eth.net.getId();
-  const deployedNetwork = TimelapseContract.networks[networkId];
-  const contract = new web3.eth.Contract(
+  const timelapseNetwork = TimelapseContract.networks[networkId];
+  const timelapseInstance = new web3.eth.Contract(
     TimelapseContract.abi,
-    deployedNetwork && deployedNetwork.address
+    timelapseNetwork && timelapseNetwork.address
   );
 
-  await contract.methods.lowBalance(data.phoneHash, data.ref).send({
+  await timelapseInstance.methods.lowBalance(data.phoneHash, data.ref).send({
     from: accounts[0],
   });
 };
@@ -53,12 +55,13 @@ lowBalance = async (data) => {
 acceptance = async (data) => {
   const accounts = await web3.eth.getAccounts();
   const networkId = await web3.eth.net.getId();
-  const deployedNetwork = TimelapseContract.networks[networkId];
-  const contract = new web3.eth.Contract(
+  const timelapseNetwork = TimelapseContract.networks[networkId];
+  const timelapseInstance = new web3.eth.Contract(
     TimelapseContract.abi,
-    deployedNetwork && deployedNetwork.address
+    timelapseNetwork && timelapseNetwork.address
   );
-  await contract.methods
+
+  await timelapseInstance.methods
     .acceptance(data.phoneHash, data.ref, data.timestamp, data.offerId, data.proposalId)
     .send({
       from: accounts[0],
@@ -68,17 +71,18 @@ acceptance = async (data) => {
 topUp = async (data) => {
   const accounts = await web3.eth.getAccounts();
   const networkId = await web3.eth.net.getId();
-  const deployedNetwork = TimelapseContract.networks[networkId];
-  const contract = new web3.eth.Contract(
+  const timelapseNetwork = TimelapseContract.networks[networkId];
+  const timelapseInstance = new web3.eth.Contract(
     TimelapseContract.abi,
-    deployedNetwork && deployedNetwork.address
+    timelapseNetwork && timelapseNetwork.address
   );
+
   if (data.partner != null && data.partner === PARTNER_CODE) {
-    await contract.methods.topUp(data.phoneHash, data.timestamp).send({
+    await timelapseInstance.methods.topUp(data.phoneHash, data.timestamp).send({
       from: accounts[0],
     });
   } else {
-    await contract.methods.addToScore(data.phoneHash).send({
+    await timelapseInstance.methods.addToScore(data.phoneHash).send({
       from: accounts[0],
     });
   }

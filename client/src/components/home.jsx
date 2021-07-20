@@ -5,7 +5,7 @@ class Home extends Component {
   state = {
     web3: null,
     accounts: null,
-    contract: null,
+    timelapseInstance: null,
     proposalsCount: null,
     proposalList: null,
     proposalDescriptionError: null,
@@ -15,9 +15,9 @@ class Home extends Component {
     console.log("==> componentWillMount");
     const web3 = this.props.web3;
     const accounts = this.props.accounts;
-    const contract = this.props.contract;
+    const timelapseInstance = this.props.timelapseInstance;
 
-    this.setState({ web3, accounts, contract }, this.runInit);
+    this.setState({ web3, accounts, timelapseInstance }, this.runInit);
   };
 
   runInit = async () => {

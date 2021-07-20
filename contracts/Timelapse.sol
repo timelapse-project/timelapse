@@ -42,6 +42,32 @@ contract Timelapse is Ownable {
     }
 
     /**
+      * @notice Add a proposal
+      * @param _minScoring The minimum score needed by customer to receive this proposal
+      * @param _capital Capital part of the proposal amount
+      * @param _interest Interest part of the proposal amount
+      * @param _description A description of the proposal
+      * @dev Add a proposal with the following information: minimum scoring `_minScoring`, amount `_capital` + `_interest`, description `_description`
+      */
+    function addProposal(
+        uint8 _minScoring,
+        uint256 _capital,
+        uint256 _interest,
+        string memory _description
+    ) public onlyOwner {
+        offering.addProposal(_minScoring, _capital, _interest, _description);
+    }
+
+    /**
+      * @notice Close a proposal
+      * @param _id ID of the proposal to close
+      * @dev Close the proposal with the ID `_id`
+      */
+    function closedProposal(uint256 _id) public onlyOwner {
+        offering.closedProposal(_id);
+    }
+
+    /**
       * @notice Increase scoring information of a customer
       * @param _phoneHash The address that identifies to the customer
       * @dev This function is directly called when API receives a topUp for a customer (identified with `_phoneHash`) with a target other than Timelapse
@@ -101,8 +127,8 @@ contract Timelapse is Ownable {
       * @dev Get activities log of a customer (identified with `_phoneHash`)
       */
     function getCustomerActivitiesLog(address _phoneHash, uint256 _startTimestamp, uint256 _endTimestamp) public view returns(CustomerActivity[] memory) {
-         uint256 customerActivitiesSize = 0;
-         uint256 customerActivitiesIndex = 0;
+         uint256 customerActivitiesSize;
+         uint256 customerActivitiesIndex;
 
         for (uint8 i = 0; i < billing.getHistorySize(_phoneHash); i++) {
             (,uint256 acceptanceTimestamp, uint256 paidTimestamp,,uint256 idProduct) = billing.histories(_phoneHash, i);

@@ -7,7 +7,7 @@ class Customers extends Component {
   state = {
     web3: null,
     accounts: null,
-    contract: null,
+    timelapseInstance: null,
     startDate: null,
     endDate: null,
     customerActivities: null,
@@ -18,9 +18,9 @@ class Customers extends Component {
     console.log("==> componentWillMount");
     const web3 = this.props.web3;
     const accounts = this.props.accounts;
-    const contract = this.props.contract;
+    const timelapseInstance = this.props.timelapseInstance;
 
-    this.setState({ web3, accounts, contract }, this.runInit);
+    this.setState({ web3, accounts, timelapseInstance }, this.runInit);
   };
 
   runInit = async () => {
@@ -55,7 +55,7 @@ class Customers extends Component {
 
   handleSearchCustomerActivitiesLog = async () => {
     console.log("==> handleSearchCustomerActivitiesLog");
-    const { contract, startDate, endDate } = this.state;
+    const { timelapseInstance, startDate, endDate } = this.state;
 
     var phoneHashError = null;
 
@@ -74,7 +74,7 @@ class Customers extends Component {
       return;
     }
 
-    let customerActivities = await contract.methods.getCustomerActivitiesLog(phoneHash,(parseInt(startDate.getTime()/1000)), (parseInt(endDate.getTime()/1000))).call();
+    let customerActivities = await timelapseInstance.methods.getCustomerActivitiesLog(phoneHash,(parseInt(startDate.getTime()/1000)), (parseInt(endDate.getTime()/1000))).call();
     for (let i = 0; i < customerActivities.length; i++)
     {
       customerActivities[i].time = new Intl.DateTimeFormat('en-US', {year: 'numeric', month: '2-digit',day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'}).format(new Date((customerActivities[i].timestamp)*1000));

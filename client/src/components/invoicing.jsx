@@ -7,7 +7,7 @@ class Invoicing extends Component {
   state = {
     web3: null,
     accounts: null,
-    contract: null,
+    timelapseInstance: null,
     startDate: null,
     endDate: null,
     generatedInvoicing: null,
@@ -17,9 +17,9 @@ class Invoicing extends Component {
     console.log("==> componentWillMount");
     const web3 = this.props.web3;
     const accounts = this.props.accounts;
-    const contract = this.props.contract;
+    const timelapseInstance = this.props.timelapseInstance;
 
-    this.setState({ web3, accounts, contract }, this.runInit);
+    this.setState({ web3, accounts, timelapseInstance }, this.runInit);
   };
 
   runInit = async () => {
@@ -53,9 +53,9 @@ class Invoicing extends Component {
 
   handleGenerateInvoicing = async () => {
     console.log("==> handleGenerateInvoicing");
-    const { contract, startDate, endDate } = this.state;
+    const { timelapseInstance, startDate, endDate } = this.state;
 
-    let generatedInvoicing = await contract.methods.generateInvoicing((parseInt(startDate.getTime()/1000)), (parseInt(endDate.getTime()/1000))).call();
+    let generatedInvoicing = await timelapseInstance.methods.generateInvoicing((parseInt(startDate.getTime()/1000)), (parseInt(endDate.getTime()/1000))).call();
 
     this.setState({
       generatedInvoicing: generatedInvoicing,
