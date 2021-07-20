@@ -152,7 +152,7 @@ contract Timelapse is Ownable, Billing, Offering {
         for (uint8 i = 0; i < histories[_phoneHash].length; i++) {
             if(offers[products[histories[_phoneHash][i].idProduct].idOffer].timestamp >= _startTimestamp && offers[products[histories[_phoneHash][i].idProduct].idOffer].timestamp <= _endTimestamp) {
                 if(offers[products[histories[_phoneHash][i].idProduct].idOffer].proposals.length == 1){
-                    customerActivities[customerActivitiesIndex].log=  string(abi.encodePacked("Offer: ", proposals[offers[products[histories[_phoneHash][i].idProduct].idOffer].proposals[0]].description));
+                    customerActivities[customerActivitiesIndex].log =  string(abi.encodePacked("Offer: ", proposals[offers[products[histories[_phoneHash][i].idProduct].idOffer].proposals[0]].description));
                 } else if (offers[products[histories[_phoneHash][i].idProduct].idOffer].proposals.length == 2){
                     customerActivities[customerActivitiesIndex].log = string(abi.encodePacked("Offer: ", proposals[offers[products[histories[_phoneHash][i].idProduct].idOffer].proposals[0]].description,"/",proposals[offers[products[histories[_phoneHash][i].idProduct].idOffer].proposals[1]].description));
                 } else if (offers[products[histories[_phoneHash][i].idProduct].idOffer].proposals.length == 3){

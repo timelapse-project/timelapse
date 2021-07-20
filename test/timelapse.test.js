@@ -17,7 +17,18 @@ contract('Timelapse', function (accounts) {
     const activeProduct = new BN(0);
     const closeProduct = new BN(1);
 
-    describe("Test du contrat", function() {
+    const minScore = new BN(1);
+    const capital = new BN(500);
+    const interest = new BN(50);
+    const description = "Test one two";
+    const activeStatus = new BN(0);
+    const closedStatus = new BN(1);
+
+    const phoneHash1 = "0x3ad53d26D15A658A84Fe8cA9FFc8aA3a7240C1a0";
+    const ref1 = "EXTERNAL_REFERENCE";
+  
+
+    describe("Début des tests pour Billing", function() {
         beforeEach(async function() {
             this.TimelapseInstance = await Timelapse.new();
         });
@@ -142,6 +153,132 @@ contract('Timelapse', function (accounts) {
                 "Acknowledge",
                 {phoneHash: phoneHash, ref: ref});
             })
+        });
+    });
+
+    describe("Début des tests pour Offering", function () {
+        beforeEach(async function () {
+            this.TimelapseInstance = await Timelapse.new();
+        });
+    
+        describe("Function: addProposal", async function() {
+          it("Revert: addProposal is onlyOwner", async function() {
+            await expectRevert(this.TimelapseInstance.addProposal(minScore, capital, interest, description, {from:phoneHash1}),
+            "Ownable: caller is not the owner");
+          });
+    
+          it("addProposal", async function () {
+            await this.TimelapseInstance.addProposal(minScore, capital, interest, description, {from: owner});
+            let proposals = await this.TimelapseInstance.proposals(0);
+            expect(proposals["minScoring"]).to.be.bignumber.equal(minScore);
+            expect(proposals["capital"]).to.be.bignumber.equal(capital);
+            expect(proposals["interest"]).to.be.bignumber.equal(interest);
+            expect(proposals["description"]).to.be.equal(description);
+            expect(proposals["status"]).to.be.bignumber.equal(activeStatus);
+          });
+    
+          it("Event: ProposalAdded", async function () {
+            expectEvent(await this.TimelapseInstance.addProposal(minScore, capital, interest, description, {from: owner}),
+              "ProposalAdded",
+              {idProposal: new BN(0), minScoring: minScore, capital: capital, interest: interest, description: description});
+          });
+        });
+    
+        describe("Function: closedProposal", async function() {
+          it("Revert: closedProposal is onlyOwner", async function() {
+            await this.TimelapseInstance.addProposal(minScore, capital, interest, description, {from: owner});
+            await expectRevert(this.TimelapseInstance.closedProposal(0, {from:phoneHash1}),
+            "Ownable: caller is not the owner");
+          });
+    
+          it("Revert: closedProposal for existing proposal", async function() {
+            await expectRevert(this.TimelapseInstance.closedProposal(0, {from:owner}),
+            "Proposal doesn't exist");
+          });
+    
+          it("closedProposal", async function () {
+            await this.TimelapseInstance.addProposal(minScore, capital, interest, description, {from: owner});
+            await this.TimelapseInstance.closedProposal(0, {from: owner});
+            let proposal = await this.TimelapseInstance.proposals(0);
+            expect(proposal["status"]).to.be.bignumber.equal(closedStatus);
+          });
+    
+          it("Event: ClosedProposal for closedProposal", async function() {
+            await this.TimelapseInstance.addProposal(minScore, capital, interest, description, {from: owner});
+            expectEvent(await this.TimelapseInstance.closedProposal(0, {from: owner}),
+            "ClosedProposal",
+            {idProposal: new BN(0)});
+          })
+        });
+    
+        describe("Function: lowBalanceOffering", async function() {
+          it("Revert: lowBalanceOffering is onlyOwner", async function() {
+            await expectRevert(this.TimelapseInstance.lowBalanceOffering(phoneHash1, ref1, minScore, {from:phoneHash1}),
+            "Ownable: caller is not the owner");
+          });
+    
+          it("lowBalanceOffering", async function() {
+            await this.TimelapseInstance.lowBalanceOffering(phoneHash1, ref1, minScore, {from:owner});
+            const offer = await this.TimelapseInstance.offers(0);
+            expect(offer["phoneHash"]).to.be.equal(phoneHash1);
+            expect(offer["ref"]).to.be.equal(ref1);
+            expect(offer["status"]).to.be.bignumber.equal(activeStatus);
+          });
+    
+          it("Event: LowBalanceReceived for lowBalanceOffering", async function () {
+            expectEvent(await this.TimelapseInstance.lowBalanceOffering(phoneHash1, ref1, minScore, {from: owner}),
+              "LowBalanceReceived",
+              {phoneHash: phoneHash1, ref: ref1});
+          });
+    
+          it("Event: OfferSent for lowBalanceOffering", async function () {
+            expectEvent(await this.TimelapseInstance.lowBalanceOffering(phoneHash1, ref1, minScore, {from: owner}),
+              "OfferSent",
+              {phoneHash: phoneHash1, ref: ref1});
+          });
+        });
+    
+        describe("Function: createProduct", async function() {
+          it("Revert: createProduct is onlyOwner", async function() {
+            await this.TimelapseInstance.addProposal(minScore, capital, interest, description, {from: owner});
+            await this.TimelapseInstance.lowBalanceOffering(phoneHash1, ref1, minScore, {from:owner});
+            await expectRevert(this.TimelapseInstance.createProduct(phoneHash1, timestampA, 0, 0, {from:phoneHash1}),
+            "Ownable: caller is not the owner");
+          });
+    
+          it("Revert: createProduct for existing Proposal", async function() {
+            await this.TimelapseInstance.addProposal(minScore, capital, interest, description, {from: owner});
+            await this.TimelapseInstance.lowBalanceOffering(phoneHash1, ref1, minScore, {from:owner});
+            await expectRevert(this.TimelapseInstance.createProduct(phoneHash1, timestampA, 0, 1),
+            "Proposal doesn't exist");
+          });
+    
+          it("Revert: createProduct for existing Offer", async function() {
+            await this.TimelapseInstance.addProposal(minScore, capital, interest, description, {from: owner});
+            await this.TimelapseInstance.lowBalanceOffering(phoneHash1, ref1, minScore, {from:owner});
+            await expectRevert(this.TimelapseInstance.createProduct(phoneHash1, timestampA, 1, 0),
+            "Offer doesn't exist");
+          });
+    
+          it("createProduct", async function() {
+            await this.TimelapseInstance.addProposal(minScore, capital, interest, description, {from: owner});
+            await this.TimelapseInstance.lowBalanceOffering(phoneHash1, ref1, minScore, {from:owner});
+            await this.TimelapseInstance.createProduct(phoneHash1, timestampA, 0, 0);
+            const product = await this.TimelapseInstance.products(0);
+            expect(product["phoneHash"]).to.be.equal(phoneHash1);
+            expect(product["timestamp"]).to.be.bignumber.equal(timestampA);
+            expect(product["idOffer"]).to.be.bignumber.equal(new BN(0));
+            expect(product["idProposal"]).to.be.bignumber.equal(new BN(0));
+            expect(product["status"]).to.be.bignumber.equal(activeStatus);
+          });
+    
+          it("Event: ProductCreated for createProduct", async function() {
+            await this.TimelapseInstance.addProposal(minScore, capital, interest, description, {from: owner});
+            await this.TimelapseInstance.lowBalanceOffering(phoneHash1, ref1, minScore, {from:owner});
+            expectEvent(await this.TimelapseInstance.createProduct(phoneHash1, timestampA, 0, 0),
+            "ProductCreated",
+            {phoneHash: phoneHash1, timestamp: timestampA, idOffer: new BN(0), idProposal: new BN(0)});
+          });
         });
     });
 });

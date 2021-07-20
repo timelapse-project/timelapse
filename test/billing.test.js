@@ -17,7 +17,7 @@ contract('Billing', function (accounts) {
     const activeProduct = new BN(0);
     const closeProduct = new BN(1);
 
-    describe("Test du contrat", function() {
+    describe("Début des tests pour Billing", function() {
         beforeEach(async function() {
             this.BillingInstance = await Billing.new();
         });
