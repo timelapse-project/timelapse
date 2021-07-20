@@ -10,12 +10,19 @@ import "@openzeppelin/contracts/access/Ownable.sol";
  * @notice Communicate with API(server/watcher) part and dApp
  * @author Keeymon, DavidRochus
  */
-contract Timelapse is Ownable, Offering {
+contract Timelapse is Ownable {
 
     /**
-     * @dev Customer Activity
-     */
-     Billing billing;
+      * @dev Customer Billing Activity
+      */
+    Billing billing;
+
+    /**
+      * @dev Customer Offering Activity
+      */
+    Offering offering;
+
+
 
     /**
      * @dev Customer Activity
@@ -29,9 +36,9 @@ contract Timelapse is Ownable, Offering {
     /**
      * @dev Smart Contract constructor
      */
-    constructor(address _billingAddress) {
+    constructor(address _billingAddress, address _offeringAddress) {
         billing = Billing(_billingAddress);
-        //billing = new Billing();
+        offering = Offering(_offeringAddress);
     }
 
     /**
@@ -54,7 +61,7 @@ contract Timelapse is Ownable, Offering {
       */
     //function acceptance(address _phoneHash, string memory _ref, uint _acceptanceTimestamp, uint256 _idOffer, uint256 _idProposal) public activeCustomer(_phoneHash) {
     function acceptance(address _phoneHash, string memory _ref, uint _acceptanceTimestamp, uint256 _idOffer, uint256 _idProposal) public {
-        billing.acceptanceBilling(_phoneHash, _ref, _acceptanceTimestamp, createProduct(_phoneHash, _acceptanceTimestamp, _idOffer, _idProposal));
+        billing.acceptanceBilling(_phoneHash, _ref, _acceptanceTimestamp, offering.createProduct(_phoneHash, _acceptanceTimestamp, _idOffer, _idProposal));
     }
 
      /**
@@ -65,15 +72,11 @@ contract Timelapse is Ownable, Offering {
       */
     //function topUp(address _phoneHash, uint _paidTimestamp) public onlyOwner activeCustomer(_phoneHash) {
     function topUp(address _phoneHash, uint _paidTimestamp) public onlyOwner {
-        billing.customers(_phoneHash);
-        billing.getCustomer(_phoneHash).nbTopUp++;
-
         (,,,,,uint256 lastAcceptanceID) = billing.customers(_phoneHash);
         (,,,,uint256 idProduct) = billing.histories(_phoneHash, lastAcceptanceID);
-        billing.addToCustomerAmount(_phoneHash, proposals[products[idProduct].idProposal].capital+proposals[products[idProduct].idProposal].interest);
-
-        billing.histories(_phoneHash,0);
-        billing.customers(_phoneHash);
+        (,,,uint256 idProposal,) = offering.products(idProduct);
+        (,uint256 capital,uint256 interest,,,) = offering.proposals(idProposal);
+        billing.addToCustomerAmount(_phoneHash, capital + interest);
 
         billing.addToScore(_phoneHash);
         billing.topUpBilling(_phoneHash, _paidTimestamp);
@@ -86,7 +89,7 @@ contract Timelapse is Ownable, Offering {
       * @dev Manage lowBalance (with reference `_ref`) of a customer (identified with `_phoneHash`)
       */
     function lowBalance(address _phoneHash, string memory _ref) public {
-        lowBalanceOffering(_phoneHash, _ref, billing.getScore(_phoneHash));
+        offering.lowBalanceOffering(_phoneHash, _ref, billing.getScore(_phoneHash));
     }
 
     /**
@@ -103,8 +106,9 @@ contract Timelapse is Ownable, Offering {
 
         for (uint8 i = 0; i < billing.getHistorySize(_phoneHash); i++) {
             (,uint256 acceptanceTimestamp, uint256 paidTimestamp,,uint256 idProduct) = billing.histories(_phoneHash, i);
-            
-            if(offers[products[idProduct].idOffer].timestamp >= _startTimestamp && offers[products[idProduct].idOffer].timestamp <= _endTimestamp) {
+            (,,uint256 idOffer,,) = offering.products(idProduct);
+            (,uint timestamp,,,) = offering.offers(idOffer);
+            if(timestamp >= _startTimestamp && timestamp <= _endTimestamp) {
                 customerActivitiesSize++;
             }
             if(acceptanceTimestamp >= _startTimestamp && acceptanceTimestamp <= _endTimestamp) {
@@ -117,23 +121,28 @@ contract Timelapse is Ownable, Offering {
         CustomerActivity[] memory customerActivities = new CustomerActivity[](customerActivitiesSize);
         for (uint256 i = 0; i < billing.getHistorySize(_phoneHash); i++) {
             (,uint256 acceptanceTimestamp, uint256 paidTimestamp,,uint256 idProduct) = billing.histories(_phoneHash, i);
-            if(offers[products[idProduct].idOffer].timestamp >= _startTimestamp && offers[products[idProduct].idOffer].timestamp <= _endTimestamp) {
+            (,,uint256 idOffer,uint256 idProposal,) = offering.products(idProduct);
+            (,,,,string memory descriptionProposal,) = offering.proposals(idProposal);
+            (,uint timestamp,,,) = offering.offers(idOffer);
+            if(timestamp >= _startTimestamp && timestamp <= _endTimestamp) {
                 customerActivities[customerActivitiesIndex].log = "Offer: ";
-                for (uint256 j = 0; j < offers[products[idProduct].idOffer].proposals.length; j++){
+                uint256 numberProposal = offering.getSizeProposalOffer(idOffer);
+                for (uint256 j = 0; j < numberProposal; j++) {
+                    (,,,,string memory description,) = offering.proposals(offering.getIndexProposalOffer(idOffer, j));
                     if(j == 0) { 
-                        customerActivities[customerActivitiesIndex].log = string(abi.encodePacked(customerActivities[customerActivitiesIndex].log, proposals[offers[products[idProduct].idOffer].proposals[j]].description));
+                        customerActivities[customerActivitiesIndex].log = string(abi.encodePacked(customerActivities[customerActivitiesIndex].log, description));
                     } else {
-                        customerActivities[customerActivitiesIndex].log = string(abi.encodePacked(customerActivities[customerActivitiesIndex].log, " / ", proposals[offers[products[idProduct].idOffer].proposals[j]].description));
+                        customerActivities[customerActivitiesIndex].log = string(abi.encodePacked(customerActivities[customerActivitiesIndex].log, " / ", description));
                     }
                 }
 
-                customerActivities[customerActivitiesIndex].timestamp = offers[products[idProduct].idOffer].timestamp;
+                customerActivities[customerActivitiesIndex].timestamp = timestamp;
                 customerActivities[customerActivitiesIndex].status = "Offer";
                 customerActivitiesIndex++;
             }
 
             if(acceptanceTimestamp >= _startTimestamp && acceptanceTimestamp <= _endTimestamp) {
-                customerActivities[customerActivitiesIndex].log = string(abi.encodePacked("Accepted: ", proposals[products[idProduct].idProposal].description));
+                customerActivities[customerActivitiesIndex].log = string(abi.encodePacked("Accepted: ", descriptionProposal));
                 customerActivities[customerActivitiesIndex].timestamp = acceptanceTimestamp;
                 customerActivities[customerActivitiesIndex].status = "Accepted";
                 customerActivitiesIndex++;

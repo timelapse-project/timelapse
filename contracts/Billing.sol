@@ -33,7 +33,7 @@ contract Billing is Ownable {
         uint            acceptanceTimestamp;
         uint            paidTimestamp;
         HistoryStatus   status;
-        uint256         idProduct; // Pas mieux d'avoir juste l'ID du produit du coup ? ya tout dedans
+        uint256         idProduct;
     }
 
     /**
@@ -109,10 +109,6 @@ contract Billing is Ownable {
      */
     constructor() {}
 
-    function test() public {
-        emit Acknowledge(0x3ad53d26D15A658A84Fe8cA9FFc8aA3a7240C1a0, "test");
-    }
-
     /**
       * @notice Inform if the customer is active
       * @param _phoneHash The address that identifies to the customer
@@ -180,6 +176,7 @@ contract Billing is Ownable {
       */
     function addToCustomerAmount(address _phoneHash, uint _amount) public onlyOwner activeCustomer(_phoneHash) {
         customers[_phoneHash].amount += _amount;
+        customers[_phoneHash].nbTopUp++;
     }
 
     /**
@@ -220,10 +217,6 @@ contract Billing is Ownable {
         }
         */
         emit Acknowledge(_phoneHash, histories[_phoneHash][index].ref);
-    }
-
-    function getCustomer(address _phoneHash) public view returns(Customer memory) {
-        return customers[_phoneHash];
     }
 
     /**
@@ -275,5 +268,4 @@ contract Billing is Ownable {
             (nbTopUpPoints * 8);
         return score;
     }
-
 }

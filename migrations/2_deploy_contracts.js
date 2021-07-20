@@ -1,15 +1,21 @@
 var Billing = artifacts.require("./Billing.sol");
+var Offering = artifact.require("./Offering.sol");
 var Timelapse = artifacts.require("./Timelapse.sol");
 
 module.exports = async function (deployer) {
-  //deployer.deploy(Timelapse);
-
+  // Deploy Billing Contract
   await deployer.deploy(Billing);
   const billing = await Billing.deployed();
 
-  await deployer.deploy(Timelapse, billing.address);
-  timelapse = await Timelapse.deployed();
-  
-  await billing.transferOwnership(timelapse.address);
+  // Deploy Offering Contract
+  await deployer.deploy(Offering);
+  const offering = await Offering.deployed();
 
+  // Deploy Timelapse Contract
+  await deployer.deploy(Timelapse, billing.address, offering.address);
+  const timelapse = await Timelapse.deployed();
+  
+  // Transfer Ownership to Timelapse
+  await billing.transferOwnership(timelapse.address);
+  await offering.transferOwnership(timelapse.address);
 };

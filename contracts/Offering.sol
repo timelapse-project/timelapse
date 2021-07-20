@@ -229,6 +229,15 @@ contract Offering is Ownable {
         return proposals.length;
     }
 
+    function getSizeProposalOffer(uint256 _idOffer) public view existOffer(_idOffer) returns(uint256) {
+        return offers[_idOffer].proposals.length;
+    }
+
+    function getIndexProposalOffer(uint256 _idOffer, uint256 _id) public view existOffer(_idOffer) returns(uint256) {
+        require(_id < offers[_idOffer].proposals.length, "Invalid index");
+        return offers[_idOffer].proposals[_id];
+    }
+
     /**
       * @notice Manage the "low balances" received and generate an offer
       * @param _phoneHash The address that identifies to the customer
