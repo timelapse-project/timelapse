@@ -78,7 +78,7 @@ contract('Billing', function (accounts) {
     
             it("acceptanceBilling", async function() {
                 await this.BillingInstance.acceptanceBilling(phoneHash, ref, timestampA, idProduct, {from:owner});
-                const history = await this.BillingInstance.histories(phoneHash, (await this.BillingInstance.customers(phoneHash))["lastAcceptanceID"]);
+                const history = await this.BillingInstance.histories((await this.BillingInstance.customers(phoneHash))["lastAcceptanceID"]);
                 expect(history["ref"]).to.be.equal(ref);
                 expect(history["acceptanceTimestamp"]).to.be.bignumber.equal(timestampA);
                 expect(history["paidTimestamp"]).to.be.bignumber.equal(new BN(0));
@@ -121,7 +121,7 @@ contract('Billing', function (accounts) {
             it("topUpBilling", async function() {
                 await this.BillingInstance.acceptanceBilling(phoneHash, ref, timestampA, idProduct, {from:owner});
                 await this.BillingInstance.topUpBilling(phoneHash, timestampP, {from:owner});
-                const history = await this.BillingInstance.histories(phoneHash, (await this.BillingInstance.customers(phoneHash))["lastAcceptanceID"]);
+                const history = await this.BillingInstance.histories((await this.BillingInstance.customers(phoneHash))["lastAcceptanceID"]);
                 expect(history["ref"]).to.be.equal(ref);
                 expect(history["acceptanceTimestamp"]).to.be.bignumber.equal(timestampA);
                 expect(history["paidTimestamp"]).to.be.bignumber.equal(timestampP);
