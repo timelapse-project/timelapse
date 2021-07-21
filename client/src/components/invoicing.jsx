@@ -7,7 +7,7 @@ class Invoicing extends Component {
   state = {
     web3: null,
     accounts: null,
-    contract: null,
+    timelapseInstance: null,
     startDate: null,
     endDate: null,
     generatedInvoicing: null,
@@ -17,17 +17,17 @@ class Invoicing extends Component {
     console.log("==> componentWillMount");
     const web3 = this.props.web3;
     const accounts = this.props.accounts;
-    const contract = this.props.contract;
+    const timelapseInstance = this.props.timelapseInstance;
 
-    this.setState({ web3, accounts, contract }, this.runInit);
+    this.setState({ web3, accounts, timelapseInstance }, this.runInit);
   };
 
   runInit = async () => {
     console.log("==> runInit");
 
-    var startDate = new Date();
-    startDate.setDate(startDate.getDate() - 1);
-    var endDate = new Date();
+    var date = new Date();
+    var startDate = new Date(date.getFullYear(), date.getMonth(), 1);
+    var endDate = new Date(date.getFullYear(), date.getMonth() + 1, 0);
 
     this.setState({
       startDate: startDate,
@@ -53,9 +53,11 @@ class Invoicing extends Component {
 
   handleGenerateInvoicing = async () => {
     console.log("==> handleGenerateInvoicing");
-    const { contract, startDate, endDate } = this.state;
+    const { timelapseInstance, startDate, endDate } = this.state;
 
-    let generatedInvoicing = await contract.methods.generateInvoicing((parseInt(startDate.getTime()/1000)), (parseInt(endDate.getTime()/1000))).call();
+    let generatedInvoicing = await timelapseInstance.methods.generateInvoicing((parseInt(startDate.getTime()/1000)), (parseInt(endDate.getTime()/1000))).call();
+    
+    console.log("generatedInvoicing", generatedInvoicing);
 
     this.setState({
       generatedInvoicing: generatedInvoicing,
@@ -155,7 +157,7 @@ class Invoicing extends Component {
           <div className="col-sm-12">
             <div className="card text-center">
               <div className="card-header">
-                <strong>Search Results</strong>
+                <strong>Invoicing details</strong>
               </div>
               {generatedInvoicing != null && generatedInvoicing.length > 0 ? (
                 <div className="card-body">
@@ -173,11 +175,11 @@ class Invoicing extends Component {
                         {generatedInvoicing !== null &&
                           generatedInvoicing.map((row, index) => (
                             <tr>
-                              <td>{parseFloat(row["totalCapital"] / 100).toFixed(2)}</td>
-                              <td>{parseFloat(row["totalInterest"] / 100).toFixed(2)}</td>
+                              <td>{parseFloat(row["totalCapital"] / 100).toFixed(2)} $</td>
+                              <td>{parseFloat(row["totalInterest"] / 100).toFixed(2)} $</td>
 
-                              <td>{parseFloat((parseInt(row["totalCapital"]) + (parseInt(row["totalInterest"]) * 60 / 100))/ 100).toFixed(2)}</td>
-                              <td>{parseFloat(((parseInt(row["totalInterest"]) * 40 / 100))/ 100).toFixed(2)}</td>
+                              <td>{parseFloat((parseInt(row["totalCapital"]) + (parseInt(row["totalInterest"]) * 60 / 100))/ 100).toFixed(2)} $</td>
+                              <td>{parseFloat(((parseInt(row["totalInterest"]) * 40 / 100))/ 100).toFixed(2)} $</td>
                             </tr>
                           ))}
                       </tbody>

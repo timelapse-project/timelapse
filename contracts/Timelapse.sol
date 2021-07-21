@@ -22,8 +22,6 @@ contract Timelapse is Ownable {
       */
     Offering offering;
 
-
-
     /**
      * @dev Customer Activity
      */
@@ -34,11 +32,45 @@ contract Timelapse is Ownable {
     }
 
     /**
+     * @dev Invoice information
+     */
+    struct Invoice {
+        uint256 totalCapital;
+        uint256 totalInterest;
+    }
+
+    /**
      * @dev Smart Contract constructor
      */
     constructor(address _billingAddress, address _offeringAddress) {
         billing = Billing(_billingAddress);
         offering = Offering(_offeringAddress);
+    }
+
+    /**
+      * @notice Add a proposal
+      * @param _minScoring The minimum score needed by customer to receive this proposal
+      * @param _capital Capital part of the proposal amount
+      * @param _interest Interest part of the proposal amount
+      * @param _description A description of the proposal
+      * @dev Add a proposal with the following information: minimum scoring `_minScoring`, amount `_capital` + `_interest`, description `_description`
+      */
+    function addProposal(
+        uint8 _minScoring,
+        uint256 _capital,
+        uint256 _interest,
+        string memory _description
+    ) public onlyOwner {
+        offering.addProposal(_minScoring, _capital, _interest, _description);
+    }
+
+    /**
+      * @notice Close a proposal
+      * @param _id ID of the proposal to close
+      * @dev Close the proposal with the ID `_id`
+      */
+    function closedProposal(uint256 _id) public onlyOwner {
+        offering.closedProposal(_id);
     }
 
     /**
@@ -73,7 +105,8 @@ contract Timelapse is Ownable {
     //function topUp(address _phoneHash, uint _paidTimestamp) public onlyOwner activeCustomer(_phoneHash) {
     function topUp(address _phoneHash, uint _paidTimestamp) public onlyOwner {
         (,,,,,uint256 lastAcceptanceID) = billing.customers(_phoneHash);
-        (,,,,uint256 idProduct) = billing.histories(_phoneHash, lastAcceptanceID);
+        //(,,,,uint256 idProduct) = billing.histories(_phoneHash, lastAcceptanceID);
+        (,,,,uint256 idProduct) = billing.histories(lastAcceptanceID);
         (,,,uint256 idProposal,) = offering.products(idProduct);
         (,uint256 capital,uint256 interest,,,) = offering.proposals(idProposal);
         billing.addToCustomerAmount(_phoneHash, capital + interest);
@@ -101,11 +134,13 @@ contract Timelapse is Ownable {
       * @dev Get activities log of a customer (identified with `_phoneHash`)
       */
     function getCustomerActivitiesLog(address _phoneHash, uint256 _startTimestamp, uint256 _endTimestamp) public view returns(CustomerActivity[] memory) {
-         uint256 customerActivitiesSize = 0;
-         uint256 customerActivitiesIndex = 0;
+         uint256 customerActivitiesSize;
+         uint256 customerActivitiesIndex;
 
         for (uint8 i = 0; i < billing.getHistorySize(_phoneHash); i++) {
-            (,uint256 acceptanceTimestamp, uint256 paidTimestamp,,uint256 idProduct) = billing.histories(_phoneHash, i);
+            //(,uint256 acceptanceTimestamp, uint256 paidTimestamp,,uint256 idProduct) = billing.histories(_phoneHash, i);
+            uint256 historyIndex = billing.historyList(_phoneHash, i);
+            (,uint256 acceptanceTimestamp, uint256 paidTimestamp,,uint256 idProduct) = billing.histories(historyIndex);
             (,,uint256 idOffer,,) = offering.products(idProduct);
             (,uint timestamp,,,) = offering.offers(idOffer);
             if(timestamp >= _startTimestamp && timestamp <= _endTimestamp) {
@@ -120,7 +155,9 @@ contract Timelapse is Ownable {
         }
         CustomerActivity[] memory customerActivities = new CustomerActivity[](customerActivitiesSize);
         for (uint256 i = 0; i < billing.getHistorySize(_phoneHash); i++) {
-            (,uint256 acceptanceTimestamp, uint256 paidTimestamp,,uint256 idProduct) = billing.histories(_phoneHash, i);
+            //(,uint256 acceptanceTimestamp, uint256 paidTimestamp,,uint256 idProduct) = billing.histories(_phoneHash, i);
+            uint256 historyIndex = billing.historyList(_phoneHash, i);
+            (,uint256 acceptanceTimestamp, uint256 paidTimestamp,,uint256 idProduct) = billing.histories(historyIndex);
             (,,uint256 idOffer,uint256 idProposal,) = offering.products(idProduct);
             (,,,,string memory descriptionProposal,) = offering.proposals(idProposal);
             (,uint timestamp,,,) = offering.offers(idOffer);
@@ -156,5 +193,37 @@ contract Timelapse is Ownable {
             }
         }
         return customerActivities;
+    }
+
+    /**
+      * @notice Generate invoicing for a given period
+      * @param _startTimestamp Start of the invoicing period
+      * @param _endTimestamp End of the invoicing period
+      * @return The invoice 
+      * @dev Generate invoicing for a given period (between _startTimestamp and _endTimestamp)
+      */
+    function generateInvoicing(uint256 _startTimestamp, uint256 _endTimestamp) public view returns(Invoice[] memory) {
+        uint256 invoiceSize;
+        uint256 invoiceIndex;
+        bool outOfInvoicingWindow;
+        // In POC context, we will only use 1 global invoice. In the next phases, additional invoice could be returned for a given period
+        invoiceSize = 1;
+        Invoice[] memory invoice = new Invoice[](invoiceSize);
+
+        for (uint256 i = billing.getHistoriesSize(); i > 0 && !(outOfInvoicingWindow); i--) {
+            (,, uint256 paidTimestamp, Billing.HistoryStatus status, uint256 idProduct) = billing.histories(i-1);
+            
+            if(paidTimestamp < _startTimestamp){
+                outOfInvoicingWindow = true;
+            }
+            if(paidTimestamp >= _startTimestamp && paidTimestamp <= _endTimestamp && status == Billing.HistoryStatus.Closed){
+                (,,,uint256 idProposal,) = offering.products(idProduct);
+                (,uint256 capital,uint256 interest,,,) = offering.proposals(idProposal);
+                invoice[invoiceIndex].totalCapital += capital;
+                invoice[invoiceIndex].totalInterest += interest;
+            }
+        }
+
+        return invoice;
     }
 }

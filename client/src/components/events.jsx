@@ -4,7 +4,7 @@ class Events extends Component {
   state = {
     web3: null,
     accounts: null,
-    contract: null,
+    timelapseInstance: null,
     eventLog: [],
   };
 
@@ -12,14 +12,14 @@ class Events extends Component {
     console.log("==> componentWillMount");
     const web3 = this.props.web3;
     const accounts = this.props.accounts;
-    const contract = this.props.contract;
+    const timelapseInstance = this.props.timelapseInstance;
 
-    contract.events
+    timelapseInstance.events
       .allEvents()
       .on("data", (event) => this.doWhenEvent(event))
       .on("error", console.error);
 
-    this.setState({ web3, accounts, contract }, this.runInit);
+    this.setState({ web3, accounts, timelapseInstance }, this.runInit);
   };
 
   runInit = async () => {
@@ -128,8 +128,8 @@ class Events extends Component {
 
   getPastEvents = async () => {
     console.log("handleAddProposal");
-    const { contract } = this.state;
-    contract
+    const { timelapseInstance } = this.state;
+    timelapseInstance
       .getPastEvents("allEvents", {
         fromBlock: 0,
         toBlock: "latest",

@@ -51,6 +51,18 @@ Number of proposals
 
 Return the number of proposals
 
+### `getSizeProposalOffer(uint256 _idOffer) → uint256` (public)
+
+
+
+
+
+### `getIndexProposalOffer(uint256 _idOffer, uint256 _id) → uint256` (public)
+
+
+
+
+
 ### `lowBalanceOffering(address _phoneHash, string _ref, uint8 _score)` (public)
 
 Manage the "low balances" received and generate an offer

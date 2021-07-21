@@ -5,22 +5,48 @@
 var Request = require("request");
 const { web3 } = require("./getWeb3");
 const TimelapseContract = require("../client/src/contracts/Timelapse.json");
+const BillingContract = require("../client/src/contracts/Billing.json");
+const OfferingContract = require("../client/src/contracts/Offering.json");
 
-let LOG_LEVEL = 1;
-let WS_SERVER = "http://httpbin.org/post";
-let contract = null;
-let proposalsCount = 0;
-let proposalList = [];
+var LOG_LEVEL = 1;
+var WS_SERVER = "http://httpbin.org/post";
+var timelapseInstance = null;
+var billingInstance = null;
+var proposalsCount = 0;
+var proposalList = [];
 
 runInit = async () => {
   const networkId = await web3.eth.net.getId();
-  const deployedNetwork = TimelapseContract.networks[networkId];
-  contract = new web3.eth.Contract(
+  const timelapseNetwork = TimelapseContract.networks[networkId];
+  const billingNetwork = BillingContract.networks[networkId];
+  const offeringNetwork = OfferingContract.networks[networkId];
+
+  timelapseInstance = new web3.eth.Contract(
     TimelapseContract.abi,
-    deployedNetwork && deployedNetwork.address
+    timelapseNetwork && timelapseNetwork.address
   );
 
-  contract.events
+  billingInstance = new web3.eth.Contract(
+    BillingContract.abi,
+    billingNetwork && billingNetwork.address
+  );
+
+  offeringInstance = new web3.eth.Contract(
+    OfferingContract.abi,
+    offeringNetwork && offeringNetwork.address
+  );
+
+  timelapseInstance.events
+    .allEvents()
+    .on("data", (event) => doWhenEvent(event))
+    .on("error", console.error);
+
+  billingInstance.events
+    .allEvents()
+    .on("data", (event) => doWhenEvent(event))
+    .on("error", console.error);
+
+  offeringInstance.events
     .allEvents()
     .on("data", (event) => doWhenEvent(event))
     .on("error", console.error);
@@ -57,18 +83,18 @@ doWhenEvent = async (data) => {
       sendAcknowledge(data.returnValues);
       break;
     default:
-      console.log("Event not managed", data.event);
+      LOG_LEVEL > 1 && console.log("Event not managed", data.event);
   }
 };
 
 getProposals = async () => {
   LOG_LEVEL > 0 && console.log("### getProposals");
 
-  proposalsCount = await contract.methods.proposalsCount().call();
+  proposalsCount = await offeringInstance.methods.proposalsCount().call();
 
   proposalList = [];
   for (let proposalId = 0; proposalId < proposalsCount; proposalId++) {
-    let proposalItem = await contract.methods.proposals(proposalId).call();
+    let proposalItem = await offeringInstance.methods.proposals(proposalId).call();
     proposalItem["id"] = proposalId;
     proposalList.push(proposalItem);
   }

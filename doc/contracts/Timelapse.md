@@ -6,11 +6,25 @@ Communicate with API(server/watcher) part and dApp
 
 
 
-### `constructor(address _billingAddress)` (public)
+### `constructor(address _billingAddress, address _offeringAddress)` (public)
 
 
 
 Smart Contract constructor
+
+### `addProposal(uint8 _minScoring, uint256 _capital, uint256 _interest, string _description)` (public)
+
+Add a proposal
+
+
+Add a proposal with the following information: minimum scoring `_minScoring`, amount `_capital` + `_interest`, description `_description`
+
+### `closedProposal(uint256 _id)` (public)
+
+Close a proposal
+
+
+Close the proposal with the ID `_id`
 
 ### `addToScore(address _phoneHash)` (public)
 
@@ -46,5 +60,12 @@ Get customer activities log
 
 
 Get activities log of a customer (identified with `_phoneHash`)
+
+### `generateInvoicing(uint256 _startTimestamp, uint256 _endTimestamp) → struct Timelapse.Invoice[]` (public)
+
+Generate invoicing for a given period
+
+
+Generate invoicing for a given period (between _startTimestamp and _endTimestamp)
 
 
