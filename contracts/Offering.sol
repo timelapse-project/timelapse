@@ -229,10 +229,21 @@ contract Offering is Ownable {
         return proposals.length;
     }
 
+    /**
+      * @notice Number of proposal in an offer
+      * @param _idOffer The ID of the offer
+      * @dev Return the number of proposal in an offer
+      */
     function getSizeProposalOffer(uint256 _idOffer) public view existOffer(_idOffer) returns(uint256) {
         return offers[_idOffer].proposals.length;
     }
 
+    /**
+      * @notice Get the ID proposal in offer
+      * @param _idOffer The ID of the offer
+      * @param _id The ID of the array proposal in an offer
+      * @dev Return the ID proposal in offer
+      */
     function getIndexProposalOffer(uint256 _idOffer, uint256 _id) public view existOffer(_idOffer) returns(uint256) {
         require(_id < offers[_idOffer].proposals.length, "Invalid index");
         return offers[_idOffer].proposals[_id];

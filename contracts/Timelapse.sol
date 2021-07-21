@@ -15,7 +15,7 @@ contract Timelapse is Ownable {
     /**
       * @dev Customer Billing Activity
       */
-    Billing billing;
+    Billing public billing;
 
     /**
       * @dev Customer Offering Activity
