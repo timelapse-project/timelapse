@@ -25,9 +25,9 @@ class Invoicing extends Component {
   runInit = async () => {
     console.log("==> runInit");
 
-    var startDate = new Date();
-    startDate.setDate(startDate.getDate() - 1);
-    var endDate = new Date();
+    var date = new Date();
+    var startDate = new Date(date.getFullYear(), date.getMonth(), 1);
+    var endDate = new Date(date.getFullYear(), date.getMonth() + 1, 0);
 
     this.setState({
       startDate: startDate,
@@ -56,6 +56,8 @@ class Invoicing extends Component {
     const { timelapseInstance, startDate, endDate } = this.state;
 
     let generatedInvoicing = await timelapseInstance.methods.generateInvoicing((parseInt(startDate.getTime()/1000)), (parseInt(endDate.getTime()/1000))).call();
+    
+    console.log("generatedInvoicing", generatedInvoicing);
 
     this.setState({
       generatedInvoicing: generatedInvoicing,
@@ -155,7 +157,7 @@ class Invoicing extends Component {
           <div className="col-sm-12">
             <div className="card text-center">
               <div className="card-header">
-                <strong>Search Results</strong>
+                <strong>Invoicing details</strong>
               </div>
               {generatedInvoicing != null && generatedInvoicing.length > 0 ? (
                 <div className="card-body">
@@ -173,11 +175,11 @@ class Invoicing extends Component {
                         {generatedInvoicing !== null &&
                           generatedInvoicing.map((row, index) => (
                             <tr>
-                              <td>{parseFloat(row["totalCapital"] / 100).toFixed(2)}</td>
-                              <td>{parseFloat(row["totalInterest"] / 100).toFixed(2)}</td>
+                              <td>{parseFloat(row["totalCapital"] / 100).toFixed(2)} $</td>
+                              <td>{parseFloat(row["totalInterest"] / 100).toFixed(2)} $</td>
 
-                              <td>{parseFloat((parseInt(row["totalCapital"]) + (parseInt(row["totalInterest"]) * 60 / 100))/ 100).toFixed(2)}</td>
-                              <td>{parseFloat(((parseInt(row["totalInterest"]) * 40 / 100))/ 100).toFixed(2)}</td>
+                              <td>{parseFloat((parseInt(row["totalCapital"]) + (parseInt(row["totalInterest"]) * 60 / 100))/ 100).toFixed(2)} $</td>
+                              <td>{parseFloat(((parseInt(row["totalInterest"]) * 40 / 100))/ 100).toFixed(2)} $</td>
                             </tr>
                           ))}
                       </tbody>

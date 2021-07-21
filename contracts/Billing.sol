@@ -49,15 +49,6 @@ contract Billing is Ownable {
     }
 
     /**
-     * @dev Activity log
-     */
-    struct ActivityLog {
-        string log;
-        uint256 timestamp;
-        string status;
-    }
-
-    /**
      * @dev Triggered when status of a customer has changed
      */
     event CustomerStatusChange(address phoneHash, CustomerStatus status);
@@ -92,9 +83,14 @@ contract Billing is Ownable {
     mapping(address => Customer) public customers;
     
     /**
+     * @dev History table
+     */
+    History[] public histories;
+
+    /**
      * @dev Mapping to access history information with a phoneHash
      */
-    mapping(address => History[]) public histories;
+    mapping(address => uint256[]) public historyList;
 
     /**
      * @dev Check that the customer is still active
@@ -166,7 +162,15 @@ contract Billing is Ownable {
       * @dev Get the size of the history of a customer (identified with `_phoneHash`)
       */
     function getHistorySize(address _phoneHash) public view onlyOwner returns (uint256) {
-        return histories[_phoneHash].length;
+        return historyList[_phoneHash].length;
+    }
+
+    /**
+      * @notice Get the size of all the histories
+      * @dev Get the size of all the histories
+      */
+    function getHistoriesSize() public view onlyOwner returns (uint256) {
+        return histories.length;
     }
 
     /**
@@ -189,10 +193,11 @@ contract Billing is Ownable {
       */
     function acceptanceBilling(address _phoneHash, string memory _ref, uint _acceptanceTimestamp, uint256 _idProduct) public onlyOwner activeCustomer(_phoneHash) {
         emit AcceptanceReceived(_phoneHash, _ref, _acceptanceTimestamp, _idProduct);
-        histories[_phoneHash].push(History( _ref, _acceptanceTimestamp, 0, HistoryStatus.Active, _idProduct));
+        histories.push(History( _ref, _acceptanceTimestamp, 0, HistoryStatus.Active, _idProduct));
         Customer memory customer = customers[_phoneHash];
-        customer.lastAcceptanceID = (histories[_phoneHash].length - 1);
-        History memory lastAcceptance = histories[_phoneHash][customer.lastAcceptanceID];
+        customer.lastAcceptanceID = (histories.length - 1);
+        historyList[_phoneHash].push(histories.length - 1);
+        History memory lastAcceptance = histories[customer.lastAcceptanceID];
         emit Confirmation(_phoneHash, lastAcceptance.ref, lastAcceptance.acceptanceTimestamp, lastAcceptance.idProduct);
     }
 
@@ -203,20 +208,20 @@ contract Billing is Ownable {
       * @dev TopUp the last product of a customer (identified with `_phoneHash`) at timestamp `_paidTimestamp`
       */
     function topUpBilling(address _phoneHash, uint _paidTimestamp) public onlyOwner {
-        require(histories[_phoneHash].length > 0, "Phone is not registered");
-        uint index = (histories[_phoneHash].length - 1);
-        require(histories[_phoneHash][index].status == HistoryStatus.Active, "The customer has no product to refund");
+        require(historyList[_phoneHash].length > 0, "Phone is not registered");
+        uint index = (historyList[_phoneHash].length - 1);
+        require(histories[index].status == HistoryStatus.Active, "The customer has no product to refund");
 
-        emit TopUpReceived(_phoneHash, histories[_phoneHash][index].ref);
-        histories[_phoneHash][index].paidTimestamp = _paidTimestamp;
-        histories[_phoneHash][index].status = HistoryStatus.Closed;
+        emit TopUpReceived(_phoneHash, histories[index].ref);
+        histories[index].paidTimestamp = _paidTimestamp;
+        histories[index].status = HistoryStatus.Closed;
         /*
         if(customers[_phoneHash].score == 0) { // On mettra ca ailleur
             customers[_phoneHash].status = CustomerStatus.Closed;
             emit CustomerIsDeleted(_phoneHash);
         }
         */
-        emit Acknowledge(_phoneHash, histories[_phoneHash][index].ref);
+        emit Acknowledge(_phoneHash, histories[index].ref);
     }
 
     /**

@@ -26,9 +26,9 @@ class Customers extends Component {
   runInit = async () => {
     console.log("==> runInit");
     
-    var startDate = new Date();
-    startDate.setDate(startDate.getDate() - 1);
-    var endDate = new Date();
+    var date = new Date();
+    var startDate = new Date(date.getFullYear(), date.getMonth(), 1);
+    var endDate = new Date(date.getFullYear(), date.getMonth() + 1, 0);
 
     this.setState({
       startDate: startDate,

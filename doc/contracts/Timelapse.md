@@ -61,4 +61,11 @@ Get customer activities log
 
 Get activities log of a customer (identified with `_phoneHash`)
 
+### `generateInvoicing(uint256 _startTimestamp, uint256 _endTimestamp) → struct Timelapse.Invoice[]` (public)
+
+Generate invoicing for a given period
+
+
+Generate invoicing for a given period (between _startTimestamp and _endTimestamp)
+
 

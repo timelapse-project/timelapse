@@ -56,17 +56,17 @@ while [ TRUE ];do
            echo " "
            curl --header "Content-Type: application/json" \
                 --request POST \
-                --data '{"minScoring":49,"capital":200,"interest":50,"description":"2€ + 0.5€"}' \
+                --data '{"minScoring":49,"capital":200,"interest":50,"description":"2 $ + 0.5 $"}' \
                 ${serverURL}/addProposal
            sleep 1
            curl --header "Content-Type: application/json" \
                 --request POST \
-                --data '{"minScoring":118,"capital":400,"interest":100,"description":"4€ + 1€"}' \
+                --data '{"minScoring":118,"capital":400,"interest":100,"description":"4 $ + 1 $"}' \
                 ${serverURL}/addProposal
            sleep 1
            curl --header "Content-Type: application/json" \
                 --request POST \
-                --data '{"minScoring":185,"capital":600,"interest":150,"description":"6€ + 1.5€"}' \
+                --data '{"minScoring":185,"capital":600,"interest":150,"description":"6 $ + 1.5 $"}' \
                 ${serverURL}/addProposal
            sleep 1
            echo " "

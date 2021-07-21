@@ -118,7 +118,7 @@ class App extends Component {
             <Events
               web3={this.state.web3}
               accounts={this.state.accounts}
-              conttimelapseInstanceract={this.state.timelapseInstance}
+              timelapseInstance={this.state.timelapseInstance}
             />
           </Route>
           <Route path="/customers" exact>

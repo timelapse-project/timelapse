@@ -83,7 +83,7 @@ doWhenEvent = async (data) => {
       sendAcknowledge(data.returnValues);
       break;
     default:
-      console.log("Event not managed", data.event);
+      LOG_LEVEL > 1 && console.log("Event not managed", data.event);
   }
 };
 

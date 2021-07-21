@@ -33,7 +33,7 @@ class Proposals extends Component {
   runInit = async () => {
     console.log("==> runInit");
 
-    const { timelapseInstance, offeringInstance } = this.state;
+    const { offeringInstance } = this.state;
     const proposalsCount = await offeringInstance.methods.proposalsCount().call();
 
     let proposalList = [];
@@ -293,10 +293,10 @@ class Proposals extends Component {
                             <tr>
                               <td>{row["minScoring"]}</td>
                               <td>
-                                {parseFloat(row["capital"] / 100).toFixed(2)}
+                                {parseFloat(row["capital"] / 100).toFixed(2)} $
                               </td>
                               <td>
-                                {parseFloat(row["interest"] / 100).toFixed(2)}
+                                {parseFloat(row["interest"] / 100).toFixed(2)} $
                               </td>
                               <td>{row["description"]}</td>
                               <td>

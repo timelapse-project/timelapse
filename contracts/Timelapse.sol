@@ -22,8 +22,6 @@ contract Timelapse is Ownable {
       */
     Offering offering;
 
-
-
     /**
      * @dev Customer Activity
      */
@@ -31,6 +29,14 @@ contract Timelapse is Ownable {
         string log;
         uint256 timestamp;
         string status;
+    }
+
+    /**
+     * @dev Invoice information
+     */
+    struct Invoice {
+        uint256 totalCapital;
+        uint256 totalInterest;
     }
 
     /**
@@ -99,7 +105,8 @@ contract Timelapse is Ownable {
     //function topUp(address _phoneHash, uint _paidTimestamp) public onlyOwner activeCustomer(_phoneHash) {
     function topUp(address _phoneHash, uint _paidTimestamp) public onlyOwner {
         (,,,,,uint256 lastAcceptanceID) = billing.customers(_phoneHash);
-        (,,,,uint256 idProduct) = billing.histories(_phoneHash, lastAcceptanceID);
+        //(,,,,uint256 idProduct) = billing.histories(_phoneHash, lastAcceptanceID);
+        (,,,,uint256 idProduct) = billing.histories(lastAcceptanceID);
         (,,,uint256 idProposal,) = offering.products(idProduct);
         (,uint256 capital,uint256 interest,,,) = offering.proposals(idProposal);
         billing.addToCustomerAmount(_phoneHash, capital + interest);
@@ -131,7 +138,9 @@ contract Timelapse is Ownable {
          uint256 customerActivitiesIndex;
 
         for (uint8 i = 0; i < billing.getHistorySize(_phoneHash); i++) {
-            (,uint256 acceptanceTimestamp, uint256 paidTimestamp,,uint256 idProduct) = billing.histories(_phoneHash, i);
+            //(,uint256 acceptanceTimestamp, uint256 paidTimestamp,,uint256 idProduct) = billing.histories(_phoneHash, i);
+            uint256 historyIndex = billing.historyList(_phoneHash, i);
+            (,uint256 acceptanceTimestamp, uint256 paidTimestamp,,uint256 idProduct) = billing.histories(historyIndex);
             (,,uint256 idOffer,,) = offering.products(idProduct);
             (,uint timestamp,,,) = offering.offers(idOffer);
             if(timestamp >= _startTimestamp && timestamp <= _endTimestamp) {
@@ -146,7 +155,9 @@ contract Timelapse is Ownable {
         }
         CustomerActivity[] memory customerActivities = new CustomerActivity[](customerActivitiesSize);
         for (uint256 i = 0; i < billing.getHistorySize(_phoneHash); i++) {
-            (,uint256 acceptanceTimestamp, uint256 paidTimestamp,,uint256 idProduct) = billing.histories(_phoneHash, i);
+            //(,uint256 acceptanceTimestamp, uint256 paidTimestamp,,uint256 idProduct) = billing.histories(_phoneHash, i);
+            uint256 historyIndex = billing.historyList(_phoneHash, i);
+            (,uint256 acceptanceTimestamp, uint256 paidTimestamp,,uint256 idProduct) = billing.histories(historyIndex);
             (,,uint256 idOffer,uint256 idProposal,) = offering.products(idProduct);
             (,,,,string memory descriptionProposal,) = offering.proposals(idProposal);
             (,uint timestamp,,,) = offering.offers(idOffer);
@@ -182,5 +193,37 @@ contract Timelapse is Ownable {
             }
         }
         return customerActivities;
+    }
+
+    /**
+      * @notice Generate invoicing for a given period
+      * @param _startTimestamp Start of the invoicing period
+      * @param _endTimestamp End of the invoicing period
+      * @return The invoice 
+      * @dev Generate invoicing for a given period (between _startTimestamp and _endTimestamp)
+      */
+    function generateInvoicing(uint256 _startTimestamp, uint256 _endTimestamp) public view returns(Invoice[] memory) {
+        uint256 invoiceSize;
+        uint256 invoiceIndex;
+        bool outOfInvoicingWindow;
+        // In POC context, we will only use 1 global invoice. In the next phases, additional invoice could be returned for a given period
+        invoiceSize = 1;
+        Invoice[] memory invoice = new Invoice[](invoiceSize);
+
+        for (uint256 i = billing.getHistoriesSize(); i > 0 && !(outOfInvoicingWindow); i--) {
+            (,, uint256 paidTimestamp, Billing.HistoryStatus status, uint256 idProduct) = billing.histories(i-1);
+            
+            if(paidTimestamp < _startTimestamp){
+                outOfInvoicingWindow = true;
+            }
+            if(paidTimestamp >= _startTimestamp && paidTimestamp <= _endTimestamp && status == Billing.HistoryStatus.Closed){
+                (,,,uint256 idProposal,) = offering.products(idProduct);
+                (,uint256 capital,uint256 interest,,,) = offering.proposals(idProposal);
+                invoice[invoiceIndex].totalCapital += capital;
+                invoice[invoiceIndex].totalInterest += interest;
+            }
+        }
+
+        return invoice;
     }
 }

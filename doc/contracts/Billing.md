@@ -60,6 +60,13 @@ Get the size of the history of a customer
 
 Get the size of the history of a customer (identified with `_phoneHash`)
 
+### `getHistoriesSize() → uint256` (public)
+
+Get the size of all the histories
+
+
+Get the size of all the histories
+
 ### `addToCustomerAmount(address _phoneHash, uint256 _amount)` (public)
 
 Add amount to customer total amount

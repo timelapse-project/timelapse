@@ -90,6 +90,7 @@ topUp = async (data) => {
 
 app.post("/addProposal", function (req, res) {
   LOG_LEVEL > 0 && console.log("--> addProposal");
+  LOG_LEVEL > 0 && console.log(req.body);
   this.addProposal(req.body);
   res.end(
     JSON.stringify({
