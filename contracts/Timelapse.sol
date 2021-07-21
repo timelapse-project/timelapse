@@ -104,9 +104,8 @@ contract Timelapse is Ownable {
       */
     //function topUp(address _phoneHash, uint _paidTimestamp) public onlyOwner activeCustomer(_phoneHash) {
     function topUp(address _phoneHash, uint _paidTimestamp) public onlyOwner {
-        (,,,,,uint256 lastAcceptanceID) = billing.customers(_phoneHash);
-        //(,,,,uint256 idProduct) = billing.histories(_phoneHash, lastAcceptanceID);
-        (,,,,uint256 idProduct) = billing.histories(lastAcceptanceID);
+//        (,,,,,uint256 lastAcceptanceID) = billing.getCustomer(_phoneHash);
+        (,,,,uint256 idProduct) = billing.histories(billing.getCustomer(_phoneHash).lastAcceptanceID);
         (,,,uint256 idProposal,) = offering.products(idProduct);
         (,uint256 capital,uint256 interest,,,) = offering.proposals(idProposal);
         billing.addToCustomerAmount(_phoneHash, capital + interest);

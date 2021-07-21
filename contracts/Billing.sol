@@ -13,6 +13,7 @@ contract Billing is Ownable {
      * @dev Customer status
      */
     enum CustomerStatus {
+        New,
         Active,
         Closed
     }
@@ -48,6 +49,11 @@ contract Billing is Ownable {
         uint256         lastAcceptanceID;
     }
 
+    struct CustomerInfo {
+        uint256         idCustomer;
+        CustomerStatus  status;
+    }
+
     /**
      * @dev Triggered when status of a customer has changed
      */
@@ -78,9 +84,14 @@ contract Billing is Ownable {
     event Acknowledge(address phoneHash, string ref);   
 
     /**
+     * @dev Customer table
+     */
+    Customer[] public customers;
+
+    /**
      * @dev Mapping to access customer information with a phoneHash
      */
-    mapping(address => Customer) public customers;
+    mapping(address => CustomerInfo) public customerList;
     
     /**
      * @dev History table
@@ -96,7 +107,7 @@ contract Billing is Ownable {
      * @dev Check that the customer is still active
      */
     modifier activeCustomer(address _phoneHash) {
-        require(customers[_phoneHash].status == CustomerStatus.Active, "Blocked customer");
+        require(customerList[_phoneHash].status == CustomerStatus.Active, "Blocked or Unknowed customer");
         _;
     }
 
@@ -106,12 +117,22 @@ contract Billing is Ownable {
     constructor() {}
 
     /**
+      * @notice Get a Customer with phoneHash
+      * @param _phoneHash The address that identifies to the customer
+      * @dev This function get the customer (identified with `_phoneHash`)
+      */
+    function getCustomer(address _phoneHash) public view returns(Customer memory) {
+        require(customerList[_phoneHash].status != CustomerStatus.New, "Unknow customer");
+        return customers[customerList[_phoneHash].idCustomer];
+    }
+
+    /**
       * @notice Inform if the customer is active
       * @param _phoneHash The address that identifies to the customer
       * @dev This function informs if the customer (identified with `_phoneHash`) is active
       */
     function isActiveCustomer(address _phoneHash) public view returns(bool) {
-        return (customers[_phoneHash].status == CustomerStatus.Active ? true : false);
+        return (customerList[_phoneHash].status == CustomerStatus.Active ? true : false);
     }
 
     /**
@@ -121,8 +142,9 @@ contract Billing is Ownable {
       * @dev This function change the customer's status (using CustomerStatus `_status`) ofr a customer (identified with `_phoneHash`)
       */
     function changeCustomerStatus(address _phoneHash, CustomerStatus _status) public onlyOwner {
-        customers[_phoneHash].status = _status;
-        emit CustomerStatusChange(_phoneHash, customers[_phoneHash].status);
+        customerList[_phoneHash].status = _status;
+        customers[customerList[_phoneHash].idCustomer].status = _status;
+        emit CustomerStatusChange(_phoneHash, customerList[_phoneHash].status);
     }
 
     /**
@@ -131,7 +153,7 @@ contract Billing is Ownable {
       * @dev This function is directly called when API receives a topUp for a customer (identified with `_phoneHash`) with a target other than Timelapse
       */
     function getScore(address _phoneHash) external view onlyOwner activeCustomer(_phoneHash) returns(uint8) {
-        return customers[_phoneHash].score;
+        return customers[customerList[_phoneHash].idCustomer].score;
     }
 
     /**
@@ -139,11 +161,14 @@ contract Billing is Ownable {
       * @param _phoneHash The address that identifies to the customer
       * @dev This function is directly called when API receives a topUp for a customer (identified with `_phoneHash`) with a target other than Timelapse
       */
-    function addToScore(address _phoneHash) public onlyOwner activeCustomer(_phoneHash) {
-            if (customers[_phoneHash].firstTopUp == 0)
-            customers[_phoneHash].firstTopUp = block.timestamp;
-        customers[_phoneHash].nbTopUp++;
-        changeScore(_phoneHash, process(customers[_phoneHash]));
+    function addToScore(address _phoneHash) public onlyOwner {
+        if(customerList[_phoneHash].status == CustomerStatus.New) {
+            customers.push(Customer(CustomerStatus.Active, 0,0,0,0,0));
+            customerList[_phoneHash].idCustomer = (customers.length - 1);
+            customerList[_phoneHash].status = CustomerStatus.Active;
+        }
+        customers[customerList[_phoneHash].idCustomer].nbTopUp++;
+        changeScore(_phoneHash, process(customers[customerList[_phoneHash].idCustomer]));
     }
 
     /**
@@ -152,8 +177,8 @@ contract Billing is Ownable {
       * @dev This function informs if the customer (identified with `_phoneHash`) is active
       */
     function changeScore(address _phoneHash, uint8 _score) public onlyOwner {
-        customers[_phoneHash].score = _score;
-        emit ScoreChange(_phoneHash, customers[_phoneHash].score);
+        customers[customerList[_phoneHash].idCustomer].score = _score;
+        emit ScoreChange(_phoneHash, customers[customerList[_phoneHash].idCustomer].score);
     }
 
     /**
@@ -179,8 +204,8 @@ contract Billing is Ownable {
       * @dev Add amount to customer (identified with `_phoneHash`) total amount
       */
     function addToCustomerAmount(address _phoneHash, uint _amount) public onlyOwner activeCustomer(_phoneHash) {
-        customers[_phoneHash].amount += _amount;
-        customers[_phoneHash].nbTopUp++;
+        customers[customerList[_phoneHash].idCustomer].amount += _amount;
+        customers[customerList[_phoneHash].idCustomer].nbTopUp++;
     }
 
     /**
@@ -194,7 +219,7 @@ contract Billing is Ownable {
     function acceptanceBilling(address _phoneHash, string memory _ref, uint _acceptanceTimestamp, uint256 _idProduct) public onlyOwner activeCustomer(_phoneHash) {
         emit AcceptanceReceived(_phoneHash, _ref, _acceptanceTimestamp, _idProduct);
         histories.push(History( _ref, _acceptanceTimestamp, 0, HistoryStatus.Active, _idProduct));
-        Customer memory customer = customers[_phoneHash];
+        Customer memory customer = customers[customerList[_phoneHash].idCustomer];
         customer.lastAcceptanceID = (histories.length - 1);
         historyList[_phoneHash].push(histories.length - 1);
         History memory lastAcceptance = histories[customer.lastAcceptanceID];
@@ -213,6 +238,9 @@ contract Billing is Ownable {
         require(histories[index].status == HistoryStatus.Active, "The customer has no product to refund");
 
         emit TopUpReceived(_phoneHash, histories[index].ref);
+        if (customers[customerList[_phoneHash].idCustomer].firstTopUp == 0) {
+            customers[customerList[_phoneHash].idCustomer].firstTopUp = block.timestamp;
+        }
         histories[index].paidTimestamp = _paidTimestamp;
         histories[index].status = HistoryStatus.Closed;
         /*
