@@ -75,6 +75,12 @@ class Customers extends Component {
     }
 
     let customerActivities = await timelapseInstance.methods.getCustomerActivitiesLog(phoneHash,(parseInt(startDate.getTime()/1000)), (parseInt(endDate.getTime()/1000))).call();
+    console.log("Before sort", customerActivities);
+    customerActivities = customerActivities.sort(function(x, y){
+      return x.timestamp - y.timestamp;
+    });
+    console.log("After sort", customerActivities);
+
     for (let i = 0; i < customerActivities.length; i++)
     {
       customerActivities[i].time = new Intl.DateTimeFormat('en-US', {year: 'numeric', month: '2-digit',day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'}).format(new Date((customerActivities[i].timestamp)*1000));
@@ -128,7 +134,7 @@ class Customers extends Component {
               </div>
               <div className="card-body">
                 <div className="form-group row">
-                  <label for="phoneHash" className="col-sm-2 offset-sm-3 col-form-label">Phone Hash:</label>
+                  <label htmlFor="phoneHash" className="col-sm-2 offset-sm-3 col-form-label">Phone Hash:</label>
                   <div className="col-sm-5">
                     <input
                       type="text"

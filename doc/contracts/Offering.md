@@ -58,6 +58,13 @@ Number of proposal in an offer
 
 Return the number of proposal in an offer
 
+### `getOfferSize(address _phoneHash) → uint256` (public)
+
+Get the size of the Offers of a customer
+
+
+Get the size of the Offers of a customer (identified with `_phoneHash`)
+
 ### `getOffersSize() → uint256` (public)
 
 Get the size of all the offers
