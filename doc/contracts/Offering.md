@@ -53,15 +53,24 @@ Return the number of proposals
 
 ### `getSizeProposalOffer(uint256 _idOffer) → uint256` (public)
 
+Number of proposal in an offer
 
 
+Return the number of proposal in an offer
 
+### `getOffersSize() → uint256` (public)
+
+Get the size of all the offers
+
+
+Get the size of all the offers
 
 ### `getIndexProposalOffer(uint256 _idOffer, uint256 _id) → uint256` (public)
 
+Get the ID proposal in offer
 
 
-
+Return the ID proposal in offer
 
 ### `lowBalanceOffering(address _phoneHash, string _ref, uint8 _score)` (public)
 

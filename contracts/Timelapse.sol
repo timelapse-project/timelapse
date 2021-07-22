@@ -40,6 +40,21 @@ contract Timelapse is Ownable {
     }
 
     /**
+     * @dev Reporting information
+     */
+    struct Reporting {
+        uint256 offersCount;
+        uint256 acceptedOffersCount;
+        uint256 totalCapitalLoans;
+        uint256 totalInterestLoans;
+        uint256 closedTopupsCount;
+        uint256 totalCapitalGain;
+        uint256 totalInterestGain;
+        uint256 acceptanceTimestamp;
+        uint256 paidTimestamp;
+    }
+
+    /**
      * @dev Smart Contract constructor
      */
     constructor(address _billingAddress, address _offeringAddress) {
@@ -104,7 +119,6 @@ contract Timelapse is Ownable {
       */
     //function topUp(address _phoneHash, uint _paidTimestamp) public onlyOwner activeCustomer(_phoneHash) {
     function topUp(address _phoneHash, uint _paidTimestamp) public onlyOwner {
-//        (,,,,,uint256 lastAcceptanceID) = billing.getCustomer(_phoneHash);
         (,,,,uint256 idProduct) = billing.histories(billing.getCustomer(_phoneHash).lastAcceptanceID);
         (,,,uint256 idProposal,) = offering.products(idProduct);
         (,uint256 capital,uint256 interest,,,) = offering.proposals(idProposal);
@@ -137,7 +151,6 @@ contract Timelapse is Ownable {
          uint256 customerActivitiesIndex;
 
         for (uint8 i = 0; i < billing.getHistorySize(_phoneHash); i++) {
-            //(,uint256 acceptanceTimestamp, uint256 paidTimestamp,,uint256 idProduct) = billing.histories(_phoneHash, i);
             uint256 historyIndex = billing.historyList(_phoneHash, i);
             (,uint256 acceptanceTimestamp, uint256 paidTimestamp,,uint256 idProduct) = billing.histories(historyIndex);
             (,,uint256 idOffer,,) = offering.products(idProduct);
@@ -154,7 +167,6 @@ contract Timelapse is Ownable {
         }
         CustomerActivity[] memory customerActivities = new CustomerActivity[](customerActivitiesSize);
         for (uint256 i = 0; i < billing.getHistorySize(_phoneHash); i++) {
-            //(,uint256 acceptanceTimestamp, uint256 paidTimestamp,,uint256 idProduct) = billing.histories(_phoneHash, i);
             uint256 historyIndex = billing.historyList(_phoneHash, i);
             (,uint256 acceptanceTimestamp, uint256 paidTimestamp,,uint256 idProduct) = billing.histories(historyIndex);
             (,,uint256 idOffer,uint256 idProposal,) = offering.products(idProduct);
@@ -205,7 +217,7 @@ contract Timelapse is Ownable {
         uint256 invoiceSize;
         uint256 invoiceIndex;
         bool outOfInvoicingWindow;
-        // In POC context, we will only use 1 global invoice. In the next phases, additional invoice could be returned for a given period
+        // In POC context, we will only use 1 global invoice. In the next phases, splitted invoice could be returned for a given period
         invoiceSize = 1;
         Invoice[] memory invoice = new Invoice[](invoiceSize);
 
@@ -224,5 +236,67 @@ contract Timelapse is Ownable {
         }
 
         return invoice;
+    }
+
+    /**
+      * @notice Generate reporting for a given period
+      * @param _startTimestamp Start of the reporting period
+      * @param _endTimestamp End of the reporting period
+      * @return The reporting 
+      * @dev Generate reporting for a given period (between _startTimestamp and _endTimestamp)
+      */
+    function generateReporting(uint256 _startTimestamp, uint256 _endTimestamp) public view returns(Reporting[] memory) {
+        uint256 reportingSize;
+        uint256 reportingIndex;
+        bool outOfReportingWindow1;
+        bool outOfReportingWindow2;
+        bool outOfReportingWindow3;
+        // In POC context, we will only use 1 global reporting. In the next phases, splitted reporting could be returned for a given period
+        reportingSize = 1;
+        Reporting[] memory reporting = new Reporting[](reportingSize);
+
+        for (uint256 i = offering.getOffersSize(); i > 0 && !(outOfReportingWindow1); i--) {
+            (,uint timestamp,,Offering.OfferStatus status,) = offering.offers(i-1);
+            if(timestamp < _startTimestamp){
+                outOfReportingWindow1 = true;
+            }
+            if(timestamp >= _startTimestamp && timestamp <= _endTimestamp){
+                reporting[reportingIndex].offersCount += 1;
+                if(status == Offering.OfferStatus.Accepted){
+                    reporting[reportingIndex].acceptedOffersCount += 1;
+                }
+            }
+        }
+
+        for (uint256 i = billing.getHistoriesSize(); i > 0 && (!(outOfReportingWindow2) || !(outOfReportingWindow3)); i--) {
+            (,uint256 acceptanceTimestamp, uint256 paidTimestamp, Billing.HistoryStatus status, uint256 idProduct) = billing.histories(i-1);
+            
+            reporting[reportingIndex].acceptanceTimestamp = acceptanceTimestamp;
+            reporting[reportingIndex].paidTimestamp = paidTimestamp;
+
+            if(acceptanceTimestamp < _startTimestamp){
+                outOfReportingWindow2 = true;
+            } else {
+                if(acceptanceTimestamp >= _startTimestamp && acceptanceTimestamp <= _endTimestamp && status == Billing.HistoryStatus.Active){
+                    (,,,uint256 idProposal,) = offering.products(idProduct);
+                    (,uint256 capital,uint256 interest,,,) = offering.proposals(idProposal);
+                    reporting[reportingIndex].totalCapitalLoans += capital;
+                    reporting[reportingIndex].totalInterestLoans += interest;
+                }
+            }
+            if(paidTimestamp < _startTimestamp){
+                outOfReportingWindow3 = true;
+            } else {
+                if(paidTimestamp >= _startTimestamp && paidTimestamp <= _endTimestamp && status == Billing.HistoryStatus.Closed){
+                    (,,,uint256 idProposal,) = offering.products(idProduct);
+                    (,uint256 capital,uint256 interest,,,) = offering.proposals(idProposal);
+                    reporting[reportingIndex].closedTopupsCount += 1;
+                    reporting[reportingIndex].totalCapitalGain += capital;
+                    reporting[reportingIndex].totalInterestGain += interest;
+                }
+            }
+        }
+
+        return reporting;
     }
 }

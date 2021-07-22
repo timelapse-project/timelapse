@@ -245,6 +245,14 @@ contract Offering is Ownable {
     }
 
     /**
+      * @notice Get the size of all the offers
+      * @dev Get the size of all the offers
+      */
+    function getOffersSize() public view onlyOwner returns (uint256) {
+        return offers.length;
+    }
+
+    /**
       * @notice Get the ID proposal in offer
       * @param _idOffer The ID of the offer
       * @param _id The ID of the array proposal in an offer
@@ -296,6 +304,7 @@ contract Offering is Ownable {
       * @dev Create a product with the following information: a customer (identified with `_phoneHash`), an offer ID `_idOffer`, a proposal ID `_idProposal` and a timestamp `_acceptanceTimestamp` 
       */
     function createProduct(address _phoneHash, uint _acceptanceTimestamp, uint256 _idOffer, uint256 _idProposal) public onlyOwner existProposal(_idProposal) existOffer(_idOffer) returns(uint256) {
+        offers[_idOffer].status = OfferStatus.Accepted;
         Product memory product = Product(_phoneHash, _acceptanceTimestamp, _idOffer, _idProposal, ProductStatus.Active);
         products.push(product);
         emit ProductCreated(_phoneHash, _acceptanceTimestamp, _idOffer, _idProposal);

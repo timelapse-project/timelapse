@@ -117,7 +117,6 @@ class Invoicing extends Component {
                   <div className="col-sm-2">
                   <DatePicker 
                     selected={endDate}
-                    showTimeSelect
                     onChange={(date) => this.handeEndDateChange(date)}
                     dateFormat="MMMM d, yyyy"
                   />
