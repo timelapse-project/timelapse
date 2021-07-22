@@ -79,19 +79,18 @@ while [ TRUE ];do
         elif [ ${choice} -eq 2 ];then
             for i in {1..21};do
                 generateReference
-                echo " "
                 curl --header "Content-Type: application/json" \
                     --request POST \
                     --data '{"type":4,"phoneHash":"'${phoneHash1}'","ref":"'$(printf "%010d" $reference)'","timestamp":'$(timestamp)',"partner":"XX"}' \
                     ${serverURL}/topUp
-                sleep 0.5
+                sleep 1
                 generateReference
                 echo " "
                 curl --header "Content-Type: application/json" \
                     --request POST \
                     --data '{"type":4,"phoneHash":"'${phoneHash2}'","ref":"'$(printf "%010d" $reference)'","timestamp":'$(timestamp)',"partner":"XX"}' \
                     ${serverURL}/topUp
-                sleep 0.5
+                sleep 1
                 echo " "
             done
             read -p "Press any key to continue"

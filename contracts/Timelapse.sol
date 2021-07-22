@@ -150,14 +150,16 @@ contract Timelapse is Ownable {
          uint256 customerActivitiesSize;
          uint256 customerActivitiesIndex;
 
-        for (uint8 i = 0; i < billing.getHistorySize(_phoneHash); i++) {
-            uint256 historyIndex = billing.historyList(_phoneHash, i);
-            (,uint256 acceptanceTimestamp, uint256 paidTimestamp,,uint256 idProduct) = billing.histories(historyIndex);
-            (,,uint256 idOffer,,) = offering.products(idProduct);
-            (,uint timestamp,,,) = offering.offers(idOffer);
+        for (uint8 i = 0; i < offering.getOfferSize(_phoneHash); i++) {
+            uint256 offeringIndex = offering.offerList(_phoneHash, i);
+            (,uint256 timestamp,,,) = offering.offers(offeringIndex);
             if(timestamp >= _startTimestamp && timestamp <= _endTimestamp) {
                 customerActivitiesSize++;
             }
+        }
+        for (uint8 i = 0; i < billing.getHistorySize(_phoneHash); i++) {
+            uint256 historyIndex = billing.historyList(_phoneHash, i);
+            (,uint256 acceptanceTimestamp, uint256 paidTimestamp,,) = billing.histories(historyIndex);
             if(acceptanceTimestamp >= _startTimestamp && acceptanceTimestamp <= _endTimestamp) {
                 customerActivitiesSize++;
             }
@@ -166,17 +168,14 @@ contract Timelapse is Ownable {
             }
         }
         CustomerActivity[] memory customerActivities = new CustomerActivity[](customerActivitiesSize);
-        for (uint256 i = 0; i < billing.getHistorySize(_phoneHash); i++) {
-            uint256 historyIndex = billing.historyList(_phoneHash, i);
-            (,uint256 acceptanceTimestamp, uint256 paidTimestamp,,uint256 idProduct) = billing.histories(historyIndex);
-            (,,uint256 idOffer,uint256 idProposal,) = offering.products(idProduct);
-            (,,,,string memory descriptionProposal,) = offering.proposals(idProposal);
-            (,uint timestamp,,,) = offering.offers(idOffer);
+        for (uint8 i = 0; i < offering.getOfferSize(_phoneHash); i++) {
+            uint256 offeringIndex = offering.offerList(_phoneHash, i);
+            (,uint256 timestamp,,,) = offering.offers(offeringIndex);
             if(timestamp >= _startTimestamp && timestamp <= _endTimestamp) {
                 customerActivities[customerActivitiesIndex].log = "Offer: ";
-                uint256 numberProposal = offering.getSizeProposalOffer(idOffer);
+                uint256 numberProposal = offering.getSizeProposalOffer(offeringIndex);
                 for (uint256 j = 0; j < numberProposal; j++) {
-                    (,,,,string memory description,) = offering.proposals(offering.getIndexProposalOffer(idOffer, j));
+                    (,,,,string memory description,) = offering.proposals(offering.getIndexProposalOffer(offeringIndex, j));
                     if(j == 0) { 
                         customerActivities[customerActivitiesIndex].log = string(abi.encodePacked(customerActivities[customerActivitiesIndex].log, description));
                     } else {
@@ -188,6 +187,12 @@ contract Timelapse is Ownable {
                 customerActivities[customerActivitiesIndex].status = "Offer";
                 customerActivitiesIndex++;
             }
+        }
+        for (uint256 i = 0; i < billing.getHistorySize(_phoneHash); i++) {
+            uint256 historyIndex = billing.historyList(_phoneHash, i);
+            (,uint256 acceptanceTimestamp, uint256 paidTimestamp,,uint256 idProduct) = billing.histories(historyIndex);
+            (,,,uint256 idProposal,) = offering.products(idProduct);
+            (,,,,string memory descriptionProposal,) = offering.proposals(idProposal);
 
             if(acceptanceTimestamp >= _startTimestamp && acceptanceTimestamp <= _endTimestamp) {
                 customerActivities[customerActivitiesIndex].log = string(abi.encodePacked("Accepted: ", descriptionProposal));

@@ -5,6 +5,7 @@ class Events extends Component {
     web3: null,
     accounts: null,
     timelapseInstance: null,
+    offeringInstance: null,
     eventLog: [],
   };
 
@@ -13,13 +14,18 @@ class Events extends Component {
     const web3 = this.props.web3;
     const accounts = this.props.accounts;
     const timelapseInstance = this.props.timelapseInstance;
+    const offeringInstance = this.props.offeringInstance;
+    const billingInstance = this.props.billingInstance;
 
-    timelapseInstance.events
+    offeringInstance.events
       .allEvents()
       .on("data", (event) => this.doWhenEvent(event))
       .on("error", console.error);
-
-    this.setState({ web3, accounts, timelapseInstance }, this.runInit);
+    billingInstance.events
+      .allEvents()
+      .on("data", (event) => this.doWhenEvent(event))
+      .on("error", console.error);
+    this.setState({ web3, accounts, timelapseInstance, offeringInstance, billingInstance}, this.runInit);
   };
 
   runInit = async () => {
@@ -49,76 +55,24 @@ class Events extends Component {
     this.setState({ eventLog: eventLog });
   }
 
+  formatJSONLog(JSONLog){
+    for(let i=0;i<10;i++){
+      delete JSONLog[i];
+    }
+   return  JSON.stringify(JSONLog, null, 4);
+  }
+
   doWhenEvent = async (data) => {
+    console.log("==> doWhenEvent");
     switch (data.event) {
       case "LowBalanceReceived":
-        this.addEventLog(
-          "Event LowBalanceReceived [" +
-            data.returnValues.phoneHash +
-            "][" +
-            data.returnValues.ref +
-            "]"
-        );
-        break;
       case "OfferSent":
-        this.addEventLog(
-          "Event OfferSent [" +
-            data.returnValues.offerId +
-            "][" +
-            data.returnValues.phoneHash +
-            "][" +
-            data.returnValues.timestamp +
-            "][" +
-            data.returnValues.reason +
-            "][" +
-            data.returnValues.proposals +
-            "]"
-        );
-        break;
       case "AcceptanceReceived":
-        this.addEventLog(
-          "Event AcceptanceReceived [" +
-            data.returnValues.phoneHash +
-            "][" +
-            data.returnValues.offerId +
-            "][" +
-            data.returnValues.proposalId +
-            "]"
-        );
-        break;
       case "ConfirmationSent":
-        this.addEventLog(
-          "Event ConfirmationSent [" +
-            data.returnValues.productId +
-            "][" +
-            data.returnValues.offerId +
-            "][" +
-            data.returnValues.phoneHash +
-            "][" +
-            data.returnValues.timestamp +
-            "]"
-        );
-        break;
       case "TopUpReceived":
-        this.addEventLog(
-          "Event TopUpReceived [" +
-            data.returnValues.phoneHash +
-            "][" +
-            data.returnValues.productId +
-            "][" +
-            data.returnValues.amount +
-            "]"
-        );
-        break;
       case "AcknowledgeSent":
         this.addEventLog(
-          "Event AcknowledgeSent [" +
-            data.returnValues.phoneHash +
-            "][" +
-            data.returnValues.productId +
-            "][" +
-            data.returnValues.amount +
-            "]"
+          "### " + data.event + " ###\n" + this.formatJSONLog(data.returnValues)
         );
         break;
       default:
@@ -146,11 +100,11 @@ class Events extends Component {
         <br></br>
         <div className="row">
           <div className="col-sm-12">
-            <div className="card text-center">
-              <div className="card-header">
+            <div className="card">
+              <div className="card-header text-center">
                 <strong>Real Time Event Logs</strong>
               </div>
-              <div className="card-body">
+              <div className="card-body text-left">
                 <pre>
                   <code>
                     {eventLog.map((item) => (
@@ -174,7 +128,7 @@ class Events extends Component {
   render() {
     return (
       <div className="container">
-        <div className="col-12 text-center">{this.renderEventLogs()}</div>
+        <div className="col-12">{this.renderEventLogs()}</div>
       </div>
     );
   }

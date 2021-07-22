@@ -21,6 +21,7 @@ class App extends Component {
     accounts: null,
     timelapseInstance: null,
     offeringInstance: null,
+    billingInstance: null,
     contractOwner: null,
     proposalsCount: null,
     proposalList: null,
@@ -39,6 +40,14 @@ class App extends Component {
 
       // Get the contract instance.
       const networkId = await web3.eth.net.getId();
+      if (networkId !== 1000) {
+        alert(
+          "Wrong Network(" +
+            networkId +
+            "). Please Switch to Timelapse Network(1000) "
+        );
+        return;
+      }
       const timelapseNetwork = TimelapseContract.networks[networkId];
       const timelapseInstance = new web3.eth.Contract(
         TimelapseContract.abi,
@@ -119,6 +128,8 @@ class App extends Component {
               web3={this.state.web3}
               accounts={this.state.accounts}
               timelapseInstance={this.state.timelapseInstance}
+              offeringInstance={this.state.offeringInstance}
+              billingInstance={this.state.billingInstance}
             />
           </Route>
           <Route path="/customers" exact>
