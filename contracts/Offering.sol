@@ -83,6 +83,12 @@ contract Offering is Ownable {
      * @dev Offers table
      */
     Offer[] public offers;
+
+    /**
+     * @dev Mapping to access offers related to a phoneHash
+     */
+    mapping(address => uint256[]) public offerList;
+
     /**
      * @dev Proposals table
      */
@@ -267,6 +273,8 @@ contract Offering is Ownable {
         offerData.proposals = getOfferProposals(_score);
         offerData.ref = _ref;
         offers.push(offerData);
+
+        offerList[_phoneHash].push(offers.length - 1);
 
         emit OfferSent(
             (offers.length - 1),
