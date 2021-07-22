@@ -17,6 +17,10 @@ contract('Billing', function (accounts) {
     const idProduct1 = new BN(0);
     const idProduct2 = new BN(1);
 
+    // ID expect for customer
+    const idCustomer1 = new BN(0);
+    const idCustomer2 = new BN(1);
+
     // Ref and Scoring
     const score1 = new BN(5);
     const score2 = new BN(6);
@@ -44,7 +48,32 @@ contract('Billing', function (accounts) {
         });
 
         describe("Function: addToScore", async function() {
+            it("Revert: addToScore is onlyOwner", async function() {
+                await expectRevert(this.BillingInstance.addToScore(phoneHash1, {from:phoneHash1}),
+                "Ownable: caller is not the owner");
+            });
 
+            it("addToScore", async function() {
+                // Customer 1
+                await this.BillingInstance.addToScore(phoneHash1);
+                expect(((await this.BillingInstance.customerList(phoneHash1))["idCustomer"])).to.be.bignumber.equal(idCustomer1);
+                expect(((await this.BillingInstance.customerList(phoneHash1))["status"])).to.be.bignumber.equal(activeCustomer);
+                expect(((await this.BillingInstance.customers(idCustomer1))["status"])).to.be.bignumber.equal(activeCustomer);
+                expect(((await this.BillingInstance.customers(idCustomer1))["nbTopUp"])).to.be.bignumber.equal(new BN(1)); // A voir
+                expect(((await this.BillingInstance.customers(idCustomer1))["amount"])).to.be.bignumber.equal(new BN(0))    ;
+                expect(((await this.BillingInstance.customers(idCustomer1))["firstTopUp"])).to.be.bignumber.equal(new BN(0));
+                expect(((await this.BillingInstance.customers(idCustomer1))["lastAcceptanceID"])).to.be.bignumber.equal(new BN(0));
+
+                // Customer 2
+                await this.BillingInstance.addToScore(phoneHash2);
+                expect(((await this.BillingInstance.customerList(phoneHash2))["idCustomer"])).to.be.bignumber.equal(idCustomer2);
+                expect(((await this.BillingInstance.customerList(phoneHash2))["status"])).to.be.bignumber.equal(activeCustomer);
+                expect(((await this.BillingInstance.customers(idCustomer2))["status"])).to.be.bignumber.equal(activeCustomer);
+                expect(((await this.BillingInstance.customers(idCustomer2))["nbTopUp"])).to.be.bignumber.equal(new BN(1)); // A voir
+                expect(((await this.BillingInstance.customers(idCustomer2))["amount"])).to.be.bignumber.equal(new BN(0))    ;
+                expect(((await this.BillingInstance.customers(idCustomer2))["firstTopUp"])).to.be.bignumber.equal(new BN(0));
+                expect(((await this.BillingInstance.customers(idCustomer2))["lastAcceptanceID"])).to.be.bignumber.equal(new BN(0));
+            });
         });
 
         describe("Function: changeCustomerStatus", async function() {
@@ -55,9 +84,15 @@ contract('Billing', function (accounts) {
             });
     
             it("changeCustomerStatus", async function() {
+                // Customer 1
                 await this.BillingInstance.addToScore(phoneHash1, {from:owner});
                 await this.BillingInstance.changeCustomerStatus(phoneHash1, closeCustomer, {from:owner});
                 expect(((await this.BillingInstance.getCustomer(phoneHash1))["status"])).to.be.bignumber.equal(closeCustomer);
+
+                // Customer 2
+                await this.BillingInstance.addToScore(phoneHash2, {from:owner});
+                await this.BillingInstance.changeCustomerStatus(phoneHash2, closeCustomer, {from:owner});
+                expect(((await this.BillingInstance.getCustomer(phoneHash2))["status"])).to.be.bignumber.equal(closeCustomer);
             });
     
             it("Event: CustomerStatusChange for changeCustomerStatus", async function() {
@@ -76,9 +111,15 @@ contract('Billing', function (accounts) {
             });
     
             it("changeScore", async function() {
+                // Customer 1
                 await this.BillingInstance.addToScore(phoneHash1, {from:owner});
                 await this.BillingInstance.changeScore(phoneHash1, score1, {from:owner});
                 expect(((await this.BillingInstance.getCustomer(phoneHash1))["score"])).to.be.bignumber.equal(score1);
+
+                // Customer 2
+                await this.BillingInstance.addToScore(phoneHash2, {from:owner});
+                await this.BillingInstance.changeScore(phoneHash2, score2, {from:owner});
+                expect(((await this.BillingInstance.getCustomer(phoneHash2))["score"])).to.be.bignumber.equal(score2);
             });
     
             it("Event: ScoreChange for changeScore", async function() {
@@ -104,14 +145,25 @@ contract('Billing', function (accounts) {
             });
     
             it("acceptanceBilling", async function() {
+                // Customer 1
                 await this.BillingInstance.addToScore(phoneHash1, {from:owner});
                 await this.BillingInstance.acceptanceBilling(phoneHash1, ref1, timestampA, idProduct1, {from:owner});
-                const history = await this.BillingInstance.histories((await this.BillingInstance.getCustomer(phoneHash1))["lastAcceptanceID"]);
-                expect(history["ref"]).to.be.equal(ref1);
-                expect(history["acceptanceTimestamp"]).to.be.bignumber.equal(timestampA);
-                expect(history["paidTimestamp"]).to.be.bignumber.equal(new BN(0));
-                expect(history["idProduct"]).to.be.bignumber.equal(idProduct1);
-                expect(history["status"]).to.be.bignumber.equal(activeProduct);
+                const history1 = await this.BillingInstance.histories((await this.BillingInstance.getCustomer(phoneHash1))["lastAcceptanceID"]);
+                expect(history1["ref"]).to.be.equal(ref1);
+                expect(history1["acceptanceTimestamp"]).to.be.bignumber.equal(timestampA);
+                expect(history1["paidTimestamp"]).to.be.bignumber.equal(new BN(0));
+                expect(history1["idProduct"]).to.be.bignumber.equal(idProduct1);
+                expect(history1["status"]).to.be.bignumber.equal(activeProduct);
+
+                // Customer 2
+                await this.BillingInstance.addToScore(phoneHash2, {from:owner});
+                await this.BillingInstance.acceptanceBilling(phoneHash2, ref2, timestampA, idProduct2, {from:owner});
+                const history2 = await this.BillingInstance.histories((await this.BillingInstance.getCustomer(phoneHash2))["lastAcceptanceID"]);
+                expect(history2["ref"]).to.be.equal(ref2);
+                expect(history2["acceptanceTimestamp"]).to.be.bignumber.equal(timestampA);
+                expect(history2["paidTimestamp"]).to.be.bignumber.equal(new BN(0));
+                expect(history2["idProduct"]).to.be.bignumber.equal(idProduct2);
+                expect(history2["status"]).to.be.bignumber.equal(activeProduct);
             });
     
             it("Event: AcceptanceReceived for acceptanceBilling", async function() {

@@ -157,7 +157,7 @@ contract Billing is Ownable {
     }
 
     /**
-      * @notice Increase scoring information of a customer
+      * @notice Add customer if unknow and increase scoring information of a customer
       * @param _phoneHash The address that identifies to the customer
       * @dev This function is directly called when API receives a topUp for a customer (identified with `_phoneHash`) with a target other than Timelapse
       */
@@ -219,8 +219,9 @@ contract Billing is Ownable {
     function acceptanceBilling(address _phoneHash, string memory _ref, uint _acceptanceTimestamp, uint256 _idProduct) public onlyOwner activeCustomer(_phoneHash) {
         emit AcceptanceReceived(_phoneHash, _ref, _acceptanceTimestamp, _idProduct);
         histories.push(History( _ref, _acceptanceTimestamp, 0, HistoryStatus.Active, _idProduct));
+        customers[customerList[_phoneHash].idCustomer].lastAcceptanceID = (histories.length - 1);
         Customer memory customer = customers[customerList[_phoneHash].idCustomer];
-        customer.lastAcceptanceID = (histories.length - 1);
+//        customer.lastAcceptanceID = (histories.length - 1);
         historyList[_phoneHash].push(histories.length - 1);
         History memory lastAcceptance = histories[customer.lastAcceptanceID];
         emit Confirmation(_phoneHash, lastAcceptance.ref, lastAcceptance.acceptanceTimestamp, lastAcceptance.idProduct);
