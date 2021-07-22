@@ -33,14 +33,19 @@ while [ TRUE ];do
     echo "Select your option: "
     echo "0 : Exit simulator"
     echo "1 : Initialize Smart contract"
+    echo "2 : Generate history"
     echo ""
-    echo "Scenario A"
-    echo "10: External TopUps (21)"
-    echo "11: Send lowBalance"
-    echo "12: Send acceptance"
-    echo "13: Send topUp"
+    echo "Scenario A (" ${phoneHash1} ")"
+    echo "10: Send lowBalance"
+    echo "11: Send acceptance"
+    echo "12: Send topUp"
     echo ""
-    echo "Scenario B"
+    echo "Scenario B (" ${phoneHash2} ")"
+    echo "20: Send lowBalance"
+    echo "21: Send acceptance"
+    echo "22: Send topUp"
+    echo ""
+    echo "Scenario C"
     echo "110: Send lowBalance (" ${phoneHash2} ")"
     echo "120: Send lowBalance (" ${phoneHash3} ")"
     echo "200: Send acceptance (" ${phoneHash1} ")"
@@ -58,20 +63,20 @@ while [ TRUE ];do
                 --request POST \
                 --data '{"minScoring":49,"capital":200,"interest":50,"description":"2 $ + 0.5 $"}' \
                 ${serverURL}/addProposal
-           sleep 1
+           sleep 0.5
            curl --header "Content-Type: application/json" \
                 --request POST \
                 --data '{"minScoring":118,"capital":400,"interest":100,"description":"4 $ + 1 $"}' \
                 ${serverURL}/addProposal
-           sleep 1
+           sleep 0.5
            curl --header "Content-Type: application/json" \
                 --request POST \
                 --data '{"minScoring":185,"capital":600,"interest":150,"description":"6 $ + 1.5 $"}' \
                 ${serverURL}/addProposal
-           sleep 1
+           sleep 0.5
            echo " "
            read -p "Press any key to continue"
-        elif [ ${choice} -eq 10 ];then
+        elif [ ${choice} -eq 2 ];then
             for i in {1..21};do
                 generateReference
                 echo " "
@@ -79,11 +84,18 @@ while [ TRUE ];do
                     --request POST \
                     --data '{"type":4,"phoneHash":"'${phoneHash1}'","ref":"'$(printf "%010d" $reference)'","timestamp":'$(timestamp)',"partner":"XX"}' \
                     ${serverURL}/topUp
-                sleep 1
+                sleep 0.5
+                generateReference
+                echo " "
+                curl --header "Content-Type: application/json" \
+                    --request POST \
+                    --data '{"type":4,"phoneHash":"'${phoneHash2}'","ref":"'$(printf "%010d" $reference)'","timestamp":'$(timestamp)',"partner":"XX"}' \
+                    ${serverURL}/topUp
+                sleep 0.5
                 echo " "
             done
             read -p "Press any key to continue"
-        elif [ ${choice} -eq 11 ];then
+        elif [ ${choice} -eq 10 ];then
             generateReference
             curl --header "Content-Type: application/json" \
                 --request POST \
@@ -91,7 +103,7 @@ while [ TRUE ];do
                 ${serverURL}/lowBalance
             echo " "
             read -p "Press any key to continue"
-        elif [ ${choice} -eq 12 ];then
+        elif [ ${choice} -eq 11 ];then
             generateReference
             echo " "
             read -p "Enter offerId: " offerId 
@@ -102,12 +114,40 @@ while [ TRUE ];do
                 ${serverURL}/acceptance
             echo " "
             read -p "Press any key to continue"
-        elif [ ${choice} -eq 13 ];then 
+        elif [ ${choice} -eq 12 ];then 
             generateReference
             echo " "
             curl --header "Content-Type: application/json" \
                 --request POST \
                 --data '{"type":4,"phoneHash":"'${phoneHash1}'","ref":"'$(printf "%010d" $reference)'","timestamp":'$(timestamp)',"partner":"'${partnerCode}'"}' \
+                ${serverURL}/topUp
+            echo " "
+            read -p "Press any key to continue"
+        elif [ ${choice} -eq 20 ];then
+            generateReference
+            curl --header "Content-Type: application/json" \
+                --request POST \
+                --data '{"type":0,"phoneHash":"'${phoneHash2}'","ref":"'$(printf "%010d" $reference)'"}' \
+                ${serverURL}/lowBalance
+            echo " "
+            read -p "Press any key to continue"
+        elif [ ${choice} -eq 21 ];then
+            generateReference
+            echo " "
+            read -p "Enter offerId: " offerId 
+            read -p "Enter proposalId: " proposalId
+            curl --header "Content-Type: application/json" \
+                --request POST \
+                --data '{"type":2,"phoneHash":"'${phoneHash2}'","offerId":'${offerId}',"proposalId":'${proposalId}',"ref":"'$(printf "%010d" $reference)'","timestamp":'$(timestamp)'}' \
+                ${serverURL}/acceptance
+            echo " "
+            read -p "Press any key to continue"
+        elif [ ${choice} -eq 22 ];then 
+            generateReference
+            echo " "
+            curl --header "Content-Type: application/json" \
+                --request POST \
+                --data '{"type":4,"phoneHash":"'${phoneHash2}'","ref":"'$(printf "%010d" $reference)'","timestamp":'$(timestamp)',"partner":"'${partnerCode}'"}' \
                 ${serverURL}/topUp
             echo " "
             read -p "Press any key to continue"

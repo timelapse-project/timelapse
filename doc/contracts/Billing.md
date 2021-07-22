@@ -18,6 +18,13 @@ Check that the customer is still active
 
 Smart Contract constructor
 
+### `getCustomer(address _phoneHash) → struct Billing.Customer` (public)
+
+Get a Customer with phoneHash
+
+
+This function get the customer (identified with `_phoneHash`)
+
 ### `isActiveCustomer(address _phoneHash) → bool` (public)
 
 Inform if the customer is active

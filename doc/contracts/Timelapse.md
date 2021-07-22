@@ -68,4 +68,11 @@ Generate invoicing for a given period
 
 Generate invoicing for a given period (between _startTimestamp and _endTimestamp)
 
+### `generateReporting(uint256 _startTimestamp, uint256 _endTimestamp) → struct Timelapse.Reporting[]` (public)
+
+Generate reporting for a given period
+
+
+Generate reporting for a given period (between _startTimestamp and _endTimestamp)
+
 
