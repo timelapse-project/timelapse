@@ -235,7 +235,7 @@ contract Billing is Ownable {
       */
     function topUpBilling(address _phoneHash, uint _paidTimestamp) public onlyOwner {
         require(historyList[_phoneHash].length > 0, "Phone is not registered");
-        uint index = (historyList[_phoneHash].length - 1);
+        uint index = historyList[_phoneHash][(historyList[_phoneHash].length - 1)];
         require(histories[index].status == HistoryStatus.Active, "The customer has no product to refund");
 
         emit TopUpReceived(_phoneHash, histories[index].ref);

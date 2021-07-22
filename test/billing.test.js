@@ -203,15 +203,27 @@ contract('Billing', function (accounts) {
             });
 
             it("topUpBilling", async function() {
+                // Customer 1
                 await this.BillingInstance.addToScore(phoneHash1, {from:owner});
                 await this.BillingInstance.acceptanceBilling(phoneHash1, ref1, timestampA, idProduct1, {from:owner});
                 await this.BillingInstance.topUpBilling(phoneHash1, timestampP, {from:owner});
-                const history = await this.BillingInstance.histories((await this.BillingInstance.getCustomer(phoneHash1))["lastAcceptanceID"]);
-                expect(history["ref"]).to.be.equal(ref1);
-                expect(history["acceptanceTimestamp"]).to.be.bignumber.equal(timestampA);
-                expect(history["paidTimestamp"]).to.be.bignumber.equal(timestampP);
-                expect(history["idProduct"]).to.be.bignumber.equal(idProduct1);
-                expect(history["status"]).to.be.bignumber.equal(closeProduct);
+                const history1 = await this.BillingInstance.histories((await this.BillingInstance.getCustomer(phoneHash1))["lastAcceptanceID"]);
+                expect(history1["ref"]).to.be.equal(ref1);
+                expect(history1["acceptanceTimestamp"]).to.be.bignumber.equal(timestampA);
+                expect(history1["paidTimestamp"]).to.be.bignumber.equal(timestampP);
+                expect(history1["idProduct"]).to.be.bignumber.equal(idProduct1);
+                expect(history1["status"]).to.be.bignumber.equal(closeProduct);
+
+                // Customer 2
+                await this.BillingInstance.addToScore(phoneHash2, {from:owner});
+                await this.BillingInstance.acceptanceBilling(phoneHash2, ref2, timestampA, idProduct2, {from:owner});
+                await this.BillingInstance.topUpBilling(phoneHash2, timestampP, {from:owner});
+                const history2 = await this.BillingInstance.histories((await this.BillingInstance.getCustomer(phoneHash2))["lastAcceptanceID"]);
+                expect(history2["ref"]).to.be.equal(ref2);
+                expect(history2["acceptanceTimestamp"]).to.be.bignumber.equal(timestampA);
+                expect(history2["paidTimestamp"]).to.be.bignumber.equal(timestampP);
+                expect(history2["idProduct"]).to.be.bignumber.equal(idProduct2);
+                expect(history2["status"]).to.be.bignumber.equal(closeProduct);
             });
 
             it("Event: TopUpReceived for topUpBilling", async function() {
