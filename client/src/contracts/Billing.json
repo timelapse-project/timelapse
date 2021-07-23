@@ -33833,12 +33833,12 @@
         }
       },
       "links": {},
-      "address": "0xff547E14A1338aB30a502338C5E6Ea7b46BaA8a4",
-      "transactionHash": "0x626cfdf781645c325d713af98f9892910154cd5fe710060c9b982842695bcd6c"
+      "address": "0x6f1145b1f8a5c9E10e2c19cDF71efD232d1aD83B",
+      "transactionHash": "0xc7cbb365c9ebdebd60bdb3ae5d29b0f5a12476e9cfd012d182541b2b24c8cb0a"
     }
   },
   "schemaVersion": "3.4.1",
-  "updatedAt": "2021-07-23T11:43:43.517Z",
+  "updatedAt": "2021-07-23T13:23:34.754Z",
   "networkType": "ethereum",
   "devdoc": {
     "author": "Keeymon, DavidRochus",

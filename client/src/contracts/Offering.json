@@ -30577,12 +30577,12 @@
         }
       },
       "links": {},
-      "address": "0x1a492b2136bd9E61f8B1e08095f1C28C71574F0b",
-      "transactionHash": "0x7a2bb7c405e0661f42ee9f969556d7fe5848d3707b87f03a20f7b855277710cb"
+      "address": "0x6702cfdb868657F846fEEF8B035aA2Cc7a52dfB0",
+      "transactionHash": "0xb028d3cb6f046c29f148540a0d01693de75c15570ce0223bc6291b9f1effb180"
     }
   },
   "schemaVersion": "3.4.1",
-  "updatedAt": "2021-07-23T11:43:43.540Z",
+  "updatedAt": "2021-07-23T13:23:34.779Z",
   "networkType": "ethereum",
   "devdoc": {
     "author": "Keeymon, DavidRochus",
