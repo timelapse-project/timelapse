@@ -40,7 +40,7 @@ class App extends Component {
 
       // Get the contract instance.
       const networkId = await web3.eth.net.getId();
-      if (networkId !== 1000) {
+      if (networkId !== 1000 && networkId !== 1337) {
         alert(
           "Wrong Network(" +
             networkId +

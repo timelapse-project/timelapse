@@ -48,7 +48,7 @@ This function is directly called when API receives a topUp for a customer (ident
 
 ### `addToScore(address _phoneHash)` (public)
 
-Increase scoring information of a customer
+Add customer if unknow and increase scoring information of a customer
 
 
 This function is directly called when API receives a topUp for a customer (identified with `_phoneHash`) with a target other than Timelapse
