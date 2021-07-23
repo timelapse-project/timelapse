@@ -171,6 +171,20 @@ The smart-contracts documentation is available in the folder [doc/contracts](doc
 _[Timelapse][timelapse-url]_ is released under the terms of the MIT license.  
 See COPYING for more information or https://opensource.org/licenses/MIT .
 
+# Sources
+Here are a few links to resources that we used while building bet-no-loss.
+- Solidity
+    - https://docs.soliditylang.org/en/v0.8.6
+    - [@openzeppelin/contracts](https://docs.openzeppelin.com/contracts)
+    - [Solidity Patterns](https://fravoll.github.io/solidity-patterns/)
+- Security
+    - [Security Hacks](https://solidity-by-example.org/)
+- Private BlockcChain
+    - [Geth](https://geth.ethereum.org/docs/)
+- Test
+    - [@openzeppelin/test-helpers](https://docs.openzeppelin.com/test-helpers/)
+    - [Chai](https://www.chaijs.com/) TDD assertion library
+
 <!-- Github Badges: Images and URLs -->
 
 [timelapse-url]: https://github.com/timelapse-project/timelapse
