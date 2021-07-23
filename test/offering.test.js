@@ -16,16 +16,33 @@ contract("Offering", function (accounts) {
   // Ref
   const ref1 = "EXTERNAL_REFERENCE 1";
   const ref2 = "EXTERNAL_REFERENCE 2";
+  const ref3 = "EXTERNAL_REFERENCE 3";
 
   // Proposal Creation
+  const idProposal1 = new BN(0);
+  const idProposal2 = new BN(1);
+  const idProposal3 = new BN(2);
   const minScore1 = new BN(1);
   const minScore2 = new BN(2);
+  const minScore3 = new BN(3);
   const capital1 = new BN(500);
   const capital2 = new BN(1000);
+  const capital3 = new BN(30000);
   const interest1 = new BN(50);
   const interest2 = new BN(100);
+  const interest3 = new BN(1500);
   const description1 = "Description 1";
   const description2 = "Description 2";
+  const description3 = "Description 3";
+
+  // Offer Creation
+  const idOffer1 = new BN(0);
+  const idOffer2 = new BN(1);
+  const idOffer3 = new BN(2);
+
+  // Product Creation
+  const idProduct1 = new BN(0);
+  const idProduct2 = new BN(1);
 
   // Proposal Status
   const activeProposal = new BN(0);
@@ -51,13 +68,32 @@ contract("Offering", function (accounts) {
       });
 
       it("addProposal", async function () {
+        // Proposal 1
         await this.OfferingInstance.addProposal(minScore1, capital1, interest1, description1, {from: owner});
-        let proposals = await this.OfferingInstance.proposals(0);
-        expect(proposals["minScoring"]).to.be.bignumber.equal(minScore1);
-        expect(proposals["capital"]).to.be.bignumber.equal(capital1);
-        expect(proposals["interest"]).to.be.bignumber.equal(interest1);
-        expect(proposals["description"]).to.be.equal(description1);
-        expect(proposals["status"]).to.be.bignumber.equal(activeProposal);
+        const proposal1 = await this.OfferingInstance.proposals(idProposal1);
+        expect(proposal1["minScoring"]).to.be.bignumber.equal(minScore1);
+        expect(proposal1["capital"]).to.be.bignumber.equal(capital1);
+        expect(proposal1["interest"]).to.be.bignumber.equal(interest1);
+        expect(proposal1["description"]).to.be.equal(description1);
+        expect(proposal1["status"]).to.be.bignumber.equal(activeProposal);
+
+        // Proposal 2
+        await this.OfferingInstance.addProposal(minScore2, capital2, interest2, description2, {from: owner});
+        const proposal2 = await this.OfferingInstance.proposals(idProposal2);
+        expect(proposal2["minScoring"]).to.be.bignumber.equal(minScore2);
+        expect(proposal2["capital"]).to.be.bignumber.equal(capital2);
+        expect(proposal2["interest"]).to.be.bignumber.equal(interest2);
+        expect(proposal2["description"]).to.be.equal(description2);
+        expect(proposal2["status"]).to.be.bignumber.equal(activeProposal);
+
+        // Proposal 3
+        await this.OfferingInstance.addProposal(minScore3, capital3, interest3, description3, {from: owner});
+        const proposal3 = await this.OfferingInstance.proposals(idProposal3);
+        expect(proposal3["minScoring"]).to.be.bignumber.equal(minScore3);
+        expect(proposal3["capital"]).to.be.bignumber.equal(capital3);
+        expect(proposal3["interest"]).to.be.bignumber.equal(interest3);
+        expect(proposal3["description"]).to.be.equal(description3);
+        expect(proposal3["status"]).to.be.bignumber.equal(activeProposal);
       });
 
       it("Event: ProposalAdded", async function () {
@@ -80,10 +116,23 @@ contract("Offering", function (accounts) {
       });
 
       it("closedProposal", async function () {
+        // Proposal 1
         await this.OfferingInstance.addProposal(minScore1, capital1, interest1, description1, {from: owner});
-        await this.OfferingInstance.closedProposal(0, {from: owner});
-        let proposal = await this.OfferingInstance.proposals(0);
-        expect(proposal["status"]).to.be.bignumber.equal(closedProposal);
+        await this.OfferingInstance.closedProposal(idProposal1, {from: owner});
+        const proposal1 = await this.OfferingInstance.proposals(idProposal1);
+        expect(proposal1["status"]).to.be.bignumber.equal(closedProposal);
+
+        // Proposal 2
+        await this.OfferingInstance.addProposal(minScore2, capital2, interest2, description2, {from: owner});
+        await this.OfferingInstance.closedProposal(idProposal2, {from: owner});
+        const proposal2 = await this.OfferingInstance.proposals(idProposal2);
+        expect(proposal2["status"]).to.be.bignumber.equal(closedProposal);
+
+        // Proposal 1
+        await this.OfferingInstance.addProposal(minScore3, capital3, interest3, description3, {from: owner});
+        await this.OfferingInstance.closedProposal(idProposal3, {from: owner});
+        const proposal3 = await this.OfferingInstance.proposals(idProposal3);
+        expect(proposal3["status"]).to.be.bignumber.equal(closedProposal);
       });
 
       it("Event: ClosedProposal for closedProposal", async function() {
@@ -95,7 +144,14 @@ contract("Offering", function (accounts) {
     });
 
     describe("Function: proposalsCount", async function() {
-
+      it("proposalsCount", async function() {
+        await this.OfferingInstance.addProposal(minScore1, capital1, interest1, description1, {from: owner});
+        expect(await this.OfferingInstance.proposalsCount()).to.be.bignumber.equal(new BN(1));
+        await this.OfferingInstance.addProposal(minScore2, capital2, interest2, description2, {from: owner});
+        expect(await this.OfferingInstance.proposalsCount()).to.be.bignumber.equal(new BN(2));
+        await this.OfferingInstance.addProposal(minScore3, capital3, interest3, description3, {from: owner});
+        expect(await this.OfferingInstance.proposalsCount()).to.be.bignumber.equal(new BN(3));
+      });
     });
 
     describe("Function: getSizeProposalOffer", async function() {
@@ -113,11 +169,31 @@ contract("Offering", function (accounts) {
       });
 
       it("lowBalanceOffering", async function() {
+        // Add Proposal
+        await this.OfferingInstance.addProposal(minScore1, capital1, interest1, description1, {from: owner});
+        await this.OfferingInstance.addProposal(minScore2, capital2, interest2, description2, {from: owner});
+        await this.OfferingInstance.addProposal(minScore3, capital3, interest3, description3, {from: owner});
+
+        // Customer 1
         await this.OfferingInstance.lowBalanceOffering(phoneHash1, ref1, minScore1, {from:owner});
-        const offer = await this.OfferingInstance.offers(0);
-        expect(offer["phoneHash"]).to.be.equal(phoneHash1);
-        expect(offer["ref"]).to.be.equal(ref1);
-        expect(offer["status"]).to.be.bignumber.equal(newOffer);
+        const offer1 = await this.OfferingInstance.offers(idOffer1);
+        expect(offer1["phoneHash"]).to.be.equal(phoneHash1);
+        expect(offer1["ref"]).to.be.equal(ref1);
+        expect(offer1["status"]).to.be.bignumber.equal(newOffer);
+
+        // Customer 2
+        await this.OfferingInstance.lowBalanceOffering(phoneHash2, ref2, minScore2, {from:owner});
+        const offer2 = await this.OfferingInstance.offers(idOffer2);
+        expect(offer2["phoneHash"]).to.be.equal(phoneHash2);
+        expect(offer2["ref"]).to.be.equal(ref2);
+        expect(offer2["status"]).to.be.bignumber.equal(newOffer);
+
+        // Customer 3
+        await this.OfferingInstance.lowBalanceOffering(phoneHash2, ref3, minScore3, {from:owner});
+        const offer3 = await this.OfferingInstance.offers(idOffer3);
+        expect(offer3["phoneHash"]).to.be.equal(phoneHash2);
+        expect(offer3["ref"]).to.be.equal(ref3);
+        expect(offer3["status"]).to.be.bignumber.equal(newOffer);
       });
 
       it("Event: LowBalanceReceived for lowBalanceOffering", async function () {
@@ -156,15 +232,30 @@ contract("Offering", function (accounts) {
       });
 
       it("createProduct", async function() {
+        // Add Proposal
         await this.OfferingInstance.addProposal(minScore1, capital1, interest1, description1, {from: owner});
+        await this.OfferingInstance.addProposal(minScore2, capital2, interest2, description2, {from: owner});
+        await this.OfferingInstance.addProposal(minScore3, capital3, interest3, description3, {from: owner});
+
+        // Product 1
         await this.OfferingInstance.lowBalanceOffering(phoneHash1, ref1, minScore1, {from:owner});
-        await this.OfferingInstance.createProduct(phoneHash1, timestampA, 0, 0);
-        const product = await this.OfferingInstance.products(0);
-        expect(product["phoneHash"]).to.be.equal(phoneHash1);
-        expect(product["timestamp"]).to.be.bignumber.equal(timestampA);
-        expect(product["idOffer"]).to.be.bignumber.equal(new BN(0));
-        expect(product["idProposal"]).to.be.bignumber.equal(new BN(0));
-        expect(product["status"]).to.be.bignumber.equal(activeProduct);
+        await this.OfferingInstance.createProduct(phoneHash1, timestampA, idOffer1, idProposal1);
+        const product1 = await this.OfferingInstance.products(idProduct1);
+        expect(product1["phoneHash"]).to.be.equal(phoneHash1);
+        expect(product1["timestamp"]).to.be.bignumber.equal(timestampA);
+        expect(product1["idOffer"]).to.be.bignumber.equal(idOffer1);
+        expect(product1["idProposal"]).to.be.bignumber.equal(idProposal1);
+        expect(product1["status"]).to.be.bignumber.equal(activeProduct);
+
+        // Product 2
+        await this.OfferingInstance.lowBalanceOffering(phoneHash2, ref2, minScore2, {from:owner});
+        await this.OfferingInstance.createProduct(phoneHash2, timestampA, idOffer2, idProposal2);
+        const product2 = await this.OfferingInstance.products(idProduct2);
+        expect(product2["phoneHash"]).to.be.equal(phoneHash2);
+        expect(product2["timestamp"]).to.be.bignumber.equal(timestampA);
+        expect(product2["idOffer"]).to.be.bignumber.equal(idOffer2);
+        expect(product2["idProposal"]).to.be.bignumber.equal(idProposal2);
+        expect(product2["status"]).to.be.bignumber.equal(activeProduct);
       });
 
       it("Event: ProductCreated for createProduct", async function() {
