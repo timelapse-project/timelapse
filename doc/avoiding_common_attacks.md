@@ -29,4 +29,4 @@ We do not store any sensitive data of the customer in order to be GDPR compliant
 
 We do not use directly `tx.origin` in our contracts but only `msg.sender`(via Ownable).
 
-[Reference] (https://solidity-by-example.org/hacks/phishing-with-tx-origin/)
+[Reference](https://solidity-by-example.org/hacks/phishing-with-tx-origin/)

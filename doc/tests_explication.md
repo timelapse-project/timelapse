@@ -77,7 +77,7 @@ Test the `Offering.sol` smart-contract
 ## `test/timelapse.test.js`
 
 Test the `Timelapse.sol` smart-contract 
-- `Test Billing.sol, Owner = Timelapse`
+- `Test Offering.sol, Owner = Timelapse`
     - `Function: isActiveCustomer`
         - `isActiveCustomer` makes sure that `.isActiveCustomer()` reverts if called for an unknown customer
     - `Function: addToScore`
