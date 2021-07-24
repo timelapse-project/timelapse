@@ -112,9 +112,9 @@ To deploy the project on Timelapse Private Blockchain, you can set the following
 
 ## Heroku Configuration
 
-**Procedure:**
+Here is the procedure to install and configure Heroku:
 
-- Download, install and configure [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli#download-and-install).  
+- Download and install [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli#download-and-install).  
 - Configure the Heroku **remote repository**
     ```
     # git clone git@github.com:timelapse-project/timelapse.git
@@ -129,26 +129,86 @@ To deploy the project on Timelapse Private Blockchain, you can set the following
     # Option B: If existing, declare the heroku git remote repository
     heroku git:remote --ssh-git -a timelapse-project
     ```
-# Execution
+# Compile
+
 ## Timelapse Core
-You can compile and deploy the
+
+Here is the procedure to compile **Timelapse Core**:
+- Compile contracts:
     ```
     export PATH=$PATH:node_modules/.bin
-    truffle migrate --network timelapse --reset
+    truffle compile
     ```
+# Test
+
+## Timelapse Core
+
+[This page](doc/tests_explication.md) explains the tests.
+- Test contracts:
+    ```
+    export PATH=$PATH:node_modules/.bin
+    truffle test
+    ```
+
+# Deploy
+
+## Timelapse Core
+
+Here is the procedure to deploy **Timelapse Core**:
+- Deploy the contracts to Timelapse Private Blockchain:
+    ```
+    export PATH=$PATH:node_modules/.bin
+    truffle deploy --network timelapse
+    ```
+
+***Remark***: This contracts deployment is not mandatory. In the file **[`deployed_addresses.md`](doc/deployed_addresses.md)**, you can always find the current ***Contracts Addresses*** that are published to the Timelapse Private Blockchain.
+
 ## Timelapse Client
-There are several way to execute **Timelapse Core**:
+
+There are 2 ways to deploy **Timelapse Client**:
 - Local version: 
     ```
-    npm run start
+    npm --prefix client/ run start
     ```
-    Then, access the [Local version](http://localhost:3000/)
+
+    ***Remark***: If you meet a dependency issue, please remove the webpack module from the ***Timelapse Core*** node_modules and restart the previous command:
+    ```
+    rm -rf node_modules/webpack
+    ```
 
 - Heroku version
     ```
     git subtree push --prefix client/ heroku master
     ```
-    Then, access the [Heroku version][heroku-url]
+
+# Execution
+
+## Timelapse Client
+
+There are several way to execute **Timelapse Client**:
+- Local version: 
+    Access the [Local version](http://localhost:3000/)
+
+- Heroku version
+    Access the [Heroku version][heroku-url]
+
+## Timelapse API
+
+There are several way to execute **Timelapse Core**:
+- Local version: 
+    ```
+    # git clone git@github.com:timelapse-project/timelapse.git
+    cd timelapse/api
+
+    # Execute the Server
+    node server.js
+
+    # Execute the Watcher
+    node watcher.js
+
+    # Execute the Telecom Operator Simulator
+    ./simulator.sh
+    ```
 
 # Documentation
 
