@@ -26,6 +26,7 @@ Test the `Billing.sol` smart-contract
 - `Function: addToScore`
     - `Revert: addToScore is onlyOwner` makes sure that `.addToScore()` reverts if not called by the contract owner
     - `addToScore` makes sure that `.addToScore()` updates correctly the customer(s) information 
+    - `Event: ScoreChange for addToScore` makes sure that `.addToScore()` generates the event `ScoreChange`
 - `Function: changeCustomerStatus`
     - `Revert: changeCustomerStatus is onlyOwner` makes sure that `.changeCustomerStatus()` reverts if not called by the contract owner
     - `changeCustomerStatus` makes sure that `.changeCustomerStatus()` updates correctly the customer(s) status 
@@ -77,12 +78,13 @@ Test the `Offering.sol` smart-contract
 ## `test/timelapse.test.js`
 
 Test the `Timelapse.sol` smart-contract 
-- `Test Offering.sol, Owner = Timelapse`
+- `Test Billing.sol, Owner = Timelapse`
     - `Function: isActiveCustomer`
         - `isActiveCustomer` makes sure that `.isActiveCustomer()` reverts if called for an unknown customer
     - `Function: addToScore`
         - `Revert: addToScore is onlyOwner` makes sure that `.addToScore()` reverts if not called by the contract owner
         - `addToScore` makes sure that `.addToScore()` updates correctly the customer(s) information 
+        - `Event: ScoreChange for addToScore` makes sure that `.addToScore()` generates the event `ScoreChange`
     - `Function: changeCustomerStatus`
         - `Revert: changeCustomerStatus is onlyOwner` makes sure that `.changeCustomerStatus()` reverts if not called by the contract owner
         - `changeCustomerStatus` makes sure that `.changeCustomerStatus()` updates correctly the customer(s) status 
@@ -104,7 +106,7 @@ Test the `Timelapse.sol` smart-contract
         - `topUpBilling` makes sure that `.topUpBilling()` updates correctly the customer(s) history 
         - `Event: TopUpReceived for topUpBilling` makes sure that `.topUpBilling()` generates the event `TopUpReceived`
         - `Event: Acknowledge for topUpBilling` makes sure that `.topUpBilling()` generates the event `Acknowledge`
-- `Test Billing.sol, Owner = Timelapse`
+- `Test Offering.sol, Owner = Timelapse`
     - `Function: addProposal`
         - `Revert: addProposal is onlyOwner` makes sure that `.addProposal()` reverts if not called by the contract owner
         - `addProposal` makes sure that `.addProposal()` adds correctly new proposal(s) 
@@ -126,5 +128,45 @@ Test the `Timelapse.sol` smart-contract
         - `createProduct` makes sure that `.createProduct()` generates a product with the correct information
         - `Event: ProductCreated for createProduct` makes sure that `.createProduct()` generates the event `ProductCreated`
 - `Test Timelapse.sol`
-    - `Workflow`
-        - `Scenario A` makes sure that customer is able to purchase the 2 first proposal if his scoring reach 124 
+    - `Function: addProposal`
+        - `Revert: addProposal is onlyOwner` makes sure that `.addProposal()` reverts if not called by the contract owner
+        - `addProposal` makes sure that `.addProposal()` adds correctly new proposal(s) 
+        - `Event: ProposalAdded` makes sure that `.addProposal()` generates the event `ProposalAdded`
+    - `Function: closedProposal`
+        - `Revert: closedProposal is onlyOwner` makes sure that `.closedProposal()` reverts if not called by the contract owner
+        - `Revert: closedProposal for existing proposal` makes sure that `.closedProposal()` reverts if called for an unknown proposal
+        - `closedProposal` makes sure that `.closedProposal()` closes correctly proposal(s) 
+        - `Event: ClosedProposal for closedProposal` makes sure that `.closedProposal()` generates the event `ClosedProposal`
+    - `Function: addToScore`
+        - `Revert: addToScore is onlyOwner` makes sure that `.addToScore()` reverts if not called by the contract owner
+        - `addToScore` makes sure that `.addToScore()` updates correctly the customer(s) information 
+        - `Event: ScoreChange for addToScore` makes sure that `.addToScore()` generates the event `ScoreChange`
+    - `Function: lowBalance`
+        - `Revert: lowBalance is onlyOwner` makes sure that `.lowBalance()` reverts if not called by the contract owner
+        - `lowBalance` makes sure that `.lowBalance()` generates a new offer
+        - `Event: LowBalanceReceived for lowBalance` makes sure that `.lowBalance()` generates the event `LowBalanceReceived`
+        - `Event: OfferSent for lowBalance` makes sure that `.lowBalance()` generates the event `OfferSent`
+    - `Function: acceptance`
+        - `Revert: acceptance is onlyOwner` makes sure that `.acceptance()` reverts if not called by the contract owner
+        - `acceptance` makes sure that `.acceptance()` updates correctly the customer(s) history 
+        - `Event: AcceptanceReceived for acceptance` makes sure that `.acceptance()` generates the event `AcceptanceReceived`
+        - `Event: Confirmation for acceptance` makes sure that `.acceptance()` generates the event `Confirmation`
+    - `Function: topUp`
+        - `Revert: topUp is onlyOwner` makes sure that `.topUp()` reverts if not called by the contract owner
+        - `topUp` makes sure that `.topUp()` updates correctly the customer(s) history 
+        - `Event: TopUpReceived for topUp` makes sure that `.topUp()` generates the event `TopUpReceived`
+        - `Event: Acknowledge for topUp` makes sure that `.topUp()` generates the event `Acknowledge`
+    - `Function: getCustomerActivitiesLog`
+        - `getCustomerActivitiesLog` makes sure that `.getCustomerActivitiesLog()` returns the correct Activities Logs
+    - `Function: generateInvoicing`
+        - `generateInvoicing` makes sure that `.generateInvoicing()` returns the correct invoicing values
+    - `Function: getOfferSize`
+        - `getOfferSize` makes sure that `.getOfferSize()` returns the correct amount of offers for a give customer    
+    - `Function: getOffersSize`
+        - `getOffersSize` makes sure that `.getOfferSize()` returns the correct amount of offers (globally)        
+    - `Function: generateReporting`
+        - `generateReporting` makes sure that `.generateReporting()` returns the correct reporting values    
+    - `Function: getSizeProposalOffer`
+        - `getSizeProposalOffer` makes sure that `.getSizeProposalOffer()` returns the correct amount of proposals in an offer
+    - `Function: getIndexProposalOffer`
+        - `getIndexProposalOffer` makes sure that `.getIndexProposalOffer()` returns the correct proposal index in an offer

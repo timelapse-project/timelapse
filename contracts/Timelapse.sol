@@ -107,7 +107,7 @@ contract Timelapse is Ownable {
       * @dev Accept the offer `_idOffer` (By choosing proposal `_idProposal`) of a customer (identified with `_phoneHash`) with reference `_ref` at timestamp `_acceptanceTimestamp`
       */
     //function acceptance(address _phoneHash, string memory _ref, uint _acceptanceTimestamp, uint256 _idOffer, uint256 _idProposal) public activeCustomer(_phoneHash) {
-    function acceptance(address _phoneHash, string memory _ref, uint _acceptanceTimestamp, uint256 _idOffer, uint256 _idProposal) public {
+    function acceptance(address _phoneHash, string memory _ref, uint _acceptanceTimestamp, uint256 _idOffer, uint256 _idProposal) public onlyOwner {
         billing.acceptanceBilling(_phoneHash, _ref, _acceptanceTimestamp, offering.createProduct(_phoneHash, _acceptanceTimestamp, _idOffer, _idProposal));
     }
 

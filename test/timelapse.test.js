@@ -14,6 +14,8 @@ contract('Timelapse', function (accounts) {
     // Timestamp
     const timestampA = new BN(1626699313);
     const timestampP = new BN(1626699323);
+    const timestampPast = new BN(996009553);
+    const timestampFuture = new BN(2573846353);
     
     /* Billling Begin */
     // ID expect for customer
@@ -116,6 +118,12 @@ contract('Timelapse', function (accounts) {
                 // firstTopUp is set to block.timestamp
                 // expect(((await this.BillingInstance.customers(idCustomer2))["firstTopUp"])).to.be.bignumber.equal(new BN(0));
                 expect(((await this.BillingInstance.customers(idCustomer2))["lastAcceptanceID"])).to.be.bignumber.equal(new BN(0));
+            });
+
+            it("Event: ScoreChange for addToScore", async function() {
+              expectEvent(await this.BillingInstance.addToScore(phoneHash1, {from:owner}),
+              "ScoreChange",
+              {phoneHash: phoneHash1, score: new BN(12)});
             });
         });
 
@@ -377,15 +385,14 @@ contract('Timelapse', function (accounts) {
           });
       
           describe("Function: proposalsCount", async function() {
-      
-          });
-      
-          describe("Function: getSizeProposalOffer", async function() {
-            
-          });
-      
-          describe("Function: getIndexProposalOffer", async function() {
-            
+            it("proposalsCount", async function() {
+              await this.OfferingInstance.addProposal(minScore1, capital1, interest1, description1, {from: owner});
+              expect(await this.OfferingInstance.proposalsCount()).to.be.bignumber.equal(new BN(1));
+              await this.OfferingInstance.addProposal(minScore2, capital2, interest2, description2, {from: owner});
+              expect(await this.OfferingInstance.proposalsCount()).to.be.bignumber.equal(new BN(2));
+              await this.OfferingInstance.addProposal(minScore3, capital3, interest3, description3, {from: owner});
+              expect(await this.OfferingInstance.proposalsCount()).to.be.bignumber.equal(new BN(3));
+            });
           });
       
           describe("Function: lowBalanceOffering", async function() {
@@ -503,28 +510,463 @@ contract('Timelapse', function (accounts) {
           await this.OfferingInstance.transferOwnership(this.TimelapseInstance.address, {from: owner});
       });
 
-      describe("Workflow", async function() {
-        it("Scenario A", async function() {
-          await this.TimelapseInstance.addProposal(minScore1, capital1, interest1, description1, {from: owner});
-          await this.TimelapseInstance.addProposal(minScore2, capital2, interest2, description2, {from: owner});
-          await this.TimelapseInstance.addProposal(minScore3, capital3, interest3, description3, {from: owner});
-          await this.TimelapseInstance.addToScore(phoneHash1, {from: owner});
-          const receipt1 = await this.TimelapseInstance.lowBalance(phoneHash1, ref1, {from: owner});
-          await expectEvent.inTransaction(receipt1.tx, this.OfferingInstance, 'OfferSent', { scoring: new BN(12) });
-          for(let i = 0;i < 20;i++) {
-            await this.TimelapseInstance.addToScore(phoneHash1, {from: owner});
-          }
-          const receipt2 = await this.TimelapseInstance.lowBalance(phoneHash1, ref1, {from: owner});
-          await expectEvent.inTransaction(receipt2.tx, this.OfferingInstance, 'OfferSent', { scoring: new BN(124) });
-          await this.TimelapseInstance.acceptance(phoneHash1, ref1, timestampA, idProduct1, idProposal1, {from: owner});
-          await this.TimelapseInstance.topUp(phoneHash1, timestampP, {from: owner});
 
-          const receipt3 = await this.TimelapseInstance.lowBalance(phoneHash1, ref1, {from: owner});
-          await expectEvent.inTransaction(receipt3.tx, this.OfferingInstance, 'OfferSent', { scoring: new BN(124) });
-          await this.TimelapseInstance.acceptance(phoneHash1, ref1, timestampA, idProduct2, idProposal2, {from: owner});
-          await this.TimelapseInstance.topUp(phoneHash1, timestampP, {from: owner});
+      describe("Function: addProposal", async function() {
+        it("Revert: addProposal is onlyOwner", async function() {
+          await expectRevert(this.TimelapseInstance.addProposal(minScore1, capital1, interest1, description1, {from:phoneHash1}),
+          "Ownable: caller is not the owner");
+        });
+  
+        it("addProposal", async function () {
+          // Proposal 1
+          await this.TimelapseInstance.addProposal(minScore1, capital1, interest1, description1, {from: owner});
+          const proposal1 = await this.OfferingInstance.proposals(idProposal1);
+          expect(proposal1["minScoring"]).to.be.bignumber.equal(minScore1);
+          expect(proposal1["capital"]).to.be.bignumber.equal(capital1);
+          expect(proposal1["interest"]).to.be.bignumber.equal(interest1);
+          expect(proposal1["description"]).to.be.equal(description1);
+          expect(proposal1["status"]).to.be.bignumber.equal(activeProposal);
+  
+          // Proposal 2
+          await this.TimelapseInstance.addProposal(minScore2, capital2, interest2, description2, {from: owner});
+          const proposal2 = await this.OfferingInstance.proposals(idProposal2);
+          expect(proposal2["minScoring"]).to.be.bignumber.equal(minScore2);
+          expect(proposal2["capital"]).to.be.bignumber.equal(capital2);
+          expect(proposal2["interest"]).to.be.bignumber.equal(interest2);
+          expect(proposal2["description"]).to.be.equal(description2);
+          expect(proposal2["status"]).to.be.bignumber.equal(activeProposal);
+  
+          // Proposal 3
+          await this.TimelapseInstance.addProposal(minScore3, capital3, interest3, description3, {from: owner});
+          const proposal3 = await this.OfferingInstance.proposals(idProposal3);
+          expect(proposal3["minScoring"]).to.be.bignumber.equal(minScore3);
+          expect(proposal3["capital"]).to.be.bignumber.equal(capital3);
+          expect(proposal3["interest"]).to.be.bignumber.equal(interest3);
+          expect(proposal3["description"]).to.be.equal(description3);
+          expect(proposal3["status"]).to.be.bignumber.equal(activeProposal);
+        });
+  
+        it("Event: ProposalAdded", async function () {
+          const receipt1 = await this.TimelapseInstance.addProposal(minScore1, capital1, interest1, description1, {from: owner});
+          await expectEvent.inTransaction(receipt1.tx, this.OfferingInstance, 'ProposalAdded', {idProposal: new BN(0), minScoring: minScore1, capital: capital1, interest: interest1, description: description1});
         });
 
       });
+
+      describe("Function: closedProposal", async function() {
+        it("Revert: closedProposal is onlyOwner", async function() {
+          await this.TimelapseInstance.addProposal(minScore1, capital1, interest1, description1, {from: owner});
+          await expectRevert(this.TimelapseInstance.closedProposal(0, {from:phoneHash1}),
+          "Ownable: caller is not the owner");
+        });
+  
+        it("Revert: closedProposal for existing proposal", async function() {
+          await expectRevert(this.TimelapseInstance.closedProposal(0, {from:owner}),
+          "Proposal doesn't exist");
+        });
+  
+        it("closedProposal", async function () {
+          // Proposal 1
+          await this.TimelapseInstance.addProposal(minScore1, capital1, interest1, description1, {from: owner});
+          await this.TimelapseInstance.closedProposal(idProposal1, {from: owner});
+          const proposal1 = await this.OfferingInstance.proposals(idProposal1);
+          expect(proposal1["status"]).to.be.bignumber.equal(closedProposal);
+  
+          // Proposal 2
+          await this.TimelapseInstance.addProposal(minScore2, capital2, interest2, description2, {from: owner});
+          await this.TimelapseInstance.closedProposal(idProposal2, {from: owner});
+          const proposal2 = await this.OfferingInstance.proposals(idProposal2);
+          expect(proposal2["status"]).to.be.bignumber.equal(closedProposal);
+  
+          // Proposal 1
+          await this.TimelapseInstance.addProposal(minScore3, capital3, interest3, description3, {from: owner});
+          await this.TimelapseInstance.closedProposal(idProposal3, {from: owner});
+          const proposal3 = await this.OfferingInstance.proposals(idProposal3);
+          expect(proposal3["status"]).to.be.bignumber.equal(closedProposal);
+        });
+  
+        it("Event: ClosedProposal for closedProposal", async function() {
+          await this.TimelapseInstance.addProposal(minScore1, capital1, interest1, description1, {from: owner});
+          const receipt1 = await this.TimelapseInstance.closedProposal(0, {from: owner});
+          await expectEvent.inTransaction(receipt1.tx, this.OfferingInstance, 'ClosedProposal', {idProposal: new BN(0)});
+        })
+      });
+
+      describe("Function: addToScore", async function() {
+        it("Revert: addToScore is onlyOwner", async function() {
+            await expectRevert(this.TimelapseInstance.addToScore(phoneHash1, {from:phoneHash1}),
+            "Ownable: caller is not the owner");
+        });
+
+        it("addToScore", async function() {
+            // Customer 1
+            await this.TimelapseInstance.addToScore(phoneHash1);
+            expect(((await this.BillingInstance.customerList(phoneHash1))["idCustomer"])).to.be.bignumber.equal(idCustomer1);
+            expect(((await this.BillingInstance.customerList(phoneHash1))["status"])).to.be.bignumber.equal(activeCustomer);
+            expect(((await this.BillingInstance.customers(idCustomer1))["status"])).to.be.bignumber.equal(activeCustomer);
+            expect(((await this.BillingInstance.customers(idCustomer1))["score"])).to.be.bignumber.equal(new BN(12));
+            expect(((await this.BillingInstance.customers(idCustomer1))["nbTopUp"])).to.be.bignumber.equal(new BN(1));
+            expect(((await this.BillingInstance.customers(idCustomer1))["amount"])).to.be.bignumber.equal(new BN(0))    ;
+            expect(((await this.BillingInstance.customers(idCustomer1))["lastAcceptanceID"])).to.be.bignumber.equal(new BN(0));
+
+            // Customer 2
+            await this.TimelapseInstance.addToScore(phoneHash2);
+            expect(((await this.BillingInstance.customerList(phoneHash2))["idCustomer"])).to.be.bignumber.equal(idCustomer2);
+            expect(((await this.BillingInstance.customerList(phoneHash2))["status"])).to.be.bignumber.equal(activeCustomer);
+            expect(((await this.BillingInstance.customers(idCustomer2))["status"])).to.be.bignumber.equal(activeCustomer);
+            expect(((await this.BillingInstance.customers(idCustomer2))["score"])).to.be.bignumber.equal(new BN(12));
+            expect(((await this.BillingInstance.customers(idCustomer2))["nbTopUp"])).to.be.bignumber.equal(new BN(1));
+            expect(((await this.BillingInstance.customers(idCustomer2))["amount"])).to.be.bignumber.equal(new BN(0))    ;
+            expect(((await this.BillingInstance.customers(idCustomer2))["lastAcceptanceID"])).to.be.bignumber.equal(new BN(0));
+        });
+
+        it("Event: ScoreChange for addToScore", async function() {
+          const receipt1 = await this.TimelapseInstance.addToScore(phoneHash1, {from:owner});
+          await expectEvent.inTransaction(receipt1.tx, this.BillingInstance, 'ScoreChange', {phoneHash: phoneHash1, score: new BN(12)});
+        });
+    });
+
+    describe("Function: lowBalance", async function() {
+      it("Revert: lowBalance is onlyOwner", async function() {
+        await expectRevert(this.TimelapseInstance.lowBalance(phoneHash1, ref1, {from:phoneHash1}),
+        "Ownable: caller is not the owner");
+      });
+
+      it("lowBalance", async function() {
+        // Add Proposal
+        await this.TimelapseInstance.addProposal(minScore1, capital1, interest1, description1, {from: owner});
+        await this.TimelapseInstance.addProposal(minScore2, capital2, interest2, description2, {from: owner});
+        await this.TimelapseInstance.addProposal(minScore3, capital3, interest3, description3, {from: owner});
+
+        for(let i = 0;i < 21;i++) {
+          await this.TimelapseInstance.addToScore(phoneHash1, {from: owner});
+        }
+        await this.TimelapseInstance.lowBalance(phoneHash1, ref1, {from:owner});
+        const offer1 = await this.OfferingInstance.offers(idOffer1);
+        expect(offer1["phoneHash"]).to.be.equal(phoneHash1);
+        expect(offer1["ref"]).to.be.equal(ref1);
+        expect(offer1["status"]).to.be.bignumber.equal(newOffer);
+
+        for(let i = 0;i < 21;i++) {
+          await this.TimelapseInstance.addToScore(phoneHash2, {from: owner});
+        }
+        await this.TimelapseInstance.lowBalance(phoneHash2, ref2, {from:owner});
+        const offer2 = await this.OfferingInstance.offers(idOffer2);
+        expect(offer2["phoneHash"]).to.be.equal(phoneHash2);
+        expect(offer2["ref"]).to.be.equal(ref2);
+        expect(offer2["status"]).to.be.bignumber.equal(newOffer);
+
+        for(let i = 0;i < 21;i++) {
+          await this.TimelapseInstance.addToScore(phoneHash2, {from: owner});
+        }
+        await this.TimelapseInstance.lowBalance(phoneHash2, ref3, {from:owner});
+        const offer3 = await this.OfferingInstance.offers(idOffer3);
+        expect(offer3["phoneHash"]).to.be.equal(phoneHash2);
+        expect(offer3["ref"]).to.be.equal(ref3);
+        expect(offer3["status"]).to.be.bignumber.equal(newOffer);
+      });
+
+      it("Event: LowBalanceReceived for lowBalance", async function () {
+        await this.TimelapseInstance.addProposal(minScore1, capital1, interest1, description1, {from: owner});
+        await this.TimelapseInstance.addProposal(minScore2, capital2, interest2, description2, {from: owner});
+        await this.TimelapseInstance.addProposal(minScore3, capital3, interest3, description3, {from: owner});
+        for(let i = 0;i < 21;i++) {
+          await this.TimelapseInstance.addToScore(phoneHash1, {from: owner});
+        }
+        const receipt1 = await this.TimelapseInstance.lowBalance(phoneHash1, ref1, {from: owner});
+        await expectEvent.inTransaction(receipt1.tx, this.OfferingInstance, 'LowBalanceReceived', {phoneHash: phoneHash1, ref: ref1});
+      });
+
+      it("Event: OfferSent for lowBalance", async function () {
+        await this.TimelapseInstance.addProposal(minScore1, capital1, interest1, description1, {from: owner});
+        await this.TimelapseInstance.addProposal(minScore2, capital2, interest2, description2, {from: owner});
+        await this.TimelapseInstance.addProposal(minScore3, capital3, interest3, description3, {from: owner});
+        for(let i = 0;i < 21;i++) {
+          await this.TimelapseInstance.addToScore(phoneHash1, {from: owner});
+        }
+        const receipt1 = await this.TimelapseInstance.lowBalance(phoneHash1, ref1, {from: owner});
+        await expectEvent.inTransaction(receipt1.tx, this.OfferingInstance, 'OfferSent', {phoneHash: phoneHash1, ref: ref1});
+      });
+    });
+
+    describe("Function: acceptance", async function() {
+      it("Revert: acceptance is onlyOwner", async function() {
+        await this.TimelapseInstance.addProposal(minScore1, capital1, interest1, description1, {from: owner});
+        await this.TimelapseInstance.addProposal(minScore2, capital2, interest2, description2, {from: owner});
+        await this.TimelapseInstance.addProposal(minScore3, capital3, interest3, description3, {from: owner});
+        for(let i = 0;i < 21;i++) {
+          await this.TimelapseInstance.addToScore(phoneHash1, {from: owner});
+        }
+        this.TimelapseInstance.lowBalance(phoneHash1, ref1, {from: owner});
+        await expectRevert(this.TimelapseInstance.acceptance(phoneHash1, ref1, timestampA, idOffer1, idProposal1, {from:phoneHash1}),
+        "Ownable: caller is not the owner");
+      });
+
+      it("acceptance", async function() {
+          await this.TimelapseInstance.addProposal(minScore1, capital1, interest1, description1, {from: owner});
+          await this.TimelapseInstance.addProposal(minScore2, capital2, interest2, description2, {from: owner});
+          await this.TimelapseInstance.addProposal(minScore3, capital3, interest3, description3, {from: owner});
+          // Customer 1
+          for(let i = 0;i < 21;i++) {
+            await this.TimelapseInstance.addToScore(phoneHash1, {from: owner});
+          }
+          this.TimelapseInstance.lowBalance(phoneHash1, ref1, {from: owner});
+          await this.TimelapseInstance.acceptance(phoneHash1, ref1, timestampA, idOffer1, idProposal1, {from: owner});
+          const history1 = await this.BillingInstance.histories((await this.BillingInstance.getCustomer(phoneHash1))["lastAcceptanceID"]);
+          expect(history1["ref"]).to.be.equal(ref1);
+          expect(history1["acceptanceTimestamp"]).to.be.bignumber.equal(timestampA);
+          expect(history1["paidTimestamp"]).to.be.bignumber.equal(new BN(0));
+          expect(history1["idProduct"]).to.be.bignumber.equal(idProduct1);
+          expect(history1["status"]).to.be.bignumber.equal(activeProduct);
+
+          // Customer 2
+          for(let i = 0;i < 21;i++) {
+            await this.TimelapseInstance.addToScore(phoneHash2, {from: owner});
+          }
+          this.TimelapseInstance.lowBalance(phoneHash2, ref1, {from: owner});
+          await this.TimelapseInstance.acceptance(phoneHash2, ref2, timestampA, idOffer2, idProposal2, {from: owner});
+          const history2 = await this.BillingInstance.histories((await this.BillingInstance.getCustomer(phoneHash2))["lastAcceptanceID"]);
+          expect(history2["ref"]).to.be.equal(ref2);
+          expect(history2["acceptanceTimestamp"]).to.be.bignumber.equal(timestampA);
+          expect(history2["paidTimestamp"]).to.be.bignumber.equal(new BN(0));
+          expect(history2["idProduct"]).to.be.bignumber.equal(idProduct2);
+          expect(history2["status"]).to.be.bignumber.equal(activeProduct);
+      });
+
+      it("Event: AcceptanceReceived for acceptance", async function() {
+        await this.TimelapseInstance.addProposal(minScore1, capital1, interest1, description1, {from: owner});
+        await this.TimelapseInstance.addProposal(minScore2, capital2, interest2, description2, {from: owner});
+        await this.TimelapseInstance.addProposal(minScore3, capital3, interest3, description3, {from: owner});
+        for(let i = 0;i < 21;i++) {
+          await this.TimelapseInstance.addToScore(phoneHash1, {from: owner});
+        }
+        this.TimelapseInstance.lowBalance(phoneHash1, ref1, {from: owner});
+        const receipt1 = await this.TimelapseInstance.acceptance(phoneHash1, ref1, timestampA, idOffer1, idProposal1, {from:owner});
+        await expectEvent.inTransaction(receipt1.tx, this.BillingInstance, 'AcceptanceReceived', {phoneHash: phoneHash1, ref: ref1, acceptanceTimestamp: timestampA, idProduct: idProduct1});
+      });
+
+      it("Event: Confirmation for acceptance", async function() {
+        await this.TimelapseInstance.addProposal(minScore1, capital1, interest1, description1, {from: owner});
+        await this.TimelapseInstance.addProposal(minScore2, capital2, interest2, description2, {from: owner});
+        await this.TimelapseInstance.addProposal(minScore3, capital3, interest3, description3, {from: owner});
+        for(let i = 0;i < 21;i++) {
+          await this.TimelapseInstance.addToScore(phoneHash1, {from: owner});
+        }
+        this.TimelapseInstance.lowBalance(phoneHash1, ref1, {from: owner});
+        const receipt1 = await this.TimelapseInstance.acceptance(phoneHash1, ref1, timestampA, idOffer1, idProposal1, {from:owner});
+        await expectEvent.inTransaction(receipt1.tx, this.BillingInstance, 'Confirmation', {phoneHash: phoneHash1, ref: ref1, acceptanceTimestamp: timestampA, idProduct: idProduct1});
+      });
+  });
+
+  describe("Function: topUp", async function() {
+    it("Revert: topUp is onlyOwner", async function() {
+      await this.TimelapseInstance.addProposal(minScore1, capital1, interest1, description1, {from: owner});
+      await this.TimelapseInstance.addProposal(minScore2, capital2, interest2, description2, {from: owner});
+      await this.TimelapseInstance.addProposal(minScore3, capital3, interest3, description3, {from: owner});
+      for(let i = 0;i < 21;i++) {
+        await this.TimelapseInstance.addToScore(phoneHash1, {from: owner});
+      }
+      this.TimelapseInstance.lowBalance(phoneHash1, ref1, {from: owner});
+      await this.TimelapseInstance.acceptance(phoneHash1, ref1, timestampA, idOffer1, idProposal1, {from: owner});
+        await expectRevert(this.TimelapseInstance.topUp(phoneHash1, timestampP, {from:phoneHash1}),
+        "Ownable: caller is not the owner");
+    });
+
+    it("topUp", async function() {
+        // Customer 1
+        await this.TimelapseInstance.addProposal(minScore1, capital1, interest1, description1, {from: owner});
+        await this.TimelapseInstance.addProposal(minScore2, capital2, interest2, description2, {from: owner});
+        await this.TimelapseInstance.addProposal(minScore3, capital3, interest3, description3, {from: owner});
+        for(let i = 0;i < 21;i++) {
+          await this.TimelapseInstance.addToScore(phoneHash1, {from: owner});
+        }
+        this.TimelapseInstance.lowBalance(phoneHash1, ref1, {from: owner});
+        await this.TimelapseInstance.acceptance(phoneHash1, ref1, timestampA, idOffer1, idProposal1, {from: owner});
+        await this.TimelapseInstance.topUp(phoneHash1, timestampP, {from:owner});
+        const history1 = await this.BillingInstance.histories((await this.BillingInstance.getCustomer(phoneHash1))["lastAcceptanceID"]);
+        expect(history1["ref"]).to.be.equal(ref1);
+        expect(history1["acceptanceTimestamp"]).to.be.bignumber.equal(timestampA);
+        expect(history1["paidTimestamp"]).to.be.bignumber.equal(timestampP);
+        expect(history1["idProduct"]).to.be.bignumber.equal(idProduct1);
+        expect(history1["status"]).to.be.bignumber.equal(closeProduct);
+
+        // Customer 2
+        await this.TimelapseInstance.addProposal(minScore1, capital1, interest1, description1, {from: owner});
+        await this.TimelapseInstance.addProposal(minScore2, capital2, interest2, description2, {from: owner});
+        await this.TimelapseInstance.addProposal(minScore3, capital3, interest3, description3, {from: owner});
+        for(let i = 0;i < 21;i++) {
+          await this.TimelapseInstance.addToScore(phoneHash2, {from: owner});
+        }
+        this.TimelapseInstance.lowBalance(phoneHash2, ref2, {from: owner});
+        await this.TimelapseInstance.acceptance(phoneHash2, ref2, timestampA, idOffer2, idProposal2, {from: owner});
+        await this.TimelapseInstance.topUp(phoneHash2, timestampP, {from:owner});
+        const history2 = await this.BillingInstance.histories((await this.BillingInstance.getCustomer(phoneHash2))["lastAcceptanceID"]);
+        expect(history2["ref"]).to.be.equal(ref2);
+        expect(history2["acceptanceTimestamp"]).to.be.bignumber.equal(timestampA);
+        expect(history2["paidTimestamp"]).to.be.bignumber.equal(timestampP);
+        expect(history2["idProduct"]).to.be.bignumber.equal(idProduct2);
+        expect(history2["status"]).to.be.bignumber.equal(closeProduct);
+    });
+
+    it("Event: TopUpReceived for topUp", async function() {
+        await this.TimelapseInstance.addProposal(minScore1, capital1, interest1, description1, {from: owner});
+        await this.TimelapseInstance.addProposal(minScore2, capital2, interest2, description2, {from: owner});
+        await this.TimelapseInstance.addProposal(minScore3, capital3, interest3, description3, {from: owner});
+        for(let i = 0;i < 21;i++) {
+          await this.TimelapseInstance.addToScore(phoneHash1, {from: owner});
+        }
+        this.TimelapseInstance.lowBalance(phoneHash1, ref1, {from: owner});
+        await this.TimelapseInstance.acceptance(phoneHash1, ref1, timestampA, idOffer1, idProposal1, {from: owner});
+        const receipt1 = await this.TimelapseInstance.topUp(phoneHash1, timestampP, {from:owner});
+        await expectEvent.inTransaction(receipt1.tx, this.BillingInstance, 'TopUpReceived', {phoneHash: phoneHash1, ref: ref1});
+    });
+
+    it("Event: Acknowledge for topUp", async function() {
+        await this.TimelapseInstance.addProposal(minScore1, capital1, interest1, description1, {from: owner});
+        await this.TimelapseInstance.addProposal(minScore2, capital2, interest2, description2, {from: owner});
+        await this.TimelapseInstance.addProposal(minScore3, capital3, interest3, description3, {from: owner});
+        for(let i = 0;i < 21;i++) {
+          await this.TimelapseInstance.addToScore(phoneHash1, {from: owner});
+        }
+        this.TimelapseInstance.lowBalance(phoneHash1, ref1, {from: owner});
+        await this.TimelapseInstance.acceptance(phoneHash1, ref1, timestampA, idOffer1, idProposal1, {from: owner});
+        const receipt1 = await this.TimelapseInstance.topUp(phoneHash1, timestampP, {from:owner});
+        await expectEvent.inTransaction(receipt1.tx, this.BillingInstance, 'Acknowledge', {phoneHash: phoneHash1, ref: ref1});
+    })
+});
+
+    describe("Function: getCustomerActivitiesLog", async function() {
+      it("getCustomerActivitiesLog", async function() {
+        await this.TimelapseInstance.addProposal(minScore1, capital1, interest1, description1, {from: owner});
+        await this.TimelapseInstance.addProposal(minScore2, capital2, interest2, description2, {from: owner});
+        await this.TimelapseInstance.addProposal(minScore3, capital3, interest3, description3, {from: owner});
+        for(let i = 0;i < 21;i++) {
+          await this.TimelapseInstance.addToScore(phoneHash1, {from: owner});
+        }
+        this.TimelapseInstance.lowBalance(phoneHash1, ref1, {from: owner});
+        await this.TimelapseInstance.acceptance(phoneHash1, ref1, timestampA, idOffer1, idProposal1, {from: owner});
+        await this.TimelapseInstance.topUp(phoneHash1, timestampP, {from:owner});
+        const customerActivitiesLog = await this.TimelapseInstance.getCustomerActivitiesLog(phoneHash1, timestampPast, timestampFuture, {from:owner});
+        expect(customerActivitiesLog[0].status).to.be.equal("Offer");
+        expect(customerActivitiesLog[1].status).to.be.equal("Accepted");
+        expect(customerActivitiesLog[2].status).to.be.equal("Closed");
+      });
+    });
+
+    describe("Function: generateInvoicing", async function() {
+      it("generateInvoicing", async function() {
+        await this.TimelapseInstance.addProposal(minScore1, capital1, interest1, description1, {from: owner});
+        await this.TimelapseInstance.addProposal(minScore2, capital2, interest2, description2, {from: owner});
+        await this.TimelapseInstance.addProposal(minScore3, capital3, interest3, description3, {from: owner});
+        
+        // Customer 1
+        for(let i = 0;i < 21;i++) {
+          await this.TimelapseInstance.addToScore(phoneHash1, {from: owner});
+        }
+        this.TimelapseInstance.lowBalance(phoneHash1, ref1, {from: owner});
+        await this.TimelapseInstance.acceptance(phoneHash1, ref1, timestampA, idOffer1, idProposal1, {from: owner});
+        await this.TimelapseInstance.topUp(phoneHash1, timestampP, {from:owner});
+
+        // Customer 2
+        for(let i = 0;i < 21;i++) {
+          await this.TimelapseInstance.addToScore(phoneHash2, {from: owner});
+        }
+        this.TimelapseInstance.lowBalance(phoneHash2, ref2, {from: owner});
+        await this.TimelapseInstance.acceptance(phoneHash2, ref2, timestampA, idOffer2, idProposal2, {from: owner});
+        await this.TimelapseInstance.topUp(phoneHash2, timestampP, {from:owner});
+        const invoicing = await this.TimelapseInstance.generateInvoicing(timestampPast, timestampFuture, {from:owner});
+        expect(invoicing[0].totalCapital).to.be.bignumber.equal(new BN(600));
+        expect(invoicing[0].totalInterest).to.be.bignumber.equal(new BN(150));
+      });
+    });
+
+    describe("Function: generateReporting", async function() {
+      it("generateReporting", async function() {
+        await this.TimelapseInstance.addProposal(minScore1, capital1, interest1, description1, {from: owner});
+        await this.TimelapseInstance.addProposal(minScore2, capital2, interest2, description2, {from: owner});
+        await this.TimelapseInstance.addProposal(minScore3, capital3, interest3, description3, {from: owner});
+        
+        // Customer 1
+        for(let i = 0;i < 21;i++) {
+          await this.TimelapseInstance.addToScore(phoneHash1, {from: owner});
+        }
+        this.TimelapseInstance.lowBalance(phoneHash1, ref1, {from: owner});
+        await this.TimelapseInstance.acceptance(phoneHash1, ref1, timestampA, idOffer1, idProposal1, {from: owner});
+        await this.TimelapseInstance.topUp(phoneHash1, timestampP, {from:owner});
+
+        // Customer 2
+        for(let i = 0;i < 21;i++) {
+          await this.TimelapseInstance.addToScore(phoneHash2, {from: owner});
+        }
+        this.TimelapseInstance.lowBalance(phoneHash2, ref2, {from: owner});
+        await this.TimelapseInstance.acceptance(phoneHash2, ref2, timestampA, idOffer2, idProposal2, {from: owner});
+        const reporting = await this.TimelapseInstance.generateReporting(timestampPast, timestampFuture, {from:owner});
+        expect(reporting[0].offersCount).to.be.bignumber.equal(new BN(2));
+        expect(reporting[0].acceptedOffersCount).to.be.bignumber.equal(new BN(2));
+        expect(reporting[0].totalCapitalLoans).to.be.bignumber.equal(new BN(400));
+        expect(reporting[0].totalInterestLoans).to.be.bignumber.equal(new BN(100));
+        expect(reporting[0].closedTopupsCount).to.be.bignumber.equal(new BN(1));
+        expect(reporting[0].totalCapitalGain).to.be.bignumber.equal(new BN(200));
+        expect(reporting[0].totalInterestGain).to.be.bignumber.equal(new BN(50));
+      });
+    });
+
+    describe("Function: getOfferSize", async function() {
+      it("getOfferSize", async function() {
+        await this.TimelapseInstance.addProposal(minScore1, capital1, interest1, description1, {from: owner});
+        await this.TimelapseInstance.addProposal(minScore2, capital2, interest2, description2, {from: owner});
+        await this.TimelapseInstance.addProposal(minScore3, capital3, interest3, description3, {from: owner});
+        for(let i = 0;i < 21;i++) {
+          await this.TimelapseInstance.addToScore(phoneHash1, {from: owner});
+        }
+        await this.TimelapseInstance.lowBalance(phoneHash1, ref1, {from:owner});
+        const offerSize = await this.OfferingInstance.getOfferSize(phoneHash1, {from:owner});
+        expect(offerSize).to.be.bignumber.equal(new BN(1));
+      });
+    });
+
+    describe("Function: getOffersSize", async function() {
+      it("getOffersSize", async function() {
+        await this.TimelapseInstance.addProposal(minScore1, capital1, interest1, description1, {from: owner});
+        await this.TimelapseInstance.addProposal(minScore2, capital2, interest2, description2, {from: owner});
+        await this.TimelapseInstance.addProposal(minScore3, capital3, interest3, description3, {from: owner});
+        for(let i = 0;i < 21;i++) {
+          await this.TimelapseInstance.addToScore(phoneHash1, {from: owner});
+        }
+        await this.TimelapseInstance.lowBalance(phoneHash1, ref1, {from:owner});
+        const offersSize = await this.OfferingInstance.getOffersSize({from:owner});
+        expect(offersSize).to.be.bignumber.equal(new BN(1));
+      });
+    });
+
+    describe("Function: getSizeProposalOffer", async function() {
+      it("getSizeProposalOffer", async function() {
+        await this.TimelapseInstance.addProposal(minScore1, capital1, interest1, description1, {from: owner});
+        await this.TimelapseInstance.addProposal(minScore2, capital2, interest2, description2, {from: owner});
+        await this.TimelapseInstance.addProposal(minScore3, capital3, interest3, description3, {from: owner});
+        for(let i = 0;i < 21;i++) {
+          await this.TimelapseInstance.addToScore(phoneHash1, {from: owner});
+        }
+        await this.TimelapseInstance.lowBalance(phoneHash1, ref1, {from:owner});
+        const proposalOfferSize = await this.OfferingInstance.getSizeProposalOffer(idOffer1, {from:owner});
+        expect(proposalOfferSize).to.be.bignumber.equal(new BN(2));
+      });
+    });
+
+    describe("Function: getIndexProposalOffer", async function() {
+      it("getIndexProposalOffer", async function() {
+        await this.TimelapseInstance.addProposal(minScore1, capital1, interest1, description1, {from: owner});
+        await this.TimelapseInstance.addProposal(minScore2, capital2, interest2, description2, {from: owner});
+        await this.TimelapseInstance.addProposal(minScore3, capital3, interest3, description3, {from: owner});
+        for(let i = 0;i < 21;i++) {
+          await this.TimelapseInstance.addToScore(phoneHash1, {from: owner});
+        }
+        await this.TimelapseInstance.lowBalance(phoneHash1, ref1, {from:owner});
+        const proposalOfferIndex = await this.OfferingInstance.getIndexProposalOffer(idOffer1, new BN(0) , {from:owner});
+        expect(proposalOfferIndex).to.be.bignumber.equal(idProposal1);
+      });
+    });
+
+
   });
 });

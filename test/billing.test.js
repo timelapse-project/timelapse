@@ -78,6 +78,12 @@ contract('Billing', function (accounts) {
                 // expect(((await this.BillingInstance.customers(idCustomer2))["firstTopUp"])).to.be.bignumber.equal(new BN(0));
                 expect(((await this.BillingInstance.customers(idCustomer2))["lastAcceptanceID"])).to.be.bignumber.equal(new BN(0));
             });
+
+            it("Event: ScoreChange for addToScore", async function() {
+                expectEvent(await this.BillingInstance.addToScore(phoneHash1, {from:owner}),
+                "ScoreChange",
+                {phoneHash: phoneHash1, score: new BN(12)});
+            });
         });
 
         describe("Function: changeCustomerStatus", async function() {

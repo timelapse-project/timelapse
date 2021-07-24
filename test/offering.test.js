@@ -154,14 +154,6 @@ contract("Offering", function (accounts) {
       });
     });
 
-    describe("Function: getSizeProposalOffer", async function() {
-      
-    });
-
-    describe("Function: getIndexProposalOffer", async function() {
-      
-    });
-
     describe("Function: lowBalanceOffering", async function() {
       it("Revert: lowBalanceOffering is onlyOwner", async function() {
         await expectRevert(this.OfferingInstance.lowBalanceOffering(phoneHash1, ref1, minScore1, {from:phoneHash1}),

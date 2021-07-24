@@ -249,7 +249,7 @@ contract Offering is Ownable {
       * @param _phoneHash The address that identifies to the customer
       * @dev Get the size of the Offers of a customer (identified with `_phoneHash`)
       */
-    function getOfferSize(address _phoneHash) public view onlyOwner returns (uint256) {
+    function getOfferSize(address _phoneHash) public view returns (uint256) {
         return offerList[_phoneHash].length;
     }
 
@@ -257,7 +257,7 @@ contract Offering is Ownable {
       * @notice Get the size of all the offers
       * @dev Get the size of all the offers
       */
-    function getOffersSize() public view onlyOwner returns (uint256) {
+    function getOffersSize() public view returns (uint256) {
         return offers.length;
     }
 
