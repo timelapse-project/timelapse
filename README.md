@@ -19,12 +19,12 @@
 ## Architecture
 
 Timelapse software is composed of 3 parts:
-- **Back-End**:  
+- **Timelapse Core**:  
 The **Ethereum smart-contracts** deployed on the testnets. They are written in Solidity.
-- **Front-End** (DApp):  
+- **Timelapse Client** (DApp):  
 A **ReactJS client app** written in ReactJS and deployed on Heroku. 
 It  provides the User Interface to interact with the contracts.
-- **API**:  
+- **Timelapse API**:  
 The **Server/Watcher** written in NodeJS.
 
 This Github **repository** gather the **back-end and**, the **front-end** and the **API** code.
@@ -35,9 +35,9 @@ This Github **repository** gather the **back-end and**, the **front-end** and th
 ### Low Level Architecture
 ![Low Level Architecture](doc/img/Timelapse_TechnicalArchitecture_LL.png)
 
-### Back-End
+### Timelapse Core
 
-The back-end is composed of the following Ethereum **smart-contracts**:
+Timelapse Core is composed of the following Ethereum **smart-contracts**:
 
 - [`Timelapse`](contracts/Timelapse.sol) The entry point of Timelapse application.
 - [`Offering`](contracts/Offering.sol) Manage all aspects related to offering. The contract is in charge of:
@@ -49,41 +49,44 @@ The back-end is composed of the following Ethereum **smart-contracts**:
     - accounting management
     - billing management
 
-### Front-End
+### Timelapse Client
 
 Our **DApp** is a **Front-End** application written in **ReactJS** and deployed on Heroku.
 
-### API
+### Timelapse API
 
-Our **API** application, written in **NodeJS**, is responsible for the communication with Telecom Operator and is composed of the following parts:
+Our **Timelapse API** application, written in **NodeJS**, is responsible for the communication with Telecom Operator and is composed of the following parts:
 
 - [`server.js`](server/server.js) Manage incoming Rest calls from Telecom Operator and call blockchain.
 - [`watcher.js`](server/watcher.js) Listen to blockchain and initiate Rest calls to Telecom Operator.
 
 # Installation
 
-- Install [`nodejs` and `npm`](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
-- Install the [Solidity Compiler version `0.8.6`](https://docs.soliditylang.org/en/v0.8.6/installing-solidity.html)
+- Install [`nodejs` and `npm`](https://docs.npmjs.com/
+downloading-and-installing-node-js-and-npm)
+- Install [`git`](https://git-scm.com/)
 - Clone the Github repository
 
   ```
   # Clone the repository
   git clone git@github.com:timelapse-project/timelapse.git
-
   cd timelapse
   ```
 
-- Install the `npm` packages for the back-end and the front-end
+- Install the `npm` packages for timelapse-core, timelapse-client and timelapse-api
 
   ```
   # Update npm to its latest version
-  npm install -g npm
+  sudo npm install -g npm
 
-  # Install the npm packages for the back-end
+  # Install the npm packages for timelapse-core
   npm install
 
-  # Install the npm packages for the front-end
+  # Install the npm packages for timelapse-client
   npm --prefix client/ install
+
+  # Install the npm packages for timelapse-api
+  npm --prefix api/ install
   ```
 
 # Configuration

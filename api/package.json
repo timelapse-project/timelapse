@@ -1,0 +1,32 @@
+{
+    "name": "timelapse-api",
+    "version": "1.0.0",
+    "description": "Timelapse API",
+    "main": "server.js",
+    "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1",
+      "start": "node server.js"
+    },
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/timelapse-project/timelapse.git"
+    },
+    "contributors": [
+        {
+            "name": "@Keymon"
+        },
+        {
+            "name": "@DavidRochus"
+        }
+    ],
+    "license": "MIT",
+    "bugs": {
+      "url": "https://github.com/timelapse-project/timelapse/issues"
+    },
+    "homepage": "https://github.com/timelapse-project/timelapse#readme",
+    "dependencies": {
+      "dotenv": "^10.0.0",
+      "express": "^4.17.1",
+      "web3": "^1.4.0"
+    }
+  }

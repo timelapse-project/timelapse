@@ -1,7 +1,7 @@
 {
-    "name": "timelapse",
+    "name": "timelapse-core",
     "version": "1.0.0",
-    "description": "",
+    "description": "Timelapse",
     "main": "truffle-config.js",
     "engines": {
         "node": "16.x",
@@ -36,15 +36,17 @@
     ],
     "contributors": [
         {
-            "name": "",
-            "url": ""
+            "name": "@Keymon"
+        },
+        {
+            "name": "@DavidRochus"
         }
     ],
     "license": "MIT",
     "bugs": {
-        "url": ""
+        "url": "https://github.com/timelapse-project/timelapse/issues"
     },
-    "homepage": "",
+    "homepage": "https://github.com/timelapse-project/timelapse#readme",
     "devDependencies": {
         "@codechecks/client": "^0.1.10",
         "@openzeppelin/test-helpers": "^0.5.11",
