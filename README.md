@@ -62,8 +62,7 @@ Our **Timelapse API** application, written in **NodeJS**, is responsible for the
 
 # Installation
 
-- Install [`nodejs` and `npm`](https://docs.npmjs.com/
-downloading-and-installing-node-js-and-npm)
+- Install [`nodejs` and `npm`](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
 - Install [`git`](https://git-scm.com/)
 - Clone the Github repository
 
@@ -115,15 +114,8 @@ To deploy the project on Timelapse Private Blockchain, you can set the following
 
 **Procedure:**
 
-- [Download and install Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli#download-and-install).  
-  We use the Heroku Command Line Interface to change the Heroku configuration of our app or tune things up.  
-  Once configured, the deployment occurs all by itself without manual intervention.
-- **Configure Heroku CLI**  
-- **Create** your **App** on Heroku  
-    - **App Name**: To keep things simple give your Heroku app the same name as your Github project.
-    - **Github**: When asked enter the Github user and repository names of your project
-    - **Buildpacks**: Select **`mars/create-react-app`** and remove any other buildpack (Important: Remove NodeJs if present as `mars/create-react-app` already takes care of this)
-- Configure Heroku in the **local git repository**
+- Download, install and configure [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli#download-and-install).  
+- Configure the Heroku **remote repository**
     ```
     # git clone git@github.com:timelapse-project/timelapse.git
     cd timelapse
@@ -131,17 +123,32 @@ To deploy the project on Timelapse Private Blockchain, you can set the following
     # Login (once) to Heroku via CLI if you have not already done
     heroku login
 
-    # Declare the heroku git remote repository
+    # Option A: If not existing, create the heroku git remote repository
+    heroku create --ssh-git --buildpack mars/create-react-app timelapse-project
+
+    # Option B: If existing, declare the heroku git remote repository
     heroku git:remote --ssh-git -a timelapse-project
-
-    # If not already configured
-    #heroku buildpacks:clear
-    #heroku buildpacks:set mars/create-react-app
-
-    # Set config variables
-    #heroku config:set USE_NPM_INSTALL=true
-    heroku config:set NPM_CONFIG_PRODUCTION=true 
     ```
+# Execution
+## Timelapse Core
+You can compile and deploy the
+    ```
+    export PATH=$PATH:node_modules/.bin
+    truffle migrate --network timelapse --reset
+    ```
+## Timelapse Client
+There are several way to execute **Timelapse Core**:
+- Local version: 
+    ```
+    npm run start
+    ```
+    Then, access the [Local version](http://localhost:3000/)
+
+- Heroku version
+    ```
+    git subtree push --prefix client/ heroku master
+    ```
+    Then, access the [Heroku version][heroku-url]
 
 # Documentation
 
