@@ -229,7 +229,7 @@ contract Timelapse is Ownable {
         for (uint256 i = billing.getHistoriesSize(); i > 0 && !(outOfInvoicingWindow); i--) {
             (,, uint256 paidTimestamp, Billing.HistoryStatus status, uint256 idProduct) = billing.histories(i-1);
             
-            if(paidTimestamp < _startTimestamp){
+            if(paidTimestamp != 0 && paidTimestamp < _startTimestamp){
                 outOfInvoicingWindow = true;
             }
             if(paidTimestamp >= _startTimestamp && paidTimestamp <= _endTimestamp && status == Billing.HistoryStatus.Closed){
@@ -279,7 +279,7 @@ contract Timelapse is Ownable {
             reporting[reportingIndex].acceptanceTimestamp = acceptanceTimestamp;
             reporting[reportingIndex].paidTimestamp = paidTimestamp;
 
-            if(acceptanceTimestamp < _startTimestamp){
+            if(acceptanceTimestamp != 0 && acceptanceTimestamp < _startTimestamp){
                 outOfReportingWindow2 = true;
             } else {
                 if(acceptanceTimestamp >= _startTimestamp && acceptanceTimestamp <= _endTimestamp && status == Billing.HistoryStatus.Active){
@@ -289,7 +289,7 @@ contract Timelapse is Ownable {
                     reporting[reportingIndex].totalInterestLoans += interest;
                 }
             }
-            if(paidTimestamp < _startTimestamp){
+            if(paidTimestamp != 0 && paidTimestamp < _startTimestamp){
                 outOfReportingWindow3 = true;
             } else {
                 if(paidTimestamp >= _startTimestamp && paidTimestamp <= _endTimestamp && status == Billing.HistoryStatus.Closed){

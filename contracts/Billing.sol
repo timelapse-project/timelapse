@@ -163,7 +163,7 @@ contract Billing is Ownable {
       */
     function addToScore(address _phoneHash) public onlyOwner {
         if(customerList[_phoneHash].status == CustomerStatus.New) {
-            customers.push(Customer(CustomerStatus.Active, 0,0,0,0,0));
+            customers.push(Customer(CustomerStatus.Active, 0,0,0,block.timestamp,0));
             customerList[_phoneHash].idCustomer = (customers.length - 1);
             customerList[_phoneHash].status = CustomerStatus.Active;
         }

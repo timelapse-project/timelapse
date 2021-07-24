@@ -151,6 +151,10 @@ sendOffer = async (data) => {
   }
   responseBody["proposalsCount"] = proposalsCount;
 
+  if(proposalsCount === 0) {
+    return;
+  }
+
   LOG_LEVEL > 0 && console.log(responseBody);
 
   Request.post(
