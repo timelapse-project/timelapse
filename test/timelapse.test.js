@@ -33,18 +33,18 @@ contract('Timelapse', function (accounts) {
    const idProposal1 = new BN(0);
    const idProposal2 = new BN(1);
    const idProposal3 = new BN(2);
-   const minScore1 = new BN(1);
-   const minScore2 = new BN(2);
-   const minScore3 = new BN(3);
-   const capital1 = new BN(500);
-   const capital2 = new BN(1000);
-   const capital3 = new BN(30000);
+   const minScore1 = new BN(49);
+   const minScore2 = new BN(118);
+   const minScore3 = new BN(185);
+   const capital1 = new BN(200);
+   const capital2 = new BN(400);
+   const capital3 = new BN(600);
    const interest1 = new BN(50);
    const interest2 = new BN(100);
-   const interest3 = new BN(1500);
-   const description1 = "Description 1";
-   const description2 = "Description 2";
-   const description3 = "Description 3";
+   const interest3 = new BN(150);
+   const description1 = "2 $ + 0.5 $";
+   const description2 = "4 $ + 1 $";
+   const description3 = "6 $ + 1.5 $";
  
    // Offer Creation
    const idOffer1 = new BN(0);
@@ -98,9 +98,11 @@ contract('Timelapse', function (accounts) {
                 expect(((await this.BillingInstance.customerList(phoneHash1))["idCustomer"])).to.be.bignumber.equal(idCustomer1);
                 expect(((await this.BillingInstance.customerList(phoneHash1))["status"])).to.be.bignumber.equal(activeCustomer);
                 expect(((await this.BillingInstance.customers(idCustomer1))["status"])).to.be.bignumber.equal(activeCustomer);
+                expect(((await this.BillingInstance.customers(idCustomer1))["score"])).to.be.bignumber.equal(new BN(12));
                 expect(((await this.BillingInstance.customers(idCustomer1))["nbTopUp"])).to.be.bignumber.equal(new BN(1)); // A voir
                 expect(((await this.BillingInstance.customers(idCustomer1))["amount"])).to.be.bignumber.equal(new BN(0))    ;
-                expect(((await this.BillingInstance.customers(idCustomer1))["firstTopUp"])).to.be.bignumber.equal(new BN(0));
+                // firstTopUp is set to block.timestamp
+                // expect(((await this.BillingInstance.customers(idCustomer1))["firstTopUp"])).to.be.bignumber.equal(new BN(0));
                 expect(((await this.BillingInstance.customers(idCustomer1))["lastAcceptanceID"])).to.be.bignumber.equal(new BN(0));
 
                 // Customer 2
@@ -108,9 +110,11 @@ contract('Timelapse', function (accounts) {
                 expect(((await this.BillingInstance.customerList(phoneHash2))["idCustomer"])).to.be.bignumber.equal(idCustomer2);
                 expect(((await this.BillingInstance.customerList(phoneHash2))["status"])).to.be.bignumber.equal(activeCustomer);
                 expect(((await this.BillingInstance.customers(idCustomer2))["status"])).to.be.bignumber.equal(activeCustomer);
+                expect(((await this.BillingInstance.customers(idCustomer2))["score"])).to.be.bignumber.equal(new BN(12));
                 expect(((await this.BillingInstance.customers(idCustomer2))["nbTopUp"])).to.be.bignumber.equal(new BN(1)); // A voir
                 expect(((await this.BillingInstance.customers(idCustomer2))["amount"])).to.be.bignumber.equal(new BN(0))    ;
-                expect(((await this.BillingInstance.customers(idCustomer2))["firstTopUp"])).to.be.bignumber.equal(new BN(0));
+                // firstTopUp is set to block.timestamp
+                // expect(((await this.BillingInstance.customers(idCustomer2))["firstTopUp"])).to.be.bignumber.equal(new BN(0));
                 expect(((await this.BillingInstance.customers(idCustomer2))["lastAcceptanceID"])).to.be.bignumber.equal(new BN(0));
             });
         });
@@ -491,10 +495,36 @@ contract('Timelapse', function (accounts) {
     });
 
     describe("Début des tests pour Timelapse.sol", async function() {
-        beforeEach(async function() {
-            this.BillingInstance = await Billing.new();
-            this.OfferingInstance = await Offering.new();
-            this.TimelapseInstance = await Timelapse.new(this.BillingInstance.address, this.OfferingInstance.address);
+      beforeEach(async function() {
+          this.BillingInstance = await Billing.new();
+          this.OfferingInstance = await Offering.new();
+          this.TimelapseInstance = await Timelapse.new(this.BillingInstance.address, this.OfferingInstance.address);
+          await this.BillingInstance.transferOwnership(this.TimelapseInstance.address, {from: owner});
+          await this.OfferingInstance.transferOwnership(this.TimelapseInstance.address, {from: owner});
+      });
+
+      describe("Workflow", async function() {
+        it("Scenario A", async function() {
+          await this.TimelapseInstance.addProposal(minScore1, capital1, interest1, description1, {from: owner});
+          await this.TimelapseInstance.addProposal(minScore2, capital2, interest2, description2, {from: owner});
+          await this.TimelapseInstance.addProposal(minScore3, capital3, interest3, description3, {from: owner});
+          await this.TimelapseInstance.addToScore(phoneHash1, {from: owner});
+          const receipt1 = await this.TimelapseInstance.lowBalance(phoneHash1, ref1, {from: owner});
+          await expectEvent.inTransaction(receipt1.tx, this.OfferingInstance, 'OfferSent', { scoring: new BN(12) });
+          for(let i = 0;i < 20;i++) {
+            await this.TimelapseInstance.addToScore(phoneHash1, {from: owner});
+          }
+          const receipt2 = await this.TimelapseInstance.lowBalance(phoneHash1, ref1, {from: owner});
+          await expectEvent.inTransaction(receipt2.tx, this.OfferingInstance, 'OfferSent', { scoring: new BN(124) });
+          await this.TimelapseInstance.acceptance(phoneHash1, ref1, timestampA, idProduct1, idProposal1, {from: owner});
+          await this.TimelapseInstance.topUp(phoneHash1, timestampP, {from: owner});
+
+          const receipt3 = await this.TimelapseInstance.lowBalance(phoneHash1, ref1, {from: owner});
+          await expectEvent.inTransaction(receipt3.tx, this.OfferingInstance, 'OfferSent', { scoring: new BN(124) });
+          await this.TimelapseInstance.acceptance(phoneHash1, ref1, timestampA, idProduct2, idProposal2, {from: owner});
+          await this.TimelapseInstance.topUp(phoneHash1, timestampP, {from: owner});
         });
-    });
+
+      });
+  });
 });

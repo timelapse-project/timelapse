@@ -264,9 +264,9 @@ contract Billing is Ownable {
         uint8 topupAmountPoints;
         uint8 firstTopUpAgePoints;
         uint8 nbTopUpPoints;
-        if (_customer.amount >= 0 && _customer.amount <= 40) {
+        if (_customer.amount >= 0 && _customer.amount <= 4000) {
             topupAmountPoints = 1;
-        } else if (_customer.amount > 40 && _customer.amount <= 150) {
+        } else if (_customer.amount > 4000 && _customer.amount <= 15000) {
             topupAmountPoints = 2;
         } else {
             topupAmountPoints = 3;

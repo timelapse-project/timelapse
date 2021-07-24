@@ -22,18 +22,18 @@ contract("Offering", function (accounts) {
   const idProposal1 = new BN(0);
   const idProposal2 = new BN(1);
   const idProposal3 = new BN(2);
-  const minScore1 = new BN(1);
-  const minScore2 = new BN(2);
-  const minScore3 = new BN(3);
-  const capital1 = new BN(500);
-  const capital2 = new BN(1000);
-  const capital3 = new BN(30000);
+  const minScore1 = new BN(49);
+  const minScore2 = new BN(118);
+  const minScore3 = new BN(185);
+  const capital1 = new BN(200);
+  const capital2 = new BN(400);
+  const capital3 = new BN(600);
   const interest1 = new BN(50);
   const interest2 = new BN(100);
-  const interest3 = new BN(1500);
-  const description1 = "Description 1";
-  const description2 = "Description 2";
-  const description3 = "Description 3";
+  const interest3 = new BN(150);
+  const description1 = "2 $ + 0.5 $";
+  const description2 = "4 $ + 1 $";
+  const description3 = "6 $ + 1.5 $";
 
   // Offer Creation
   const idOffer1 = new BN(0);

@@ -125,3 +125,6 @@ Test the `Timelapse.sol` smart-contract
         - `Revert: createProduct for existing Offer` makes sure that `.createProduct()` reverts if called for an unknown offer
         - `createProduct` makes sure that `.createProduct()` generates a product with the correct information
         - `Event: ProductCreated for createProduct` makes sure that `.createProduct()` generates the event `ProductCreated`
+- `Test Timelapse.sol`
+    - `Workflow`
+        - `Scenario A` makes sure that customer is able to purchase the 2 first proposal if his scoring reach 124 
