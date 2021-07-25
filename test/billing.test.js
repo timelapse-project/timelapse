@@ -62,8 +62,6 @@ contract('Billing', function (accounts) {
                 expect(((await this.BillingInstance.customers(idCustomer1))["score"])).to.be.bignumber.equal(new BN(12));
                 expect(((await this.BillingInstance.customers(idCustomer1))["nbTopUp"])).to.be.bignumber.equal(new BN(1)); // A voir
                 expect(((await this.BillingInstance.customers(idCustomer1))["amount"])).to.be.bignumber.equal(new BN(0))    ;
-                // firstTopUp is set to block.timestamp
-                // expect(((await this.BillingInstance.customers(idCustomer1))["firstTopUp"])).to.be.bignumber.equal(new BN(0));
                 expect(((await this.BillingInstance.customers(idCustomer1))["lastAcceptanceID"])).to.be.bignumber.equal(new BN(0));
 
                 // Customer 2
@@ -74,8 +72,6 @@ contract('Billing', function (accounts) {
                 expect(((await this.BillingInstance.customers(idCustomer2))["score"])).to.be.bignumber.equal(new BN(12));
                 expect(((await this.BillingInstance.customers(idCustomer2))["nbTopUp"])).to.be.bignumber.equal(new BN(1)); // A voir
                 expect(((await this.BillingInstance.customers(idCustomer2))["amount"])).to.be.bignumber.equal(new BN(0))    ;
-                // firstTopUp is set to block.timestamp
-                // expect(((await this.BillingInstance.customers(idCustomer2))["firstTopUp"])).to.be.bignumber.equal(new BN(0));
                 expect(((await this.BillingInstance.customers(idCustomer2))["lastAcceptanceID"])).to.be.bignumber.equal(new BN(0));
             });
 

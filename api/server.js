@@ -14,15 +14,26 @@ const BillingContract = require("../client/src/contracts/Billing.json");
 var LOG_LEVEL = 1;
 var PARTNER_CODE = "TL";
 
+/**
+  * @dev Express server configuration
+  */
 app.use(
   express.urlencoded({
     extended: true,
   })
 );
 
+/**
+  * @dev Express server configuration
+  */
 app.use(express.json());
 
-addProposal = async (data) => {
+/**
+  * @notice Send a request to BlockChain in order to add a proposal
+  * @param _data The content of the rest request
+  * @dev Send a request to BlockChain to add a proposal using `_data` content
+  */
+addProposal = async (_data) => {
   const accounts = await web3.eth.getAccounts();
   const networkId = await web3.eth.net.getId();
   const timelapseNetwork = TimelapseContract.networks[networkId];
@@ -30,15 +41,19 @@ addProposal = async (data) => {
     TimelapseContract.abi,
     timelapseNetwork && timelapseNetwork.address
   );
-
   await timelapseInstance.methods
-    .addProposal(data.minScoring, data.capital, data.interest, data.description)
+    .addProposal(_data.minScoring, _data.capital, _data.interest, _data.description)
     .send({
       from: accounts[0],
     });
 };
 
-lowBalance = async (data) => {
+/**
+  * @notice Send a request to BlockChain in order to manage a lowBalance
+  * @param _data The content of the rest request
+  * @dev Send a request to BlockChain in order to manage a lowBalance using `_data` content
+  */
+lowBalance = async (_data) => {
   const accounts = await web3.eth.getAccounts();
   const networkId = await web3.eth.net.getId();
   const timelapseNetwork = TimelapseContract.networks[networkId];
@@ -46,13 +61,17 @@ lowBalance = async (data) => {
     TimelapseContract.abi,
     timelapseNetwork && timelapseNetwork.address
   );
-
-  await timelapseInstance.methods.lowBalance(data.phoneHash, data.ref).send({
+  await timelapseInstance.methods.lowBalance(_data.phoneHash, _data.ref).send({
     from: accounts[0],
   });
 };
 
-acceptance = async (data) => {
+/**
+  * @notice Send a request to BlockChain in order to manage an acceptance
+  * @param _data The content of the rest request
+  * @dev Send a request to BlockChain in order to manage an acceptance using `_data` content
+  */
+acceptance = async (_data) => {
   const accounts = await web3.eth.getAccounts();
   const networkId = await web3.eth.net.getId();
   const timelapseNetwork = TimelapseContract.networks[networkId];
@@ -60,15 +79,19 @@ acceptance = async (data) => {
     TimelapseContract.abi,
     timelapseNetwork && timelapseNetwork.address
   );
-
   await timelapseInstance.methods
-    .acceptance(data.phoneHash, data.ref, data.timestamp, data.offerId, data.proposalId)
+    .acceptance(_data.phoneHash, _data.ref, _data.timestamp, _data.offerId, _data.proposalId)
     .send({
       from: accounts[0],
     });
 };
 
-topUp = async (data) => {
+/**
+  * @notice Send a request to BlockChain in order to manage a topUp
+  * @param _data The content of the rest request
+  * @dev Send a request to BlockChain in order to manage a topUp using `_data` content
+  */
+topUp = async (_data) => {
   const accounts = await web3.eth.getAccounts();
   const networkId = await web3.eth.net.getId();
   const timelapseNetwork = TimelapseContract.networks[networkId];
@@ -76,65 +99,88 @@ topUp = async (data) => {
     TimelapseContract.abi,
     timelapseNetwork && timelapseNetwork.address
   );
-
-  if (data.partner != null && data.partner === PARTNER_CODE) {
-    await timelapseInstance.methods.topUp(data.phoneHash, data.timestamp).send({
+  if (_data.partner != null && _data.partner === PARTNER_CODE) {
+    await timelapseInstance.methods.topUp(_data.phoneHash, _data.timestamp).send({
       from: accounts[0],
     });
   } else {
-    await timelapseInstance.methods.addToScore(data.phoneHash).send({
+    await timelapseInstance.methods.addToScore(_data.phoneHash).send({
       from: accounts[0],
     });
   }
 };
 
-app.post("/addProposal", function (req, res) {
+/**
+  * @notice Rest endpoint to manage an addProposal
+  * @param _req The http request data
+  * @param _res The http response data
+  * @dev Rest endpoint to manage an addProposal using `_req`, `_res` data
+  */
+app.post("/addProposal", function (_req, _res) {
   LOG_LEVEL > 0 && console.log("--> addProposal");
-  LOG_LEVEL > 0 && console.log(req.body);
-  this.addProposal(req.body);
-  res.end(
+  LOG_LEVEL > 0 && console.log(_req.body);
+  this.addProposal(_req.body);
+  _res.end(
     JSON.stringify({
       result: "OK",
     })
   );
 });
 
-app.post("/lowBalance", function (req, res) {
+/**
+  * @notice Rest endpoint to manage a lowBalance
+  * @param _req The http request data
+  * @param _res The http response data
+  * @dev Rest endpoint to manage a lowBalance using `_req`, `_res` data
+  */
+app.post("/lowBalance", function (_req, _res) {
   LOG_LEVEL > 0 && console.log("--> lowBalance");
-  LOG_LEVEL > 0 && console.log(req.body);
-  this.lowBalance(req.body);
-  res.end(
+  LOG_LEVEL > 0 && console.log(_req.body);
+  this.lowBalance(_req.body);
+  _res.end(
     JSON.stringify({
       result: "OK",
     })
   );
 });
 
-app.post("/acceptance", function (req, res) {
+/**
+  * @notice Rest endpoint to manage an acceptance
+  * @param _req The http request data
+  * @param _res The http response data
+  * @dev Rest endpoint to manage an acceptance using `_req`, `_res` data
+  */
+app.post("/acceptance", function (_req, _res) {
   LOG_LEVEL > 0 && console.log("--> acceptance");
-  LOG_LEVEL > 0 && console.log(req.body);
-  this.acceptance(req.body);
-  res.end(
+  LOG_LEVEL > 0 && console.log(_req.body);
+  this.acceptance(_req.body);
+  _res.end(
     JSON.stringify({
       result: "OK",
     })
   );
 });
 
-app.post("/topUp", function (req, res) {
+/**
+  * @notice Rest endpoint to manage a topUp
+  * @param _req The http request data
+  * @param _res The http response data
+  * @dev Rest endpoint to manage a topUp using `_req`, `_res` data
+  */
+app.post("/topUp", function (_req, _res) {
   LOG_LEVEL > 0 && console.log("--> topUp");
-  LOG_LEVEL > 0 && console.log(req.body);
-  this.topUp(req.body);
-  res.end(
+  LOG_LEVEL > 0 && console.log(_req.body);
+  this.topUp(_req.body);
+  _res.end(
     JSON.stringify({
       result: "OK",
     })
   );
 });
 
+/**
+  * @notice Initialize Express server
+  */
 var server = app.listen(8081, function () {
-  var host = server.address().address;
-  var port = server.address().port;
-  //console.log("Example app listening at http://%s:%s", host, port);
   console.log("Server started...");
 });

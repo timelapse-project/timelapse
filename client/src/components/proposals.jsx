@@ -131,7 +131,7 @@ class Proposals extends Component {
   handleCloseProposal = async (index) => {
     console.log("==> handleCloseProposal", index);
     const { accounts, timelapseInstance } = this.state;
-    await timelapseInstance.methods.closedProposal(index).send({
+    await timelapseInstance.methods.closeProposal(index).send({
       from: accounts[0],
     });
     this.runInit();

@@ -56,11 +56,11 @@ Test the `Offering.sol` smart-contract
     - `Revert: addProposal is onlyOwner` makes sure that `.addProposal()` reverts if not called by the contract owner
     - `addProposal` makes sure that `.addProposal()` adds correctly new proposal(s) 
     - `Event: ProposalAdded` makes sure that `.addProposal()` generates the event `ProposalAdded`
-- `Function: closedProposal`
-    - `Revert: closedProposal is onlyOwner` makes sure that `.closedProposal()` reverts if not called by the contract owner
-    - `Revert: closedProposal for existing proposal` makes sure that `.closedProposal()` reverts if called for an unknown proposal
-    - `closedProposal` makes sure that `.closedProposal()` closes correctly proposal(s) 
-    - `Event: ClosedProposal for closedProposal` makes sure that `.closedProposal()` generates the event `ClosedProposal`
+- `Function: closeProposal`
+    - `Revert: closeProposal is onlyOwner` makes sure that `.closeProposal()` reverts if not called by the contract owner
+    - `Revert: closeProposal for existing proposal` makes sure that `.closeProposal()` reverts if called for an unknown proposal
+    - `closeProposal` makes sure that `.closeProposal()` closes correctly proposal(s) 
+    - `Event: ClosedProposal for closeProposal` makes sure that `.closeProposal()` generates the event `ClosedProposal`
 - `Function: proposalsCount`
     - `proposalsCount` makes sure that `.proposalsCount()` returns the correct number of proposal(s) 
 - `Function: lowBalanceOffering`
@@ -111,11 +111,11 @@ Test the `Timelapse.sol` smart-contract
         - `Revert: addProposal is onlyOwner` makes sure that `.addProposal()` reverts if not called by the contract owner
         - `addProposal` makes sure that `.addProposal()` adds correctly new proposal(s) 
         - `Event: ProposalAdded` makes sure that `.addProposal()` generates the event `ProposalAdded`
-    - `Function: closedProposal`
-        - `Revert: closedProposal is onlyOwner` makes sure that `.closedProposal()` reverts if not called by the contract owner
-        - `Revert: closedProposal for existing proposal` makes sure that `.closedProposal()` reverts if called for an unknown proposal
-        - `closedProposal` makes sure that `.closedProposal()` closes correctly proposal(s) 
-        - `Event: ClosedProposal for closedProposal` makes sure that `.closedProposal()` generates the event `ClosedProposal`
+    - `Function: closeProposal`
+        - `Revert: closeProposal is onlyOwner` makes sure that `.closeProposal()` reverts if not called by the contract owner
+        - `Revert: closeProposal for existing proposal` makes sure that `.closeProposal()` reverts if called for an unknown proposal
+        - `closeProposal` makes sure that `.closeProposal()` closes correctly proposal(s) 
+        - `Event: ClosedProposal for closeProposal` makes sure that `.closeProposal()` generates the event `ClosedProposal`
     - `Function: lowBalanceOffering`
         - `Revert: lowBalanceOffering is onlyOwner` makes sure that `.lowBalanceOffering()` reverts if not called by the contract owner
         - `lowBalanceOffering` makes sure that `.lowBalanceOffering()` generates a new offer
@@ -132,11 +132,11 @@ Test the `Timelapse.sol` smart-contract
         - `Revert: addProposal is onlyOwner` makes sure that `.addProposal()` reverts if not called by the contract owner
         - `addProposal` makes sure that `.addProposal()` adds correctly new proposal(s) 
         - `Event: ProposalAdded` makes sure that `.addProposal()` generates the event `ProposalAdded`
-    - `Function: closedProposal`
-        - `Revert: closedProposal is onlyOwner` makes sure that `.closedProposal()` reverts if not called by the contract owner
-        - `Revert: closedProposal for existing proposal` makes sure that `.closedProposal()` reverts if called for an unknown proposal
-        - `closedProposal` makes sure that `.closedProposal()` closes correctly proposal(s) 
-        - `Event: ClosedProposal for closedProposal` makes sure that `.closedProposal()` generates the event `ClosedProposal`
+    - `Function: closeProposal`
+        - `Revert: closeProposal is onlyOwner` makes sure that `.closeProposal()` reverts if not called by the contract owner
+        - `Revert: closeProposal for existing proposal` makes sure that `.closeProposal()` reverts if called for an unknown proposal
+        - `closeProposal` makes sure that `.closeProposal()` closes correctly proposal(s) 
+        - `Event: ClosedProposal for closeProposal` makes sure that `.closeProposal()` generates the event `ClosedProposal`
     - `Function: addToScore`
         - `Revert: addToScore is onlyOwner` makes sure that `.addToScore()` reverts if not called by the contract owner
         - `addToScore` makes sure that `.addToScore()` updates correctly the customer(s) information 

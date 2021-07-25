@@ -19,7 +19,7 @@ Add a proposal
 
 Add a proposal with the following information: minimum scoring `_minScoring`, amount `_capital` + `_interest`, description `_description`
 
-### `closedProposal(uint256 _id)` (public)
+### `closeProposal(uint256 _id)` (public)
 
 Close a proposal
 

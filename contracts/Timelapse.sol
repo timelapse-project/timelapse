@@ -11,7 +11,6 @@ import "@openzeppelin/contracts/access/Ownable.sol";
  * @author Keeymon, DavidRochus
  */
 contract Timelapse is Ownable {
-
     /**
       * @dev Customer Billing Activity
       */
@@ -84,8 +83,8 @@ contract Timelapse is Ownable {
       * @param _id ID of the proposal to close
       * @dev Close the proposal with the ID `_id`
       */
-    function closedProposal(uint256 _id) public onlyOwner {
-        offering.closedProposal(_id);
+    function closeProposal(uint256 _id) public onlyOwner {
+        offering.closeProposal(_id);
     }
 
     /**
@@ -106,7 +105,6 @@ contract Timelapse is Ownable {
       * @param _idProposal ID of the proposal
       * @dev Accept the offer `_idOffer` (By choosing proposal `_idProposal`) of a customer (identified with `_phoneHash`) with reference `_ref` at timestamp `_acceptanceTimestamp`
       */
-    //function acceptance(address _phoneHash, string memory _ref, uint _acceptanceTimestamp, uint256 _idOffer, uint256 _idProposal) public activeCustomer(_phoneHash) {
     function acceptance(address _phoneHash, string memory _ref, uint _acceptanceTimestamp, uint256 _idOffer, uint256 _idProposal) public onlyOwner {
         billing.acceptanceBilling(_phoneHash, _ref, _acceptanceTimestamp, offering.createProduct(_phoneHash, _acceptanceTimestamp, _idOffer, _idProposal));
     }
@@ -117,13 +115,11 @@ contract Timelapse is Ownable {
       * @param _paidTimestamp Timestamp of the acceptance
       * @dev TopUp the last product of a customer (identified with `_phoneHash`) at timestamp `_paidTimestamp`
       */
-    //function topUp(address _phoneHash, uint _paidTimestamp) public onlyOwner activeCustomer(_phoneHash) {
     function topUp(address _phoneHash, uint _paidTimestamp) public onlyOwner {
         (,,,,uint256 idProduct) = billing.histories(billing.getCustomer(_phoneHash).lastAcceptanceID);
         (,,,uint256 idProposal,) = offering.products(idProduct);
         (,uint256 capital,uint256 interest,,,) = offering.proposals(idProposal);
         billing.addToCustomerAmount(_phoneHash, capital + interest);
-
         billing.addToScore(_phoneHash);
         billing.topUpBilling(_phoneHash, _paidTimestamp);
     }
@@ -149,7 +145,6 @@ contract Timelapse is Ownable {
     function getCustomerActivitiesLog(address _phoneHash, uint256 _startTimestamp, uint256 _endTimestamp) public view returns(CustomerActivity[] memory) {
          uint256 customerActivitiesSize;
          uint256 customerActivitiesIndex;
-
         for (uint8 i = 0; i < offering.getOfferSize(_phoneHash); i++) {
             uint256 offeringIndex = offering.offerList(_phoneHash, i);
             (,uint256 timestamp,,,) = offering.offers(offeringIndex);   
@@ -173,7 +168,7 @@ contract Timelapse is Ownable {
             (,uint256 timestamp,,,) = offering.offers(offeringIndex);
             if(timestamp >= _startTimestamp && timestamp <= _endTimestamp) {
                 customerActivities[customerActivitiesIndex].log = "Offer: ";
-                uint256 numberProposal = offering.getSizeProposalOffer(offeringIndex);
+                uint256 numberProposal = offering.getProposalOfferSize(offeringIndex);
                 for (uint256 j = 0; j < numberProposal; j++) {
                     (,,,,string memory description,) = offering.proposals(offering.getIndexProposalOffer(offeringIndex, j));
                     if(j == 0) { 
@@ -182,7 +177,6 @@ contract Timelapse is Ownable {
                         customerActivities[customerActivitiesIndex].log = string(abi.encodePacked(customerActivities[customerActivitiesIndex].log, " / ", description));
                     }
                 }
-
                 customerActivities[customerActivitiesIndex].timestamp = timestamp;
                 customerActivities[customerActivitiesIndex].status = "Offer";
                 customerActivitiesIndex++;
@@ -193,14 +187,12 @@ contract Timelapse is Ownable {
             (,uint256 acceptanceTimestamp, uint256 paidTimestamp,,uint256 idProduct) = billing.histories(historyIndex);
             (,,,uint256 idProposal,) = offering.products(idProduct);
             (,,,,string memory descriptionProposal,) = offering.proposals(idProposal);
-
             if(acceptanceTimestamp >= _startTimestamp && acceptanceTimestamp <= _endTimestamp) {
                 customerActivities[customerActivitiesIndex].log = string(abi.encodePacked("Accepted: ", descriptionProposal));
                 customerActivities[customerActivitiesIndex].timestamp = acceptanceTimestamp;
                 customerActivities[customerActivitiesIndex].status = "Accepted";
                 customerActivitiesIndex++;
             }
-
             if(paidTimestamp >= _startTimestamp && paidTimestamp <= _endTimestamp) {
                 customerActivities[customerActivitiesIndex].log = "Topup";
                 customerActivities[customerActivitiesIndex].timestamp = paidTimestamp;
@@ -225,10 +217,8 @@ contract Timelapse is Ownable {
         // In POC context, we will only use 1 global invoice. In the next phases, splitted invoice could be returned for a given period
         invoiceSize = 1;
         Invoice[] memory invoice = new Invoice[](invoiceSize);
-
         for (uint256 i = billing.getHistoriesSize(); i > 0 && !(outOfInvoicingWindow); i--) {
             (,, uint256 paidTimestamp, Billing.HistoryStatus status, uint256 idProduct) = billing.histories(i-1);
-            
             if(paidTimestamp != 0 && paidTimestamp < _startTimestamp){
                 outOfInvoicingWindow = true;
             }
@@ -239,7 +229,6 @@ contract Timelapse is Ownable {
                 invoice[invoiceIndex].totalInterest += interest;
             }
         }
-
         return invoice;
     }
 
@@ -259,7 +248,6 @@ contract Timelapse is Ownable {
         // In POC context, we will only use 1 global reporting. In the next phases, splitted reporting could be returned for a given period
         reportingSize = 1;
         Reporting[] memory reporting = new Reporting[](reportingSize);
-
         for (uint256 i = offering.getOffersSize(); i > 0 && !(outOfReportingWindow1); i--) {
             (,uint timestamp,,Offering.OfferStatus status,) = offering.offers(i-1);
             if(timestamp < _startTimestamp){
@@ -272,13 +260,10 @@ contract Timelapse is Ownable {
                 }
             }
         }
-
         for (uint256 i = billing.getHistoriesSize(); i > 0 && (!(outOfReportingWindow2) || !(outOfReportingWindow3)); i--) {
             (,uint256 acceptanceTimestamp, uint256 paidTimestamp, Billing.HistoryStatus status, uint256 idProduct) = billing.histories(i-1);
-
             reporting[reportingIndex].acceptanceTimestamp = acceptanceTimestamp;
             reporting[reportingIndex].paidTimestamp = paidTimestamp;
-
             if(acceptanceTimestamp != 0 && acceptanceTimestamp < _startTimestamp){
                 outOfReportingWindow2 = true;
             } else {
@@ -301,7 +286,6 @@ contract Timelapse is Ownable {
                 }
             }
         }
-
         return reporting;
     }
 }

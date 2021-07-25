@@ -49,6 +49,9 @@ contract Billing is Ownable {
         uint256         lastAcceptanceID;
     }
 
+    /**
+     * @dev Customer index information
+     */
     struct CustomerInfo {
         uint256         idCustomer;
         CustomerStatus  status;
@@ -58,26 +61,32 @@ contract Billing is Ownable {
      * @dev Triggered when status of a customer has changed
      */
     event CustomerStatusChange(address phoneHash, CustomerStatus status);
+
     /**
      * @dev Triggered when score of a customer has changed 
      */
     event ScoreChange(address phoneHash, uint8 score);
+
     /**
      * @dev Triggered when a customer has been deleted
      */
     event CustomerIsDeleted(address phoneHash);
+
     /**
      * @dev Triggered when an Acceptance is received
      */
     event AcceptanceReceived(address phoneHash, string ref, uint acceptanceTimestamp, uint256 idProduct);
+
     /**
      * @dev Triggered when confirmation has to be sent
      */
     event Confirmation(address phoneHash, string ref, uint acceptanceTimestamp, uint256 idProduct);
+
     /**
      * @dev Triggered when a topUp is received
      */
     event TopUpReceived(address phoneHash, string ref);
+
     /**
      * @dev Triggered when an acknowledge has to be sent
      */
@@ -221,7 +230,6 @@ contract Billing is Ownable {
         histories.push(History( _ref, _acceptanceTimestamp, 0, HistoryStatus.Active, _idProduct));
         customers[customerList[_phoneHash].idCustomer].lastAcceptanceID = (histories.length - 1);
         Customer memory customer = customers[customerList[_phoneHash].idCustomer];
-//        customer.lastAcceptanceID = (histories.length - 1);
         historyList[_phoneHash].push(histories.length - 1);
         History memory lastAcceptance = histories[customer.lastAcceptanceID];
         emit Confirmation(_phoneHash, lastAcceptance.ref, lastAcceptance.acceptanceTimestamp, lastAcceptance.idProduct);
@@ -237,19 +245,12 @@ contract Billing is Ownable {
         require(historyList[_phoneHash].length > 0, "Phone is not registered");
         uint index = historyList[_phoneHash][(historyList[_phoneHash].length - 1)];
         require(histories[index].status == HistoryStatus.Active, "The customer has no product to refund");
-
         emit TopUpReceived(_phoneHash, histories[index].ref);
         if (customers[customerList[_phoneHash].idCustomer].firstTopUp == 0) {
             customers[customerList[_phoneHash].idCustomer].firstTopUp = block.timestamp;
         }
         histories[index].paidTimestamp = _paidTimestamp;
         histories[index].status = HistoryStatus.Closed;
-        /*
-        if(customers[_phoneHash].score == 0) { // On mettra ca ailleur
-            customers[_phoneHash].status = CustomerStatus.Closed;
-            emit CustomerIsDeleted(_phoneHash);
-        }
-        */
         emit Acknowledge(_phoneHash, histories[index].ref);
     }
 
@@ -260,7 +261,6 @@ contract Billing is Ownable {
       * @dev Compute the score of a customer `_customer`
       */
     function process(Customer memory _customer) public view returns(uint8) {
-        uint8 score;
         uint8 topupAmountPoints;
         uint8 firstTopUpAgePoints;
         uint8 nbTopUpPoints;
@@ -295,11 +295,8 @@ contract Billing is Ownable {
         } else {
             nbTopUpPoints = 15;
         }
-
-        score =
-            (topupAmountPoints * 4) +
+        return (topupAmountPoints * 4) +
             (firstTopUpAgePoints * 6) +
             (nbTopUpPoints * 8);
-        return score;
     }
 }

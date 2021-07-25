@@ -15,6 +15,9 @@ var billingInstance = null;
 var proposalsCount = 0;
 var proposalList = [];
 
+/**
+  * @notice Initialize application
+  */
 runInit = async () => {
   const networkId = await web3.eth.net.getId();
   const timelapseNetwork = TimelapseContract.networks[networkId];
@@ -56,6 +59,11 @@ runInit = async () => {
   console.log("Watcher started...");
 };
 
+/**
+  * @notice Manage emitted events
+  * @param _data The content of the rest request
+  * @dev Send a request to BlockChain in order to manage a topUp using `_data` content
+  */
 doWhenEvent = async (data) => {
   LOG_LEVEL > 1 &&
     console.log(
@@ -65,7 +73,7 @@ doWhenEvent = async (data) => {
 
   switch (data.event) {
     case "ProposalAdded":
-      addProposal(data.returnValues);
+      getProposal(data.returnValues);
       break;
     case "LowBalanceReceived":
       break;
@@ -87,6 +95,9 @@ doWhenEvent = async (data) => {
   }
 };
 
+/**
+  * @notice Get all the proposals
+  */
 getProposals = async () => {
   LOG_LEVEL > 0 && console.log("### getProposals");
 
@@ -102,8 +113,13 @@ getProposals = async () => {
   LOG_LEVEL > 1 && console.log("proposalList", JSON.stringify(proposalList));
 };
 
-addProposal = async (data) => {
-  LOG_LEVEL > 0 && console.log("<-- addProposal");
+/**
+  * @notice Get a proposal
+  * @param _data The content of the rest request
+  * @dev Get a proposal and add it to the proposal list using `_data` content
+  */
+getProposal = async (data) => {
+  LOG_LEVEL > 0 && console.log("<-- getProposal");
 
   let proposalItem = [];
   proposalItem.id = parseInt(data.idProposal);
@@ -117,6 +133,11 @@ addProposal = async (data) => {
   proposalsCount++;
 };
 
+/**
+  * @notice Send Offer to Telecom Operator
+  * @param _data The content of the rest request
+  * @dev Send Offer to Telecom Operator using `_data` content
+  */
 sendOffer = async (data) => {
   LOG_LEVEL > 0 && console.log("<-- sendOffer");
   var responseBody = {
@@ -150,13 +171,10 @@ sendOffer = async (data) => {
     proposalsCount++;
   }
   responseBody["proposalsCount"] = proposalsCount;
-
   if(proposalsCount === 0) {
     return;
   }
-
   LOG_LEVEL > 0 && console.log(responseBody);
-
   Request.post(
     {
       headers: { "content-type": "application/json" },
@@ -172,6 +190,11 @@ sendOffer = async (data) => {
   );
 };
 
+/**
+  * @notice Send Confirmation to Telecom Operator
+  * @param _data The content of the rest request
+  * @dev Send COnfirmation to Telecom Operator using `_data` content
+  */
 sendConfirmation = async (data) => {
   LOG_LEVEL > 0 && console.log("<-- sendConfirmation");
   var responseBody = {
@@ -180,9 +203,7 @@ sendConfirmation = async (data) => {
     productId: parseInt(data.idProduct),
     timestamp: data.acceptanceTimestamp,
   };
-
   LOG_LEVEL > 0 && console.log(responseBody);
-
   Request.post(
     {
       headers: { "content-type": "application/json" },
@@ -198,15 +219,18 @@ sendConfirmation = async (data) => {
   );
 };
 
+/**
+  * @notice Send Acknowledge to Telecom Operator
+  * @param _data The content of the rest request
+  * @dev Send Acknowledge to Telecom Operator using `_data` content
+  */
 sendAcknowledge = async (data) => {
   LOG_LEVEL > 0 && console.log("<-- sendAcknowledge");
   var responseBody = {
     type: 5,
     phoneHash: data.phoneHash,
   };
-
   LOG_LEVEL > 0 && console.log(responseBody);
-
   Request.post(
     {
       headers: { "content-type": "application/json" },

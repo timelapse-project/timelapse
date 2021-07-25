@@ -37,7 +37,7 @@ Add a proposal
 
 Add a proposal with the following information: minimum scoring `_minScoring`, amount `_capital` + `_interest`, description `_description`
 
-### `closedProposal(uint256 _id)` (public)
+### `closeProposal(uint256 _id)` (public)
 
 Close a proposal
 
@@ -51,7 +51,7 @@ Number of proposals
 
 Return the number of proposals
 
-### `getSizeProposalOffer(uint256 _idOffer) → uint256` (public)
+### `getProposalOfferSize(uint256 _idOffer) → uint256` (public)
 
 Number of proposal in an offer
 

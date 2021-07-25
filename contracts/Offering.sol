@@ -93,6 +93,7 @@ contract Offering is Ownable {
      * @dev Proposals table
      */
     Proposal[] public proposals;
+
     /**
      * @dev Products table
      */
@@ -112,14 +113,17 @@ contract Offering is Ownable {
      * @dev Triggered when a proposal is closed
      */
     event ClosedProposal(uint256 idProposal);
+
     /**
      * @dev Triggered when a product is created
      */
     event ProductCreated(address phoneHash, uint timestamp, uint256 idOffer, uint256 idProposal);
+
     /**
      * @dev Triggered when a lowBalance is received
      */
     event LowBalanceReceived(address phoneHash, string ref);
+
     /**
      * @dev Triggered when an offer has to be sent
      */
@@ -132,6 +136,7 @@ contract Offering is Ownable {
         uint256 scoring,
         string ref
     );
+
     /**
      * @dev Triggered when an acceptance is received
      */
@@ -149,10 +154,12 @@ contract Offering is Ownable {
         address phoneHash,
         uint timestamp
     );
+
     /**
      * @dev Triggered when a topUp is received
      */
     event TopUpReceived(address phoneHash, uint256 productId, uint256 amount);
+
     /**
      * @dev Triggered when an acknowledge has to be sent
      */
@@ -165,6 +172,7 @@ contract Offering is Ownable {
         require(id < proposals.length, "Proposal doesn't exist");
         _;
     }
+    
     /**
      * @dev Check if offer exists
      */
@@ -200,14 +208,12 @@ contract Offering is Ownable {
         string memory _description
     ) public onlyOwner {
         Proposal memory proposalData;
-
         proposalData.minScoring = _minScoring;
         proposalData.capital = _capital;
         proposalData.interest = _interest;
         proposalData.description = _description;
         proposalData.status = ProposalStatus.Active;
         proposals.push(proposalData);
-
         emit ProposalAdded(
             (proposals.length - 1),
             proposalData.minScoring,
@@ -222,7 +228,7 @@ contract Offering is Ownable {
       * @param _id ID of the proposal to close
       * @dev Close the proposal with the ID `_id`
       */
-    function closedProposal(uint256 _id) public onlyOwner existProposal(_id) {
+    function closeProposal(uint256 _id) public onlyOwner existProposal(_id) {
         proposals[_id].status = ProposalStatus.Closed;
         emit ClosedProposal(_id);
     }
@@ -240,7 +246,7 @@ contract Offering is Ownable {
       * @param _idOffer The ID of the offer
       * @dev Return the number of proposal in an offer
       */
-    function getSizeProposalOffer(uint256 _idOffer) public view existOffer(_idOffer) returns(uint256) {
+    function getProposalOfferSize(uint256 _idOffer) public view existOffer(_idOffer) returns(uint256) {
         return offers[_idOffer].proposals.length;
     }
 
@@ -281,8 +287,6 @@ contract Offering is Ownable {
       */
     function lowBalanceOffering(address _phoneHash, string memory _ref, uint8 _score) public onlyOwner {
         emit LowBalanceReceived(_phoneHash, _ref);
-
-        //Register Offer
         Offer memory offerData;
         offerData.phoneHash = _phoneHash;
         offerData.timestamp = block.timestamp;
@@ -290,9 +294,7 @@ contract Offering is Ownable {
         offerData.proposals = getOfferProposals(_score);
         offerData.ref = _ref;
         offers.push(offerData);
-
         offerList[_phoneHash].push(offers.length - 1);
-
         emit OfferSent(
             (offers.length - 1),
             offerData.phoneHash,
@@ -333,11 +335,9 @@ contract Offering is Ownable {
     {
         uint256[] memory offerProposals = new uint256[](3);
         uint8 offerProposalsIndex = 0;
-
         if (_scoring == 0) {
             return offerProposals;
         }
-        
         for (
             uint8 i = 0;
             (i < proposals.length && offerProposalsIndex < 3);
@@ -372,5 +372,4 @@ contract Offering is Ownable {
         }
         return offerProposals;
     }
-
 }

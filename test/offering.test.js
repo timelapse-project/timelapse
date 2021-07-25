@@ -103,41 +103,41 @@ contract("Offering", function (accounts) {
       });
     });
 
-    describe("Function: closedProposal", async function() {
-      it("Revert: closedProposal is onlyOwner", async function() {
+    describe("Function: closeProposal", async function() {
+      it("Revert: closeProposal is onlyOwner", async function() {
         await this.OfferingInstance.addProposal(minScore1, capital1, interest1, description1, {from: owner});
-        await expectRevert(this.OfferingInstance.closedProposal(0, {from:phoneHash1}),
+        await expectRevert(this.OfferingInstance.closeProposal(0, {from:phoneHash1}),
         "Ownable: caller is not the owner");
       });
 
-      it("Revert: closedProposal for existing proposal", async function() {
-        await expectRevert(this.OfferingInstance.closedProposal(0, {from:owner}),
+      it("Revert: closeProposal for existing proposal", async function() {
+        await expectRevert(this.OfferingInstance.closeProposal(0, {from:owner}),
         "Proposal doesn't exist");
       });
 
-      it("closedProposal", async function () {
+      it("closeProposal", async function () {
         // Proposal 1
         await this.OfferingInstance.addProposal(minScore1, capital1, interest1, description1, {from: owner});
-        await this.OfferingInstance.closedProposal(idProposal1, {from: owner});
+        await this.OfferingInstance.closeProposal(idProposal1, {from: owner});
         const proposal1 = await this.OfferingInstance.proposals(idProposal1);
         expect(proposal1["status"]).to.be.bignumber.equal(closedProposal);
 
         // Proposal 2
         await this.OfferingInstance.addProposal(minScore2, capital2, interest2, description2, {from: owner});
-        await this.OfferingInstance.closedProposal(idProposal2, {from: owner});
+        await this.OfferingInstance.closeProposal(idProposal2, {from: owner});
         const proposal2 = await this.OfferingInstance.proposals(idProposal2);
         expect(proposal2["status"]).to.be.bignumber.equal(closedProposal);
 
         // Proposal 1
         await this.OfferingInstance.addProposal(minScore3, capital3, interest3, description3, {from: owner});
-        await this.OfferingInstance.closedProposal(idProposal3, {from: owner});
+        await this.OfferingInstance.closeProposal(idProposal3, {from: owner});
         const proposal3 = await this.OfferingInstance.proposals(idProposal3);
         expect(proposal3["status"]).to.be.bignumber.equal(closedProposal);
       });
 
-      it("Event: ClosedProposal for closedProposal", async function() {
+      it("Event: ClosedProposal for closeProposal", async function() {
         await this.OfferingInstance.addProposal(minScore1, capital1, interest1, description1, {from: owner});
-        expectEvent(await this.OfferingInstance.closedProposal(0, {from: owner}),
+        expectEvent(await this.OfferingInstance.closeProposal(0, {from: owner}),
         "ClosedProposal",
         {idProposal: new BN(0)});
       })
@@ -161,7 +161,6 @@ contract("Offering", function (accounts) {
       });
 
       it("lowBalanceOffering", async function() {
-        // Add Proposal
         await this.OfferingInstance.addProposal(minScore1, capital1, interest1, description1, {from: owner});
         await this.OfferingInstance.addProposal(minScore2, capital2, interest2, description2, {from: owner});
         await this.OfferingInstance.addProposal(minScore3, capital3, interest3, description3, {from: owner});
@@ -224,7 +223,6 @@ contract("Offering", function (accounts) {
       });
 
       it("createProduct", async function() {
-        // Add Proposal
         await this.OfferingInstance.addProposal(minScore1, capital1, interest1, description1, {from: owner});
         await this.OfferingInstance.addProposal(minScore2, capital2, interest2, description2, {from: owner});
         await this.OfferingInstance.addProposal(minScore3, capital3, interest3, description3, {from: owner});
