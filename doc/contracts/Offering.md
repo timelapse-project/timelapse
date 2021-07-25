@@ -30,63 +30,63 @@ Check if product exists
 
 Smart Contract constructor
 
-### `addProposal(uint8 _minScoring, uint256 _capital, uint256 _interest, string _description)` (public)
+### `addProposal(uint8 _minScoring, uint256 _capital, uint256 _interest, string _description)` (external)
 
 Add a proposal
 
 
 Add a proposal with the following information: minimum scoring `_minScoring`, amount `_capital` + `_interest`, description `_description`
 
-### `closeProposal(uint256 _id)` (public)
+### `closeProposal(uint256 _id)` (external)
 
 Close a proposal
 
 
 Close the proposal with the ID `_id`
 
-### `proposalsCount() → uint256` (public)
+### `proposalsCount() → uint256` (external)
 
 Number of proposals
 
 
 Return the number of proposals
 
-### `getProposalOfferSize(uint256 _offerId) → uint256` (public)
+### `getProposalOfferSize(uint256 _offerId) → uint256` (external)
 
 Number of proposal in an offer
 
 
 Return the number of proposal in an offer
 
-### `getOfferSize(address _phoneHash) → uint256` (public)
+### `getOfferSize(address _phoneHash) → uint256` (external)
 
 Get the size of the Offers of a customer
 
 
 Get the size of the Offers of a customer (identified with `_phoneHash`)
 
-### `getOffersSize() → uint256` (public)
+### `getOffersSize() → uint256` (external)
 
 Get the size of all the offers
 
 
 Get the size of all the offers
 
-### `getIndexProposalOffer(uint256 _offerId, uint256 _id) → uint256` (public)
+### `getIndexProposalOffer(uint256 _offerId, uint256 _id) → uint256` (external)
 
 Get the ID proposal in offer
 
 
 Return the ID proposal in offer
 
-### `lowBalanceOffering(address _phoneHash, string _ref, uint8 _score)` (public)
+### `lowBalanceOffering(address _phoneHash, string _ref, uint8 _score)` (external)
 
 Manage the "low balances" received and generate an offer
 
 
 Manage lowBalance (with reference `_ref`) of a customer (identified with `_phoneHash`) and generate an offer based on the score `_score`
 
-### `createProduct(address _phoneHash, uint256 _acceptanceTimestamp, uint256 _offerId, uint256 _proposalId) → uint256` (public)
+### `createProduct(address _phoneHash, uint256 _acceptanceTimestamp, uint256 _offerId, uint256 _proposalId) → uint256` (external)
 
 Create a product
 
@@ -99,13 +99,6 @@ Get the proposals corresponding to the scoring
 
 
 Return the proposals that correspond to the given scoring `_scoring`
-
-### `trimOfferProposals(uint256[] _offerProposals, uint8 _offerProposalsCount) → uint256[]` (public)
-
-Create a trimmed table of the proposals
-
-
-Return a proposals based on table `_offerProposals` with only the first `_offerProposalsCount` proposals
 
 
 ### `ProposalAdded(uint256 proposalId, uint8 minScoring, uint256 capital, uint256 interest, string description)`

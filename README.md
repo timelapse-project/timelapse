@@ -26,7 +26,7 @@ Timelapse software is composed of 3 parts:
   A **ReactJS client app** written in ReactJS and deployed on Heroku.
   It provides the User Interface to interact with the contracts.
 - **Timelapse API**:  
-  The **Server/Watcher** written in NodeJS.
+  The **Server/Watcher** APIs written in NodeJS.
 
 This Github **repository** gather the **back-end and**, the **front-end** and the **API** code.
 
