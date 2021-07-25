@@ -1,6 +1,6 @@
 # Design Pattern Decisions
 
-This section explains why we chose the design patterns we are using in the code. 
+This section explains why we chose the design patterns we are using in the code.
 
 [Reference](https://fravoll.github.io/solidity-patterns/)
 
@@ -8,7 +8,8 @@ This section explains why we chose the design patterns we are using in the code.
 
 ### Access Restriction
 
-We restrict access to key functions(storage write functions) of our smart-contracts where only the owner can run them.  
+We restrict access to key functions(storage write functions) of our smart-contracts where only the owner can run them.
+
 - For `Timelapse` smart-contract, the owner is the one who deployed it
 - For `Offering` smart-contract, the owner is `Timelapse` smart-contract
 - For `Billing` smart-contract, the owner is `Timelapse` smart-contract
@@ -22,9 +23,10 @@ We use a **Guard Check Pattern** via `onlyOwner` of [Openzeppelin's `Ownable` co
 ### Solidity version 0.8.6
 
 We use the the latest Solidity version (0.8+) since:
+
 - it was a requirement of the project
 - OpenZeppelin supports it  
-This version brings in native handling of arithmetic overflow and underflow and reverts the transaction in this case. 
+  This version brings in native handling of arithmetic overflow and underflow and reverts the transaction in this case.
 
 ### Repository and Source Code
 

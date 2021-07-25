@@ -61,15 +61,29 @@ contract("Offering", function (accounts) {
       this.OfferingInstance = await Offering.new();
     });
 
-    describe("Function: addProposal", async function() {
-      it("Revert: addProposal is onlyOwner", async function() {
-        await expectRevert(this.OfferingInstance.addProposal(minScore1, capital1, interest1, description1, {from:phoneHash1}),
-        "Ownable: caller is not the owner");
+    describe("Function: addProposal", async function () {
+      it("Revert: addProposal is onlyOwner", async function () {
+        await expectRevert(
+          this.OfferingInstance.addProposal(
+            minScore1,
+            capital1,
+            interest1,
+            description1,
+            { from: phoneHash1 }
+          ),
+          "Ownable: caller is not the owner"
+        );
       });
 
       it("addProposal", async function () {
         // Proposal 1
-        await this.OfferingInstance.addProposal(minScore1, capital1, interest1, description1, {from: owner});
+        await this.OfferingInstance.addProposal(
+          minScore1,
+          capital1,
+          interest1,
+          description1,
+          { from: owner }
+        );
         const proposal1 = await this.OfferingInstance.proposals(idProposal1);
         expect(proposal1["minScoring"]).to.be.bignumber.equal(minScore1);
         expect(proposal1["capital"]).to.be.bignumber.equal(capital1);
@@ -78,7 +92,13 @@ contract("Offering", function (accounts) {
         expect(proposal1["status"]).to.be.bignumber.equal(activeProposal);
 
         // Proposal 2
-        await this.OfferingInstance.addProposal(minScore2, capital2, interest2, description2, {from: owner});
+        await this.OfferingInstance.addProposal(
+          minScore2,
+          capital2,
+          interest2,
+          description2,
+          { from: owner }
+        );
         const proposal2 = await this.OfferingInstance.proposals(idProposal2);
         expect(proposal2["minScoring"]).to.be.bignumber.equal(minScore2);
         expect(proposal2["capital"]).to.be.bignumber.equal(capital2);
@@ -87,7 +107,13 @@ contract("Offering", function (accounts) {
         expect(proposal2["status"]).to.be.bignumber.equal(activeProposal);
 
         // Proposal 3
-        await this.OfferingInstance.addProposal(minScore3, capital3, interest3, description3, {from: owner});
+        await this.OfferingInstance.addProposal(
+          minScore3,
+          capital3,
+          interest3,
+          description3,
+          { from: owner }
+        );
         const proposal3 = await this.OfferingInstance.proposals(idProposal3);
         expect(proposal3["minScoring"]).to.be.bignumber.equal(minScore3);
         expect(proposal3["capital"]).to.be.bignumber.equal(capital3);
@@ -97,90 +123,204 @@ contract("Offering", function (accounts) {
       });
 
       it("Event: ProposalAdded", async function () {
-        expectEvent(await this.OfferingInstance.addProposal(minScore1, capital1, interest1, description1, {from: owner}),
+        expectEvent(
+          await this.OfferingInstance.addProposal(
+            minScore1,
+            capital1,
+            interest1,
+            description1,
+            { from: owner }
+          ),
           "ProposalAdded",
-          {idProposal: new BN(0), minScoring: minScore1, capital: capital1, interest: interest1, description: description1});
+          {
+            idProposal: new BN(0),
+            minScoring: minScore1,
+            capital: capital1,
+            interest: interest1,
+            description: description1,
+          }
+        );
       });
     });
 
-    describe("Function: closeProposal", async function() {
-      it("Revert: closeProposal is onlyOwner", async function() {
-        await this.OfferingInstance.addProposal(minScore1, capital1, interest1, description1, {from: owner});
-        await expectRevert(this.OfferingInstance.closeProposal(0, {from:phoneHash1}),
-        "Ownable: caller is not the owner");
+    describe("Function: closeProposal", async function () {
+      it("Revert: closeProposal is onlyOwner", async function () {
+        await this.OfferingInstance.addProposal(
+          minScore1,
+          capital1,
+          interest1,
+          description1,
+          { from: owner }
+        );
+        await expectRevert(
+          this.OfferingInstance.closeProposal(0, { from: phoneHash1 }),
+          "Ownable: caller is not the owner"
+        );
       });
 
-      it("Revert: closeProposal for existing proposal", async function() {
-        await expectRevert(this.OfferingInstance.closeProposal(0, {from:owner}),
-        "Proposal doesn't exist");
+      it("Revert: closeProposal for existing proposal", async function () {
+        await expectRevert(
+          this.OfferingInstance.closeProposal(0, { from: owner }),
+          "Proposal doesn't exist"
+        );
       });
 
       it("closeProposal", async function () {
         // Proposal 1
-        await this.OfferingInstance.addProposal(minScore1, capital1, interest1, description1, {from: owner});
-        await this.OfferingInstance.closeProposal(idProposal1, {from: owner});
+        await this.OfferingInstance.addProposal(
+          minScore1,
+          capital1,
+          interest1,
+          description1,
+          { from: owner }
+        );
+        await this.OfferingInstance.closeProposal(idProposal1, { from: owner });
         const proposal1 = await this.OfferingInstance.proposals(idProposal1);
         expect(proposal1["status"]).to.be.bignumber.equal(closedProposal);
 
         // Proposal 2
-        await this.OfferingInstance.addProposal(minScore2, capital2, interest2, description2, {from: owner});
-        await this.OfferingInstance.closeProposal(idProposal2, {from: owner});
+        await this.OfferingInstance.addProposal(
+          minScore2,
+          capital2,
+          interest2,
+          description2,
+          { from: owner }
+        );
+        await this.OfferingInstance.closeProposal(idProposal2, { from: owner });
         const proposal2 = await this.OfferingInstance.proposals(idProposal2);
         expect(proposal2["status"]).to.be.bignumber.equal(closedProposal);
 
         // Proposal 1
-        await this.OfferingInstance.addProposal(minScore3, capital3, interest3, description3, {from: owner});
-        await this.OfferingInstance.closeProposal(idProposal3, {from: owner});
+        await this.OfferingInstance.addProposal(
+          minScore3,
+          capital3,
+          interest3,
+          description3,
+          { from: owner }
+        );
+        await this.OfferingInstance.closeProposal(idProposal3, { from: owner });
         const proposal3 = await this.OfferingInstance.proposals(idProposal3);
         expect(proposal3["status"]).to.be.bignumber.equal(closedProposal);
       });
 
-      it("Event: ClosedProposal for closeProposal", async function() {
-        await this.OfferingInstance.addProposal(minScore1, capital1, interest1, description1, {from: owner});
-        expectEvent(await this.OfferingInstance.closeProposal(0, {from: owner}),
-        "ClosedProposal",
-        {idProposal: new BN(0)});
-      })
-    });
-
-    describe("Function: proposalsCount", async function() {
-      it("proposalsCount", async function() {
-        await this.OfferingInstance.addProposal(minScore1, capital1, interest1, description1, {from: owner});
-        expect(await this.OfferingInstance.proposalsCount()).to.be.bignumber.equal(new BN(1));
-        await this.OfferingInstance.addProposal(minScore2, capital2, interest2, description2, {from: owner});
-        expect(await this.OfferingInstance.proposalsCount()).to.be.bignumber.equal(new BN(2));
-        await this.OfferingInstance.addProposal(minScore3, capital3, interest3, description3, {from: owner});
-        expect(await this.OfferingInstance.proposalsCount()).to.be.bignumber.equal(new BN(3));
+      it("Event: ClosedProposal for closeProposal", async function () {
+        await this.OfferingInstance.addProposal(
+          minScore1,
+          capital1,
+          interest1,
+          description1,
+          { from: owner }
+        );
+        expectEvent(
+          await this.OfferingInstance.closeProposal(0, { from: owner }),
+          "ClosedProposal",
+          { idProposal: new BN(0) }
+        );
       });
     });
 
-    describe("Function: lowBalanceOffering", async function() {
-      it("Revert: lowBalanceOffering is onlyOwner", async function() {
-        await expectRevert(this.OfferingInstance.lowBalanceOffering(phoneHash1, ref1, minScore1, {from:phoneHash1}),
-        "Ownable: caller is not the owner");
+    describe("Function: proposalsCount", async function () {
+      it("proposalsCount", async function () {
+        await this.OfferingInstance.addProposal(
+          minScore1,
+          capital1,
+          interest1,
+          description1,
+          { from: owner }
+        );
+        expect(
+          await this.OfferingInstance.proposalsCount()
+        ).to.be.bignumber.equal(new BN(1));
+        await this.OfferingInstance.addProposal(
+          minScore2,
+          capital2,
+          interest2,
+          description2,
+          { from: owner }
+        );
+        expect(
+          await this.OfferingInstance.proposalsCount()
+        ).to.be.bignumber.equal(new BN(2));
+        await this.OfferingInstance.addProposal(
+          minScore3,
+          capital3,
+          interest3,
+          description3,
+          { from: owner }
+        );
+        expect(
+          await this.OfferingInstance.proposalsCount()
+        ).to.be.bignumber.equal(new BN(3));
+      });
+    });
+
+    describe("Function: lowBalanceOffering", async function () {
+      it("Revert: lowBalanceOffering is onlyOwner", async function () {
+        await expectRevert(
+          this.OfferingInstance.lowBalanceOffering(
+            phoneHash1,
+            ref1,
+            minScore1,
+            { from: phoneHash1 }
+          ),
+          "Ownable: caller is not the owner"
+        );
       });
 
-      it("lowBalanceOffering", async function() {
-        await this.OfferingInstance.addProposal(minScore1, capital1, interest1, description1, {from: owner});
-        await this.OfferingInstance.addProposal(minScore2, capital2, interest2, description2, {from: owner});
-        await this.OfferingInstance.addProposal(minScore3, capital3, interest3, description3, {from: owner});
+      it("lowBalanceOffering", async function () {
+        await this.OfferingInstance.addProposal(
+          minScore1,
+          capital1,
+          interest1,
+          description1,
+          { from: owner }
+        );
+        await this.OfferingInstance.addProposal(
+          minScore2,
+          capital2,
+          interest2,
+          description2,
+          { from: owner }
+        );
+        await this.OfferingInstance.addProposal(
+          minScore3,
+          capital3,
+          interest3,
+          description3,
+          { from: owner }
+        );
 
         // Customer 1
-        await this.OfferingInstance.lowBalanceOffering(phoneHash1, ref1, minScore1, {from:owner});
+        await this.OfferingInstance.lowBalanceOffering(
+          phoneHash1,
+          ref1,
+          minScore1,
+          { from: owner }
+        );
         const offer1 = await this.OfferingInstance.offers(idOffer1);
         expect(offer1["phoneHash"]).to.be.equal(phoneHash1);
         expect(offer1["ref"]).to.be.equal(ref1);
         expect(offer1["status"]).to.be.bignumber.equal(newOffer);
 
         // Customer 2
-        await this.OfferingInstance.lowBalanceOffering(phoneHash2, ref2, minScore2, {from:owner});
+        await this.OfferingInstance.lowBalanceOffering(
+          phoneHash2,
+          ref2,
+          minScore2,
+          { from: owner }
+        );
         const offer2 = await this.OfferingInstance.offers(idOffer2);
         expect(offer2["phoneHash"]).to.be.equal(phoneHash2);
         expect(offer2["ref"]).to.be.equal(ref2);
         expect(offer2["status"]).to.be.bignumber.equal(newOffer);
 
         // Customer 3
-        await this.OfferingInstance.lowBalanceOffering(phoneHash2, ref3, minScore3, {from:owner});
+        await this.OfferingInstance.lowBalanceOffering(
+          phoneHash2,
+          ref3,
+          minScore3,
+          { from: owner }
+        );
         const offer3 = await this.OfferingInstance.offers(idOffer3);
         expect(offer3["phoneHash"]).to.be.equal(phoneHash2);
         expect(offer3["ref"]).to.be.equal(ref3);
@@ -188,48 +328,131 @@ contract("Offering", function (accounts) {
       });
 
       it("Event: LowBalanceReceived for lowBalanceOffering", async function () {
-        expectEvent(await this.OfferingInstance.lowBalanceOffering(phoneHash1, ref1, minScore1, {from: owner}),
+        expectEvent(
+          await this.OfferingInstance.lowBalanceOffering(
+            phoneHash1,
+            ref1,
+            minScore1,
+            { from: owner }
+          ),
           "LowBalanceReceived",
-          {phoneHash: phoneHash1, ref: ref1});
+          { phoneHash: phoneHash1, ref: ref1 }
+        );
       });
 
       it("Event: OfferSent for lowBalanceOffering", async function () {
-        expectEvent(await this.OfferingInstance.lowBalanceOffering(phoneHash1, ref1, minScore1, {from: owner}),
+        expectEvent(
+          await this.OfferingInstance.lowBalanceOffering(
+            phoneHash1,
+            ref1,
+            minScore1,
+            { from: owner }
+          ),
           "OfferSent",
-          {phoneHash: phoneHash1, ref: ref1});
+          { phoneHash: phoneHash1, ref: ref1 }
+        );
       });
     });
 
-    describe("Function: createProduct", async function() {
-      it("Revert: createProduct is onlyOwner", async function() {
-        await this.OfferingInstance.addProposal(minScore1, capital1, interest1, description1, {from: owner});
-        await this.OfferingInstance.lowBalanceOffering(phoneHash1, ref1, minScore1, {from:owner});
-        await expectRevert(this.OfferingInstance.createProduct(phoneHash1, timestampA, 0, 0, {from:phoneHash1}),
-        "Ownable: caller is not the owner");
+    describe("Function: createProduct", async function () {
+      it("Revert: createProduct is onlyOwner", async function () {
+        await this.OfferingInstance.addProposal(
+          minScore1,
+          capital1,
+          interest1,
+          description1,
+          { from: owner }
+        );
+        await this.OfferingInstance.lowBalanceOffering(
+          phoneHash1,
+          ref1,
+          minScore1,
+          { from: owner }
+        );
+        await expectRevert(
+          this.OfferingInstance.createProduct(phoneHash1, timestampA, 0, 0, {
+            from: phoneHash1,
+          }),
+          "Ownable: caller is not the owner"
+        );
       });
 
-      it("Revert: createProduct for existing Proposal", async function() {
-        await this.OfferingInstance.addProposal(minScore1, capital1, interest1, description1, {from: owner});
-        await this.OfferingInstance.lowBalanceOffering(phoneHash1, ref1, minScore1, {from:owner});
-        await expectRevert(this.OfferingInstance.createProduct(phoneHash1, timestampA, 0, 1),
-        "Proposal doesn't exist");
+      it("Revert: createProduct for existing Proposal", async function () {
+        await this.OfferingInstance.addProposal(
+          minScore1,
+          capital1,
+          interest1,
+          description1,
+          { from: owner }
+        );
+        await this.OfferingInstance.lowBalanceOffering(
+          phoneHash1,
+          ref1,
+          minScore1,
+          { from: owner }
+        );
+        await expectRevert(
+          this.OfferingInstance.createProduct(phoneHash1, timestampA, 0, 1),
+          "Proposal doesn't exist"
+        );
       });
 
-      it("Revert: createProduct for existing Offer", async function() {
-        await this.OfferingInstance.addProposal(minScore1, capital1, interest1, description1, {from: owner});
-        await this.OfferingInstance.lowBalanceOffering(phoneHash1, ref1, minScore1, {from:owner});
-        await expectRevert(this.OfferingInstance.createProduct(phoneHash1, timestampA, 1, 0),
-        "Offer doesn't exist");
+      it("Revert: createProduct for existing Offer", async function () {
+        await this.OfferingInstance.addProposal(
+          minScore1,
+          capital1,
+          interest1,
+          description1,
+          { from: owner }
+        );
+        await this.OfferingInstance.lowBalanceOffering(
+          phoneHash1,
+          ref1,
+          minScore1,
+          { from: owner }
+        );
+        await expectRevert(
+          this.OfferingInstance.createProduct(phoneHash1, timestampA, 1, 0),
+          "Offer doesn't exist"
+        );
       });
 
-      it("createProduct", async function() {
-        await this.OfferingInstance.addProposal(minScore1, capital1, interest1, description1, {from: owner});
-        await this.OfferingInstance.addProposal(minScore2, capital2, interest2, description2, {from: owner});
-        await this.OfferingInstance.addProposal(minScore3, capital3, interest3, description3, {from: owner});
+      it("createProduct", async function () {
+        await this.OfferingInstance.addProposal(
+          minScore1,
+          capital1,
+          interest1,
+          description1,
+          { from: owner }
+        );
+        await this.OfferingInstance.addProposal(
+          minScore2,
+          capital2,
+          interest2,
+          description2,
+          { from: owner }
+        );
+        await this.OfferingInstance.addProposal(
+          minScore3,
+          capital3,
+          interest3,
+          description3,
+          { from: owner }
+        );
 
         // Product 1
-        await this.OfferingInstance.lowBalanceOffering(phoneHash1, ref1, minScore1, {from:owner});
-        await this.OfferingInstance.createProduct(phoneHash1, timestampA, idOffer1, idProposal1);
+        await this.OfferingInstance.lowBalanceOffering(
+          phoneHash1,
+          ref1,
+          minScore1,
+          { from: owner }
+        );
+        await this.OfferingInstance.createProduct(
+          phoneHash1,
+          timestampA,
+          idOffer1,
+          idProposal1
+        );
         const product1 = await this.OfferingInstance.products(idProduct1);
         expect(product1["phoneHash"]).to.be.equal(phoneHash1);
         expect(product1["timestamp"]).to.be.bignumber.equal(timestampA);
@@ -238,8 +461,18 @@ contract("Offering", function (accounts) {
         expect(product1["status"]).to.be.bignumber.equal(activeProduct);
 
         // Product 2
-        await this.OfferingInstance.lowBalanceOffering(phoneHash2, ref2, minScore2, {from:owner});
-        await this.OfferingInstance.createProduct(phoneHash2, timestampA, idOffer2, idProposal2);
+        await this.OfferingInstance.lowBalanceOffering(
+          phoneHash2,
+          ref2,
+          minScore2,
+          { from: owner }
+        );
+        await this.OfferingInstance.createProduct(
+          phoneHash2,
+          timestampA,
+          idOffer2,
+          idProposal2
+        );
         const product2 = await this.OfferingInstance.products(idProduct2);
         expect(product2["phoneHash"]).to.be.equal(phoneHash2);
         expect(product2["timestamp"]).to.be.bignumber.equal(timestampA);
@@ -248,12 +481,35 @@ contract("Offering", function (accounts) {
         expect(product2["status"]).to.be.bignumber.equal(activeProduct);
       });
 
-      it("Event: ProductCreated for createProduct", async function() {
-        await this.OfferingInstance.addProposal(minScore1, capital1, interest1, description1, {from: owner});
-        await this.OfferingInstance.lowBalanceOffering(phoneHash1, ref1, minScore1, {from:owner});
-        expectEvent(await this.OfferingInstance.createProduct(phoneHash1, timestampA, 0, 0),
-        "ProductCreated",
-        {phoneHash: phoneHash1, timestamp: timestampA, idOffer: new BN(0), idProposal: new BN(0)});
+      it("Event: ProductCreated for createProduct", async function () {
+        await this.OfferingInstance.addProposal(
+          minScore1,
+          capital1,
+          interest1,
+          description1,
+          { from: owner }
+        );
+        await this.OfferingInstance.lowBalanceOffering(
+          phoneHash1,
+          ref1,
+          minScore1,
+          { from: owner }
+        );
+        expectEvent(
+          await this.OfferingInstance.createProduct(
+            phoneHash1,
+            timestampA,
+            0,
+            0
+          ),
+          "ProductCreated",
+          {
+            phoneHash: phoneHash1,
+            timestamp: timestampA,
+            idOffer: new BN(0),
+            idProposal: new BN(0),
+          }
+        );
       });
     });
   });

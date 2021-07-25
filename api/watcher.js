@@ -16,8 +16,8 @@ var proposalsCount = 0;
 var proposalList = [];
 
 /**
-  * @notice Initialize application
-  */
+ * @notice Initialize application
+ */
 runInit = async () => {
   const networkId = await web3.eth.net.getId();
   const timelapseNetwork = TimelapseContract.networks[networkId];
@@ -60,10 +60,10 @@ runInit = async () => {
 };
 
 /**
-  * @notice Manage emitted events
-  * @param _data The content of the rest request
-  * @dev Send a request to BlockChain in order to manage a topUp using `_data` content
-  */
+ * @notice Manage emitted events
+ * @param _data The content of the rest request
+ * @dev Send a request to BlockChain in order to manage a topUp using `_data` content
+ */
 doWhenEvent = async (data) => {
   LOG_LEVEL > 1 &&
     console.log(
@@ -96,8 +96,8 @@ doWhenEvent = async (data) => {
 };
 
 /**
-  * @notice Get all the proposals
-  */
+ * @notice Get all the proposals
+ */
 getProposals = async () => {
   LOG_LEVEL > 0 && console.log("### getProposals");
 
@@ -105,7 +105,9 @@ getProposals = async () => {
 
   proposalList = [];
   for (let proposalId = 0; proposalId < proposalsCount; proposalId++) {
-    let proposalItem = await offeringInstance.methods.proposals(proposalId).call();
+    let proposalItem = await offeringInstance.methods
+      .proposals(proposalId)
+      .call();
     proposalItem["id"] = proposalId;
     proposalList.push(proposalItem);
   }
@@ -114,10 +116,10 @@ getProposals = async () => {
 };
 
 /**
-  * @notice Get a proposal
-  * @param _data The content of the rest request
-  * @dev Get a proposal and add it to the proposal list using `_data` content
-  */
+ * @notice Get a proposal
+ * @param _data The content of the rest request
+ * @dev Get a proposal and add it to the proposal list using `_data` content
+ */
 getProposal = async (data) => {
   LOG_LEVEL > 0 && console.log("<-- getProposal");
 
@@ -134,10 +136,10 @@ getProposal = async (data) => {
 };
 
 /**
-  * @notice Send Offer to Telecom Operator
-  * @param _data The content of the rest request
-  * @dev Send Offer to Telecom Operator using `_data` content
-  */
+ * @notice Send Offer to Telecom Operator
+ * @param _data The content of the rest request
+ * @dev Send Offer to Telecom Operator using `_data` content
+ */
 sendOffer = async (data) => {
   LOG_LEVEL > 0 && console.log("<-- sendOffer");
   var responseBody = {
@@ -171,7 +173,7 @@ sendOffer = async (data) => {
     proposalsCount++;
   }
   responseBody["proposalsCount"] = proposalsCount;
-  if(proposalsCount === 0) {
+  if (proposalsCount === 0) {
     return;
   }
   LOG_LEVEL > 0 && console.log(responseBody);
@@ -191,10 +193,10 @@ sendOffer = async (data) => {
 };
 
 /**
-  * @notice Send Confirmation to Telecom Operator
-  * @param _data The content of the rest request
-  * @dev Send COnfirmation to Telecom Operator using `_data` content
-  */
+ * @notice Send Confirmation to Telecom Operator
+ * @param _data The content of the rest request
+ * @dev Send COnfirmation to Telecom Operator using `_data` content
+ */
 sendConfirmation = async (data) => {
   LOG_LEVEL > 0 && console.log("<-- sendConfirmation");
   var responseBody = {
@@ -220,10 +222,10 @@ sendConfirmation = async (data) => {
 };
 
 /**
-  * @notice Send Acknowledge to Telecom Operator
-  * @param _data The content of the rest request
-  * @dev Send Acknowledge to Telecom Operator using `_data` content
-  */
+ * @notice Send Acknowledge to Telecom Operator
+ * @param _data The content of the rest request
+ * @dev Send Acknowledge to Telecom Operator using `_data` content
+ */
 sendAcknowledge = async (data) => {
   LOG_LEVEL > 0 && console.log("<-- sendAcknowledge");
   var responseBody = {

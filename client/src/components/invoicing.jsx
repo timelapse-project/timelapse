@@ -18,51 +18,47 @@ class Invoicing extends Component {
     const web3 = this.props.web3;
     const accounts = this.props.accounts;
     const timelapseInstance = this.props.timelapseInstance;
-
     this.setState({ web3, accounts, timelapseInstance }, this.runInit);
   };
 
   runInit = async () => {
     console.log("==> runInit");
-
     var date = new Date();
     var startDate = new Date(date.getFullYear(), date.getMonth(), 1);
     var endDate = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-
     this.setState({
       startDate: startDate,
       endDate: endDate,
-    })
+    });
   };
 
   handeStartDateChange(date) {
     console.log("==> handeStartDateChange");
-
     this.setState({
       startDate: date,
-    })
+    });
   }
 
   handeEndDateChange(date) {
     console.log("==> handeEndDateChange");
-
     this.setState({
       endDate: date,
-    })
+    });
   }
 
   handleGenerateInvoicing = async () => {
     console.log("==> handleGenerateInvoicing");
     const { timelapseInstance, startDate, endDate } = this.state;
-
-    let generatedInvoicing = await timelapseInstance.methods.generateInvoicing((parseInt(startDate.getTime()/1000)), (parseInt(endDate.getTime()/1000))).call();
-    
-    console.log("generatedInvoicing", generatedInvoicing);
-
+    let generatedInvoicing = await timelapseInstance.methods
+      .generateInvoicing(
+        parseInt(startDate.getTime() / 1000),
+        parseInt(endDate.getTime() / 1000)
+      )
+      .call();
     this.setState({
       generatedInvoicing: generatedInvoicing,
-    })
-  }
+    });
+  };
 
   renderInvoicingInfo() {
     console.log("==> renderCustomerCareInfo");
@@ -71,7 +67,7 @@ class Invoicing extends Component {
         <br></br>
         <div className="row">
           <div className="col-sm-12">
-          <div className="card text-center bg-info text-white">
+            <div className="card text-center bg-info text-white">
               <div className="card-header">
                 <strong>Invoicing</strong>
               </div>
@@ -89,11 +85,7 @@ class Invoicing extends Component {
 
   renderInvoicingCriteria() {
     console.log("==> renderInvoicingCriteria");
-    const {
-      startDate,
-      endDate,
-    } = this.state;
- 
+    const { startDate, endDate } = this.state;
     return (
       <React.Fragment>
         <br></br>
@@ -105,22 +97,31 @@ class Invoicing extends Component {
               </div>
               <div className="card-body">
                 <div className="form-group row">
-                <label htmlFor="phoneHash" className="col-sm-2 offset-sm-3 col-form-label">Period:</label>
+                  <label
+                    htmlFor="phoneHash"
+                    className="col-sm-2 offset-sm-3 col-form-label"
+                  >
+                    Period:
+                  </label>
                   <div className="col-sm-2">
-                  <DatePicker
-                    selected={startDate}
-                    onChange={(date) => this.handeStartDateChange(date)}
-                    dateFormat="MMMM d, yyyy"
-                  />
-                  <small id="startDateHelp" className="form-text text-muted">Start Date</small>
+                    <DatePicker
+                      selected={startDate}
+                      onChange={(date) => this.handeStartDateChange(date)}
+                      dateFormat="MMMM d, yyyy"
+                    />
+                    <small id="startDateHelp" className="form-text text-muted">
+                      Start Date
+                    </small>
                   </div>
                   <div className="col-sm-2">
-                  <DatePicker 
-                    selected={endDate}
-                    onChange={(date) => this.handeEndDateChange(date)}
-                    dateFormat="MMMM d, yyyy"
-                  />
-                  <small id="endDateHelp" className="form-text text-muted">End Date</small>
+                    <DatePicker
+                      selected={endDate}
+                      onChange={(date) => this.handeEndDateChange(date)}
+                      dateFormat="MMMM d, yyyy"
+                    />
+                    <small id="endDateHelp" className="form-text text-muted">
+                      End Date
+                    </small>
                   </div>
                 </div>
                 <br></br>
@@ -134,7 +135,6 @@ class Invoicing extends Component {
                       <b>Generate</b>
                     </button>
                   </div>
-
                   <br></br>
                 </div>
               </div>
@@ -174,11 +174,36 @@ class Invoicing extends Component {
                         {generatedInvoicing !== null &&
                           generatedInvoicing.map((row, index) => (
                             <tr>
-                              <td>{parseFloat(row["totalCapital"] / 100).toFixed(2)} $</td>
-                              <td>{parseFloat(row["totalInterest"] / 100).toFixed(2)} $</td>
+                              <td>
+                                {parseFloat(row["totalCapital"] / 100).toFixed(
+                                  2
+                                )}{" "}
+                                $
+                              </td>
+                              <td>
+                                {parseFloat(row["totalInterest"] / 100).toFixed(
+                                  2
+                                )}{" "}
+                                $
+                              </td>
 
-                              <td>{parseFloat((parseInt(row["totalCapital"]) + (parseInt(row["totalInterest"]) * 60 / 100))/ 100).toFixed(2)} $</td>
-                              <td>{parseFloat(((parseInt(row["totalInterest"]) * 40 / 100))/ 100).toFixed(2)} $</td>
+                              <td>
+                                {parseFloat(
+                                  (parseInt(row["totalCapital"]) +
+                                    (parseInt(row["totalInterest"]) * 60) /
+                                      100) /
+                                    100
+                                ).toFixed(2)}{" "}
+                                $
+                              </td>
+                              <td>
+                                {parseFloat(
+                                  (parseInt(row["totalInterest"]) * 40) /
+                                    100 /
+                                    100
+                                ).toFixed(2)}{" "}
+                                $
+                              </td>
                             </tr>
                           ))}
                       </tbody>

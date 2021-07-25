@@ -16,7 +16,6 @@ class Events extends Component {
     const timelapseInstance = this.props.timelapseInstance;
     const offeringInstance = this.props.offeringInstance;
     const billingInstance = this.props.billingInstance;
-
     offeringInstance.events
       .allEvents()
       .on("data", (event) => this.doWhenEvent(event))
@@ -25,7 +24,10 @@ class Events extends Component {
       .allEvents()
       .on("data", (event) => this.doWhenEvent(event))
       .on("error", console.error);
-    this.setState({ web3, accounts, timelapseInstance, offeringInstance, billingInstance}, this.runInit);
+    this.setState(
+      { web3, accounts, timelapseInstance, offeringInstance, billingInstance },
+      this.runInit
+    );
   };
 
   runInit = async () => {
@@ -35,7 +37,6 @@ class Events extends Component {
   addEventLog(log) {
     console.log("==> addEventLog");
     const { eventLog } = this.state;
-
     let date = new Date();
     let formatedTimestamp =
       date.getDate() +
@@ -49,17 +50,15 @@ class Events extends Component {
       date.getMinutes() +
       ":" +
       date.getSeconds();
-
     eventLog.push({ timestamp: formatedTimestamp, log: log });
-
     this.setState({ eventLog: eventLog });
   }
 
-  formatJSONLog(JSONLog){
-    for(let i=0;i<10;i++){
+  formatJSONLog(JSONLog) {
+    for (let i = 0; i < 10; i++) {
       delete JSONLog[i];
     }
-   return  JSON.stringify(JSONLog, null, 4);
+    return JSON.stringify(JSONLog, null, 4);
   }
 
   doWhenEvent = async (data) => {

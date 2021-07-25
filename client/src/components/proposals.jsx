@@ -16,32 +16,33 @@ class Proposals extends Component {
     const accounts = this.props.accounts;
     const timelapseInstance = this.props.timelapseInstance;
     const offeringInstance = this.props.offeringInstance;
-
     timelapseInstance.events
       .allEvents()
       .on("data", (event) => this.doWhenEvent(event))
       .on("error", console.error);
-
     offeringInstance.events
       .allEvents()
       .on("data", (event) => this.doWhenEvent(event))
       .on("error", console.error);
-
-    this.setState({ web3, accounts, timelapseInstance, offeringInstance }, this.runInit);
+    this.setState(
+      { web3, accounts, timelapseInstance, offeringInstance },
+      this.runInit
+    );
   };
 
   runInit = async () => {
     console.log("==> runInit");
-
     const { offeringInstance } = this.state;
-    const proposalsCount = await offeringInstance.methods.proposalsCount().call();
-
+    const proposalsCount = await offeringInstance.methods
+      .proposalsCount()
+      .call();
     let proposalList = [];
     for (let proposalId = 0; proposalId < proposalsCount; proposalId++) {
-      let proposalItem = await offeringInstance.methods.proposals(proposalId).call();
+      let proposalItem = await offeringInstance.methods
+        .proposals(proposalId)
+        .call();
       proposalList.push(proposalItem);
     }
-
     this.setState({
       proposalsCount: proposalsCount,
       proposalList: proposalList,
@@ -69,12 +70,10 @@ class Proposals extends Component {
     var proposalCapitalError = null;
     var proposalInterestError = null;
     var proposalDescriptionError = null;
-
     var proposalMinScoring = this.proposalMinScoring.value;
     var proposalCapital = this.proposalCapital.value;
     var proposalInterest = this.proposalInterest.value;
     var proposalDescription = this.proposalDescription.value;
-
     if (proposalMinScoring == null || parseInt(proposalMinScoring) === 0) {
       proposalMinScoringError = "Please, enter a minimum scoring";
     }
@@ -156,7 +155,6 @@ class Proposals extends Component {
       proposalMinScoringOption["label"] = i;
       proposalMinScoringOptions.push(proposalMinScoringOption);
     }
-
     return (
       <React.Fragment>
         <br></br>
@@ -239,7 +237,6 @@ class Proposals extends Component {
                       {proposalDescriptionError}
                     </div>
                   </div>
-
                   <div className="col-sm-2">
                     <button
                       type="button"
@@ -249,7 +246,6 @@ class Proposals extends Component {
                       <b>Add</b>
                     </button>
                   </div>
-
                   <br></br>
                 </div>
               </div>

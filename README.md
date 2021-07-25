@@ -12,27 +12,30 @@
 
 ## Links
 
-* Open Application: [https://timelapse-project.herokuapp.com/][heroku-url]
-* [Documentation](#documentation)
-* [Github](https://github.com/timelapse-project/timelapse) (this repository: code, issues, wiki)
+- Open Application: [https://timelapse-project.herokuapp.com/][heroku-url]
+- [Documentation](#documentation)
+- [Github](https://github.com/timelapse-project/timelapse) (this repository: code, issues, wiki)
 
 ## Architecture
 
 Timelapse software is composed of 3 parts:
+
 - **Timelapse Core**:  
-The **Ethereum smart-contracts** deployed on the testnets. They are written in Solidity.
+  The **Ethereum smart-contracts** deployed on the testnets. They are written in Solidity.
 - **Timelapse Client** (DApp):  
-A **ReactJS client app** written in ReactJS and deployed on Heroku. 
-It  provides the User Interface to interact with the contracts.
+  A **ReactJS client app** written in ReactJS and deployed on Heroku.
+  It provides the User Interface to interact with the contracts.
 - **Timelapse API**:  
-The **Server/Watcher** written in NodeJS.
+  The **Server/Watcher** written in NodeJS.
 
 This Github **repository** gather the **back-end and**, the **front-end** and the **API** code.
 
 ### High Level Architecture
+
 ![High Level Architecture](doc/img/Timelapse_TechnicalArchitecture_HL.png)
 
 ### Low Level Architecture
+
 ![Low Level Architecture](doc/img/Timelapse_TechnicalArchitecture_LL.png)
 
 ### Timelapse Core
@@ -41,13 +44,13 @@ Timelapse Core is composed of the following Ethereum **smart-contracts**:
 
 - [`Timelapse`](contracts/Timelapse.sol) The entry point of Timelapse application.
 - [`Offering`](contracts/Offering.sol) Manage all aspects related to offering. The contract is in charge of:
-    - proposals management
-    - customers management
-    - products management
+  - proposals management
+  - customers management
+  - products management
 - [`Billing`](contracts/Billing.sol) Manage all aspects related to billing. The contract is in charge of:
-    - customers management
-    - accounting management
-    - billing management
+  - customers management
+  - accounting management
+  - billing management
 
 ### Timelapse Client
 
@@ -91,9 +94,11 @@ Our **Timelapse API** application, written in **NodeJS**, is responsible for the
 # Configuration
 
 ## Timelapse Private Blockchain Configuration
-This project was developped on **Solidity** and can be used on any Ethereum-like Network. 
+
+This project was developped on **Solidity** and can be used on any Ethereum-like Network.
 In the scope of the POC, private blockchain has been deployed and used.
 Here is the connection configuration:
+
 - Network Name: Timelapse
 - RPC URL: http://timelapse.rocdasys.com:8545
 - Network ID: 1000
@@ -114,101 +119,113 @@ To deploy the project on Timelapse Private Blockchain, you can set the following
 
 Here is the procedure to install and configure Heroku:
 
-- Download and install [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli#download-and-install).  
+- Download and install [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli#download-and-install).
 - Configure the Heroku **remote repository**
-    ```
-    # git clone git@github.com:timelapse-project/timelapse.git
-    cd timelapse
 
-    # Login (once) to Heroku via CLI if you have not already done
-    heroku login
+  ```
+  # git clone git@github.com:timelapse-project/timelapse.git
+  cd timelapse
 
-    # Option A: If not existing, create the heroku git remote repository
-    heroku create --ssh-git --buildpack mars/create-react-app timelapse-project
+  # Login (once) to Heroku via CLI if you have not already done
+  heroku login
 
-    # Option B: If existing, declare the heroku git remote repository
-    heroku git:remote --ssh-git -a timelapse-project
-    ```
+  # Option A: If not existing, create the heroku git remote repository
+  heroku create --ssh-git --buildpack mars/create-react-app timelapse-project
+
+  # Option B: If existing, declare the heroku git remote repository
+  heroku git:remote --ssh-git -a timelapse-project
+  ```
+
 # Compile
 
 ## Timelapse Core
 
 Here is the procedure to compile **Timelapse Core**:
+
 - Compile contracts:
-    ```
-    export PATH=$PATH:node_modules/.bin
-    truffle compile
-    ```
+  ```
+  export PATH=$PATH:node_modules/.bin
+  truffle compile
+  ```
+
 # Test
 
 ## Timelapse Core
 
 [This page](doc/tests_explication.md) explains the tests.
+
 - Test contracts:
-    ```
-    export PATH=$PATH:node_modules/.bin
-    truffle test
-    ```
+  ```
+  export PATH=$PATH:node_modules/.bin
+  truffle test
+  ```
 
 # Deploy
 
 ## Timelapse Core
 
 Here is the procedure to deploy **Timelapse Core**:
-- Deploy the contracts to Timelapse Private Blockchain:
-    ```
-    export PATH=$PATH:node_modules/.bin
-    truffle deploy --network timelapse
-    ```
 
-***Remark***: This contracts deployment is not mandatory. In the file **[`deployed_addresses.md`](doc/deployed_addresses.md)**, you can always find the current ***Contracts Addresses*** that are published to the Timelapse Private Blockchain.
+- Deploy the contracts to Timelapse Private Blockchain:
+  ```
+  export PATH=$PATH:node_modules/.bin
+  truffle deploy --network timelapse
+  ```
+
+**_Remark_**: This contracts deployment is not mandatory. In the file **[`deployed_addresses.md`](doc/deployed_addresses.md)**, you can always find the current **_Contracts Addresses_** that are published to the Timelapse Private Blockchain.
 
 ## Timelapse Client
 
 There are 2 ways to deploy **Timelapse Client**:
-- Local version: 
-    ```
-    npm --prefix client/ run start
-    ```
 
-    ***Remark***: If you meet a dependency issue, please remove the webpack module from the ***Timelapse Core*** node_modules and restart the previous command:
-    ```
-    rm -rf node_modules/webpack
-    ```
+- Local version:
+
+  ```
+  npm --prefix client/ run start
+  ```
+
+  **_Remark_**: If you meet a dependency issue, please remove the webpack module from the **_Timelapse Core_** node_modules and restart the previous command:
+
+  ```
+  rm -rf node_modules/webpack
+  ```
 
 - Heroku version
-    ```
-    git subtree push --prefix client/ heroku master
-    ```
+  ```
+  git subtree push --prefix client/ heroku master
+  ```
 
 # Execution
 
 ## Timelapse Client
 
 There are several way to execute **Timelapse Client**:
-- Local version: 
-    Access the [Local version](http://localhost:3000/)
+
+- Local version:
+  Access the [Local version](http://localhost:3000/)
 
 - Heroku version
-    Access the [Heroku version][heroku-url]
+  Access the [Heroku version][heroku-url]
 
 ## Timelapse API
 
 There are several way to execute **Timelapse Core**:
-- Local version: 
-    ```
-    # git clone git@github.com:timelapse-project/timelapse.git
-    cd timelapse/api
 
-    # Execute the Server
-    node server.js
+- Local version:
 
-    # Execute the Watcher
-    node watcher.js
+  ```
+  # git clone git@github.com:timelapse-project/timelapse.git
+  cd timelapse/api
 
-    # Execute the Telecom Operator Simulator
-    ./simulator.sh
-    ```
+  # Execute the Server
+  node server.js
+
+  # Execute the Watcher
+  node watcher.js
+
+  # Execute the Telecom Operator Simulator
+  ./simulator.sh
+  ```
 
 # Documentation
 
@@ -216,8 +233,8 @@ There are several way to execute **Timelapse Core**:
 
 - [avoiding_common_attacks.md](doc/avoiding_common_attacks.md) describes the measures we have taken to make our smart-contracts as resistant as possible to common attacks and potential hacks
 - [deployed_addresses.md](doc/deployed_addresses.md) contains the addresses of smart-contracts deployed on the private network of `Timelapse`
-- [design_pattern_decisions.md](doc/design_pattern_decisions.md) explains why we chose the design patterns we are using in the code. 
-- [tests_explication.md](doc/tests_explication.md) explains for each test why we wrote it and  what it is aimed at.
+- [design_pattern_decisions.md](doc/design_pattern_decisions.md) explains why we chose the design patterns we are using in the code.
+- [tests_explication.md](doc/tests_explication.md) explains for each test why we wrote it and what it is aimed at.
 
 ## Smart-Contracts
 
@@ -242,18 +259,20 @@ _[Timelapse][timelapse-url]_ is released under the terms of the MIT license.
 See COPYING for more information or https://opensource.org/licenses/MIT .
 
 # Sources
+
 Here are a few links to resources that we used while building bet-no-loss.
+
 - Solidity
-    - https://docs.soliditylang.org/en/v0.8.6
-    - [@openzeppelin/contracts](https://docs.openzeppelin.com/contracts)
-    - [Solidity Patterns](https://fravoll.github.io/solidity-patterns/)
+  - https://docs.soliditylang.org/en/v0.8.6
+  - [@openzeppelin/contracts](https://docs.openzeppelin.com/contracts)
+  - [Solidity Patterns](https://fravoll.github.io/solidity-patterns/)
 - Security
-    - [Security Hacks](https://solidity-by-example.org/)
+  - [Security Hacks](https://solidity-by-example.org/)
 - Private BlockcChain
-    - [Geth](https://geth.ethereum.org/docs/)
+  - [Geth](https://geth.ethereum.org/docs/)
 - Test
-    - [@openzeppelin/test-helpers](https://docs.openzeppelin.com/test-helpers/)
-    - [Chai](https://www.chaijs.com/) TDD assertion library
+  - [@openzeppelin/test-helpers](https://docs.openzeppelin.com/test-helpers/)
+  - [Chai](https://www.chaijs.com/) TDD assertion library
 
 <!-- Github Badges: Images and URLs -->
 

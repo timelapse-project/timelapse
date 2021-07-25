@@ -6,7 +6,8 @@ Here are the measures we have taken to make our smart-contracts as resistant as 
 
 ## Access Control
 
-We use `Ownable` from *@openzeppelin* to ensure that:
+We use `Ownable` from _@openzeppelin_ to ensure that:
+
 - Only owner can call key functions(storage write functions) of the Timelapse smart-contract
 - Only Timelapse smart-contract can call key functions(storage write functions) of the sub smart-contract (Offering, Billing)
 
@@ -14,7 +15,7 @@ We use `Ownable` from *@openzeppelin* to ensure that:
 
 ## Arithmetic Overflow and Underflow
 
-We don't use `SaFeMath` from *@openzeppelin*  since we are using [Solidity 0.8.6](https://docs.soliditylang.org/en/v0.8.6/080-breaking-changes.html) which handles this natively.
+We don't use `SaFeMath` from _@openzeppelin_ since we are using [Solidity 0.8.6](https://docs.soliditylang.org/en/v0.8.6/080-breaking-changes.html) which handles this natively.
 
 [Reference](https://solidity-by-example.org/hacks/overflow/)
 

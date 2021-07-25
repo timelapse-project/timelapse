@@ -14,7 +14,7 @@ module.exports = async function (deployer) {
   // Deploy Timelapse Contract
   await deployer.deploy(Timelapse, billing.address, offering.address);
   const timelapse = await Timelapse.deployed();
-  
+
   // Transfer Ownership to Timelapse
   await billing.transferOwnership(timelapse.address);
   await offering.transferOwnership(timelapse.address);

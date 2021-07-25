@@ -16,7 +16,6 @@ class Home extends Component {
     const web3 = this.props.web3;
     const accounts = this.props.accounts;
     const timelapseInstance = this.props.timelapseInstance;
-
     this.setState({ web3, accounts, timelapseInstance }, this.runInit);
   };
 
