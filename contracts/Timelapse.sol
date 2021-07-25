@@ -26,8 +26,8 @@ contract Timelapse is Ownable {
      */
     struct CustomerActivity {
         string log;
-        uint256 timestamp;
         string status;
+        uint256 timestamp;
     }
 
     /**
@@ -135,11 +135,11 @@ contract Timelapse is Ownable {
         external
         onlyOwner
     {
-        (, , , , uint256 productId) = billing.histories(
+        (, , , uint256 productId, ) = billing.histories(
             billing.getCustomer(_phoneHash).lastAcceptanceID
         );
-        (, , , uint256 proposalId, ) = offering.products(productId);
-        (, uint256 capital, uint256 interest, , , ) = offering.proposals(
+        (, , uint256 proposalId, , ) = offering.products(productId);
+        (, , uint256 capital, uint256 interest, , ) = offering.proposals(
             proposalId
         );
         billing.addToCustomerAmount(_phoneHash, capital + interest);
@@ -215,7 +215,7 @@ contract Timelapse is Ownable {
                     offeringIndex
                 );
                 for (uint256 j = 0; j < numberProposal; j++) {
-                    (, , , , string memory description, ) = offering.proposals(
+                    (string memory description, , , , , ) = offering.proposals(
                         offering.getIndexProposalOffer(offeringIndex, j)
                     );
                     if (j == 0) {
@@ -249,11 +249,11 @@ contract Timelapse is Ownable {
                 ,
                 uint256 acceptanceTimestamp,
                 uint256 paidTimestamp,
-                ,
-                uint256 productId
+                uint256 productId,
+
             ) = billing.histories(historyIndex);
-            (, , , uint256 proposalId, ) = offering.products(productId);
-            (, , , , string memory descriptionProposal, ) = offering.proposals(
+            (, , uint256 proposalId, , ) = offering.products(productId);
+            (string memory descriptionProposal, , , , , ) = offering.proposals(
                 proposalId
             );
             if (
@@ -309,8 +309,8 @@ contract Timelapse is Ownable {
                 ,
                 ,
                 uint256 paidTimestamp,
-                Billing.HistoryStatus status,
-                uint256 productId
+                uint256 productId,
+                Billing.HistoryStatus status
             ) = billing.histories(i - 1);
             if (paidTimestamp != 0 && paidTimestamp < _startTimestamp) {
                 outOfInvoicingWindow = true;
@@ -320,8 +320,8 @@ contract Timelapse is Ownable {
                 paidTimestamp <= _endTimestamp &&
                 status == Billing.HistoryStatus.Closed
             ) {
-                (, , , uint256 proposalId, ) = offering.products(productId);
-                (, uint256 capital, uint256 interest, , , ) = offering
+                (, , uint256 proposalId, , ) = offering.products(productId);
+                (, , uint256 capital, uint256 interest, , ) = offering
                 .proposals(proposalId);
                 invoice[invoiceIndex].totalCapital += capital;
                 invoice[invoiceIndex].totalInterest += interest;
@@ -355,7 +355,7 @@ contract Timelapse is Ownable {
             i > 0 && !(outOfReportingWindow1);
             i--
         ) {
-            (, uint256 timestamp, , Offering.OfferStatus status, ) = offering
+            (, uint256 timestamp, , , Offering.OfferStatus status) = offering
             .offers(i - 1);
             if (timestamp < _startTimestamp) {
                 outOfReportingWindow1 = true;
@@ -376,8 +376,8 @@ contract Timelapse is Ownable {
                 ,
                 uint256 acceptanceTimestamp,
                 uint256 paidTimestamp,
-                Billing.HistoryStatus status,
-                uint256 productId
+                uint256 productId,
+                Billing.HistoryStatus status
             ) = billing.histories(i - 1);
             reporting[reportingIndex].acceptanceTimestamp = acceptanceTimestamp;
             reporting[reportingIndex].paidTimestamp = paidTimestamp;
@@ -392,8 +392,8 @@ contract Timelapse is Ownable {
                     acceptanceTimestamp <= _endTimestamp &&
                     status == Billing.HistoryStatus.Active
                 ) {
-                    (, , , uint256 proposalId, ) = offering.products(productId);
-                    (, uint256 capital, uint256 interest, , , ) = offering
+                    (, , uint256 proposalId, , ) = offering.products(productId);
+                    (, , uint256 capital, uint256 interest, , ) = offering
                     .proposals(proposalId);
                     reporting[reportingIndex].totalCapitalLoans += capital;
                     reporting[reportingIndex].totalInterestLoans += interest;
@@ -407,8 +407,8 @@ contract Timelapse is Ownable {
                     paidTimestamp <= _endTimestamp &&
                     status == Billing.HistoryStatus.Closed
                 ) {
-                    (, , , uint256 proposalId, ) = offering.products(productId);
-                    (, uint256 capital, uint256 interest, , , ) = offering
+                    (, , uint256 proposalId, , ) = offering.products(productId);
+                    (, , uint256 capital, uint256 interest, , ) = offering
                     .proposals(proposalId);
                     reporting[reportingIndex].closedTopupsCount += 1;
                     reporting[reportingIndex].totalCapitalGain += capital;

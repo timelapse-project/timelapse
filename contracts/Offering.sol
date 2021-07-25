@@ -48,22 +48,22 @@ contract Offering is Ownable {
      * @dev Offer information
      */
     struct Offer {
-        address phoneHash;
-        uint256 timestamp;
-        EligibilityReason reason;
-        uint256[] proposals;
-        OfferStatus status;
         string ref;
+        uint256 timestamp;
+        uint256[] proposals;
+        address phoneHash;
+        EligibilityReason reason;
+        OfferStatus status;
     }
 
     /**
      * @dev Product information
      */
     struct Product {
-        address phoneHash;
         uint256 timestamp;
         uint256 offerId;
         uint256 proposalId;
+        address phoneHash;
         ProductStatus status;
     }
 
@@ -71,11 +71,11 @@ contract Offering is Ownable {
      * @dev Proposal information
      */
     struct Proposal {
+        string description;
         uint8 minScoring;
         uint256 capital;
         uint256 interest;
         uint256 validityPeriod;
-        string description;
         ProposalStatus status;
     }
 
@@ -347,10 +347,10 @@ contract Offering is Ownable {
     {
         offers[_offerId].status = OfferStatus.Accepted;
         Product memory product = Product(
-            _phoneHash,
             _acceptanceTimestamp,
             _offerId,
             _proposalId,
+            _phoneHash,
             ProductStatus.Active
         );
         products.push(product);
@@ -374,8 +374,8 @@ contract Offering is Ownable {
         view
         returns (uint256[] memory)
     {
-        uint8 offerProposalsIndex = 0;
-        uint8 offerProposalsSize = 0;
+        uint8 offerProposalsIndex;
+        uint8 offerProposalsSize;
         if (_scoring == 0) {
             return (new uint256[](0));
         }

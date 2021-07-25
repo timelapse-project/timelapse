@@ -33,20 +33,20 @@ contract Billing is Ownable {
         string ref;
         uint256 acceptanceTimestamp;
         uint256 paidTimestamp;
-        HistoryStatus status;
         uint256 productId;
+        HistoryStatus status;
     }
 
     /**
      * @dev Customer information
      */
     struct Customer {
-        CustomerStatus status;
         uint8 score;
         uint256 nbTopUp;
         uint256 amount;
         uint256 firstTopUp;
         uint256 lastAcceptanceID;
+        CustomerStatus status;
     }
 
     /**
@@ -206,7 +206,7 @@ contract Billing is Ownable {
     function addToScore(address _phoneHash) external onlyOwner {
         if (customerList[_phoneHash].status == CustomerStatus.New) {
             customers.push(
-                Customer(CustomerStatus.Active, 0, 0, 0, block.timestamp, 0)
+                Customer(0, 0, 0, block.timestamp, 0, CustomerStatus.Active)
             );
             customerList[_phoneHash].customerId = (customers.length - 1);
             customerList[_phoneHash].status = CustomerStatus.Active;
@@ -292,8 +292,8 @@ contract Billing is Ownable {
                 _ref,
                 _acceptanceTimestamp,
                 0,
-                HistoryStatus.Active,
-                _productId
+                _productId,
+                HistoryStatus.Active
             )
         );
         customers[customerList[_phoneHash].customerId]
