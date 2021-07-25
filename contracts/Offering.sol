@@ -211,7 +211,7 @@ contract Offering is Ownable {
         uint256 _capital,
         uint256 _interest,
         string memory _description
-    ) public onlyOwner {
+    ) external onlyOwner {
         Proposal memory proposalData;
         proposalData.minScoring = _minScoring;
         proposalData.capital = _capital;
@@ -233,7 +233,7 @@ contract Offering is Ownable {
      * @param _id ID of the proposal to close
      * @dev Close the proposal with the ID `_id`
      */
-    function closeProposal(uint256 _id) public onlyOwner existProposal(_id) {
+    function closeProposal(uint256 _id) external onlyOwner existProposal(_id) {
         proposals[_id].status = ProposalStatus.Closed;
         emit ClosedProposal(_id);
     }
@@ -242,7 +242,7 @@ contract Offering is Ownable {
      * @notice Number of proposals
      * @dev Return the number of proposals
      */
-    function proposalsCount() public view returns (uint256) {
+    function proposalsCount() external view returns (uint256) {
         return proposals.length;
     }
 
@@ -252,7 +252,7 @@ contract Offering is Ownable {
      * @dev Return the number of proposal in an offer
      */
     function getProposalOfferSize(uint256 _offerId)
-        public
+        external
         view
         existOffer(_offerId)
         returns (uint256)
@@ -265,7 +265,7 @@ contract Offering is Ownable {
      * @param _phoneHash The address that identifies to the customer
      * @dev Get the size of the Offers of a customer (identified with `_phoneHash`)
      */
-    function getOfferSize(address _phoneHash) public view returns (uint256) {
+    function getOfferSize(address _phoneHash) external view returns (uint256) {
         return offerList[_phoneHash].length;
     }
 
@@ -273,7 +273,7 @@ contract Offering is Ownable {
      * @notice Get the size of all the offers
      * @dev Get the size of all the offers
      */
-    function getOffersSize() public view returns (uint256) {
+    function getOffersSize() external view returns (uint256) {
         return offers.length;
     }
 
@@ -284,7 +284,7 @@ contract Offering is Ownable {
      * @dev Return the ID proposal in offer
      */
     function getIndexProposalOffer(uint256 _offerId, uint256 _id)
-        public
+        external
         view
         existOffer(_offerId)
         returns (uint256)
@@ -304,7 +304,7 @@ contract Offering is Ownable {
         address _phoneHash,
         string memory _ref,
         uint8 _score
-    ) public onlyOwner {
+    ) external onlyOwner {
         emit LowBalanceReceived(_phoneHash, _ref);
         Offer memory offerData;
         offerData.phoneHash = _phoneHash;
@@ -339,7 +339,7 @@ contract Offering is Ownable {
         uint256 _offerId,
         uint256 _proposalId
     )
-        public
+        external
         onlyOwner
         existProposal(_proposalId)
         existOffer(_offerId)
@@ -374,14 +374,27 @@ contract Offering is Ownable {
         view
         returns (uint256[] memory)
     {
-        uint256[] memory offerProposals = new uint256[](3);
         uint8 offerProposalsIndex = 0;
+        uint8 offerProposalsSize = 0;
         if (_scoring == 0) {
-            return offerProposals;
+            return (new uint256[](0));
         }
         for (
             uint8 i = 0;
-            (i < proposals.length && offerProposalsIndex < 3);
+            (i < proposals.length && offerProposalsSize < 3);
+            i++
+        ) {
+            if (
+                proposals[i].status == ProposalStatus.Active &&
+                _scoring >= proposals[i].minScoring
+            ) {
+                offerProposalsSize++;
+            }
+        }
+        uint256[] memory offerProposals = new uint256[](offerProposalsSize);
+        for (
+            uint8 i = 0;
+            (i < proposals.length && offerProposalsIndex < offerProposalsSize);
             i++
         ) {
             if (
@@ -391,24 +404,6 @@ contract Offering is Ownable {
                 offerProposals[offerProposalsIndex] = i;
                 offerProposalsIndex++;
             }
-        }
-        return trimOfferProposals(offerProposals, offerProposalsIndex);
-    }
-
-    /**
-     * @notice Create a trimmed table of the proposals
-     * @param _offerProposals Initial proposals table
-     * @param _offerProposalsCount Number of proposals to retrieve in the initial table
-     * @return Proposals
-     * @dev Return a proposals based on table `_offerProposals` with only the first `_offerProposalsCount` proposals
-     */
-    function trimOfferProposals(
-        uint256[] memory _offerProposals,
-        uint8 _offerProposalsCount
-    ) public pure returns (uint256[] memory) {
-        uint256[] memory offerProposals = new uint256[](_offerProposalsCount);
-        for (uint8 i = 0; i < _offerProposalsCount; i++) {
-            offerProposals[i] = _offerProposals[i];
         }
         return offerProposals;
     }

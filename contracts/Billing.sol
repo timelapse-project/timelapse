@@ -144,7 +144,7 @@ contract Billing is Ownable {
      * @dev This function get the customer (identified with `_phoneHash`)
      */
     function getCustomer(address _phoneHash)
-        public
+        external
         view
         returns (Customer memory)
     {
@@ -160,7 +160,7 @@ contract Billing is Ownable {
      * @param _phoneHash The address that identifies to the customer
      * @dev This function informs if the customer (identified with `_phoneHash`) is active
      */
-    function isActiveCustomer(address _phoneHash) public view returns (bool) {
+    function isActiveCustomer(address _phoneHash) external view returns (bool) {
         return (
             customerList[_phoneHash].status == CustomerStatus.Active
                 ? true
@@ -175,7 +175,7 @@ contract Billing is Ownable {
      * @dev This function change the customer's status (using CustomerStatus `_status`) ofr a customer (identified with `_phoneHash`)
      */
     function changeCustomerStatus(address _phoneHash, CustomerStatus _status)
-        public
+        external
         onlyOwner
     {
         customerList[_phoneHash].status = _status;
@@ -203,7 +203,7 @@ contract Billing is Ownable {
      * @param _phoneHash The address that identifies to the customer
      * @dev This function is directly called when API receives a topUp for a customer (identified with `_phoneHash`) with a target other than Timelapse
      */
-    function addToScore(address _phoneHash) public onlyOwner {
+    function addToScore(address _phoneHash) external onlyOwner {
         if (customerList[_phoneHash].status == CustomerStatus.New) {
             customers.push(
                 Customer(CustomerStatus.Active, 0, 0, 0, block.timestamp, 0)
@@ -237,7 +237,7 @@ contract Billing is Ownable {
      * @dev Get the size of the history of a customer (identified with `_phoneHash`)
      */
     function getHistorySize(address _phoneHash)
-        public
+        external
         view
         onlyOwner
         returns (uint256)
@@ -249,7 +249,7 @@ contract Billing is Ownable {
      * @notice Get the size of all the histories
      * @dev Get the size of all the histories
      */
-    function getHistoriesSize() public view onlyOwner returns (uint256) {
+    function getHistoriesSize() external view onlyOwner returns (uint256) {
         return histories.length;
     }
 
@@ -259,7 +259,7 @@ contract Billing is Ownable {
      * @dev Add amount to customer (identified with `_phoneHash`) total amount
      */
     function addToCustomerAmount(address _phoneHash, uint256 _amount)
-        public
+        external
         onlyOwner
         activeCustomer(_phoneHash)
     {
@@ -280,7 +280,7 @@ contract Billing is Ownable {
         string memory _ref,
         uint256 _acceptanceTimestamp,
         uint256 _productId
-    ) public onlyOwner activeCustomer(_phoneHash) {
+    ) external onlyOwner activeCustomer(_phoneHash) {
         emit AcceptanceReceived(
             _phoneHash,
             _ref,
@@ -318,7 +318,7 @@ contract Billing is Ownable {
      * @dev TopUp the last product of a customer (identified with `_phoneHash`) at timestamp `_paidTimestamp`
      */
     function topUpBilling(address _phoneHash, uint256 _paidTimestamp)
-        public
+        external
         onlyOwner
     {
         require(historyList[_phoneHash].length > 0, "Phone is not registered");

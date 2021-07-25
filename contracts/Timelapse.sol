@@ -74,7 +74,7 @@ contract Timelapse is Ownable {
         uint256 _capital,
         uint256 _interest,
         string memory _description
-    ) public onlyOwner {
+    ) external onlyOwner {
         offering.addProposal(_minScoring, _capital, _interest, _description);
     }
 
@@ -83,7 +83,7 @@ contract Timelapse is Ownable {
      * @param _id ID of the proposal to close
      * @dev Close the proposal with the ID `_id`
      */
-    function closeProposal(uint256 _id) public onlyOwner {
+    function closeProposal(uint256 _id) external onlyOwner {
         offering.closeProposal(_id);
     }
 
@@ -92,7 +92,7 @@ contract Timelapse is Ownable {
      * @param _phoneHash The address that identifies to the customer
      * @dev This function is directly called when API receives a topUp for a customer (identified with `_phoneHash`) with a target other than Timelapse
      */
-    function addToScore(address _phoneHash) public onlyOwner {
+    function addToScore(address _phoneHash) external onlyOwner {
         billing.addToScore(_phoneHash);
     }
 
@@ -111,7 +111,7 @@ contract Timelapse is Ownable {
         uint256 _acceptanceTimestamp,
         uint256 _offerId,
         uint256 _proposalId
-    ) public onlyOwner {
+    ) external onlyOwner {
         billing.acceptanceBilling(
             _phoneHash,
             _ref,
@@ -132,7 +132,7 @@ contract Timelapse is Ownable {
      * @dev TopUp the last product of a customer (identified with `_phoneHash`) at timestamp `_paidTimestamp`
      */
     function topUp(address _phoneHash, uint256 _paidTimestamp)
-        public
+        external
         onlyOwner
     {
         (, , , , uint256 productId) = billing.histories(
@@ -154,7 +154,7 @@ contract Timelapse is Ownable {
      * @dev Manage lowBalance (with reference `_ref`) of a customer (identified with `_phoneHash`)
      */
     function lowBalance(address _phoneHash, string memory _ref)
-        public
+        external
         onlyOwner
     {
         offering.lowBalanceOffering(
@@ -176,7 +176,7 @@ contract Timelapse is Ownable {
         address _phoneHash,
         uint256 _startTimestamp,
         uint256 _endTimestamp
-    ) public view returns (CustomerActivity[] memory) {
+    ) external view returns (CustomerActivity[] memory) {
         uint256 customerActivitiesSize;
         uint256 customerActivitiesIndex;
         for (uint8 i = 0; i < offering.getOfferSize(_phoneHash); i++) {
@@ -290,7 +290,7 @@ contract Timelapse is Ownable {
      * @dev Generate invoicing for a given period (between _startTimestamp and _endTimestamp)
      */
     function generateInvoicing(uint256 _startTimestamp, uint256 _endTimestamp)
-        public
+        external
         view
         returns (Invoice[] memory)
     {
@@ -338,7 +338,7 @@ contract Timelapse is Ownable {
      * @dev Generate reporting for a given period (between _startTimestamp and _endTimestamp)
      */
     function generateReporting(uint256 _startTimestamp, uint256 _endTimestamp)
-        public
+        external
         view
         returns (Reporting[] memory)
     {
