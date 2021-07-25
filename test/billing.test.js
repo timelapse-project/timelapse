@@ -14,12 +14,12 @@ contract("Billing", function (accounts) {
   const timestampP = new BN(1626699323);
 
   // ID for fictive product
-  const idProduct1 = new BN(0);
-  const idProduct2 = new BN(1);
+  const productId1 = new BN(0);
+  const productId2 = new BN(1);
 
   // ID expect for customer
-  const idCustomer1 = new BN(0);
-  const idCustomer2 = new BN(1);
+  const customerId1 = new BN(0);
+  const customerId2 = new BN(1);
 
   // Ref and Scoring
   const score1 = new BN(5);
@@ -61,25 +61,25 @@ contract("Billing", function (accounts) {
         // Customer 1
         await this.BillingInstance.addToScore(phoneHash1);
         expect(
-          (await this.BillingInstance.customerList(phoneHash1))["idCustomer"]
-        ).to.be.bignumber.equal(idCustomer1);
+          (await this.BillingInstance.customerList(phoneHash1))["customerId"]
+        ).to.be.bignumber.equal(customerId1);
         expect(
           (await this.BillingInstance.customerList(phoneHash1))["status"]
         ).to.be.bignumber.equal(activeCustomer);
         expect(
-          (await this.BillingInstance.customers(idCustomer1))["status"]
+          (await this.BillingInstance.customers(customerId1))["status"]
         ).to.be.bignumber.equal(activeCustomer);
         expect(
-          (await this.BillingInstance.customers(idCustomer1))["score"]
+          (await this.BillingInstance.customers(customerId1))["score"]
         ).to.be.bignumber.equal(new BN(12));
         expect(
-          (await this.BillingInstance.customers(idCustomer1))["nbTopUp"]
+          (await this.BillingInstance.customers(customerId1))["nbTopUp"]
         ).to.be.bignumber.equal(new BN(1)); // A voir
         expect(
-          (await this.BillingInstance.customers(idCustomer1))["amount"]
+          (await this.BillingInstance.customers(customerId1))["amount"]
         ).to.be.bignumber.equal(new BN(0));
         expect(
-          (await this.BillingInstance.customers(idCustomer1))[
+          (await this.BillingInstance.customers(customerId1))[
             "lastAcceptanceID"
           ]
         ).to.be.bignumber.equal(new BN(0));
@@ -87,25 +87,25 @@ contract("Billing", function (accounts) {
         // Customer 2
         await this.BillingInstance.addToScore(phoneHash2);
         expect(
-          (await this.BillingInstance.customerList(phoneHash2))["idCustomer"]
-        ).to.be.bignumber.equal(idCustomer2);
+          (await this.BillingInstance.customerList(phoneHash2))["customerId"]
+        ).to.be.bignumber.equal(customerId2);
         expect(
           (await this.BillingInstance.customerList(phoneHash2))["status"]
         ).to.be.bignumber.equal(activeCustomer);
         expect(
-          (await this.BillingInstance.customers(idCustomer2))["status"]
+          (await this.BillingInstance.customers(customerId2))["status"]
         ).to.be.bignumber.equal(activeCustomer);
         expect(
-          (await this.BillingInstance.customers(idCustomer2))["score"]
+          (await this.BillingInstance.customers(customerId2))["score"]
         ).to.be.bignumber.equal(new BN(12));
         expect(
-          (await this.BillingInstance.customers(idCustomer2))["nbTopUp"]
+          (await this.BillingInstance.customers(customerId2))["nbTopUp"]
         ).to.be.bignumber.equal(new BN(1)); // A voir
         expect(
-          (await this.BillingInstance.customers(idCustomer2))["amount"]
+          (await this.BillingInstance.customers(customerId2))["amount"]
         ).to.be.bignumber.equal(new BN(0));
         expect(
-          (await this.BillingInstance.customers(idCustomer2))[
+          (await this.BillingInstance.customers(customerId2))[
             "lastAcceptanceID"
           ]
         ).to.be.bignumber.equal(new BN(0));
@@ -220,7 +220,7 @@ contract("Billing", function (accounts) {
             phoneHash1,
             ref1,
             timestampA,
-            idProduct1,
+            productId1,
             { from: phoneHash1 }
           ),
           "Ownable: caller is not the owner"
@@ -239,7 +239,7 @@ contract("Billing", function (accounts) {
             phoneHash1,
             ref1,
             timestampA,
-            idProduct1,
+            productId1,
             { from: owner }
           ),
           "Blocked or Unknowed customer"
@@ -253,7 +253,7 @@ contract("Billing", function (accounts) {
           phoneHash1,
           ref1,
           timestampA,
-          idProduct1,
+          productId1,
           { from: owner }
         );
         const history1 = await this.BillingInstance.histories(
@@ -266,7 +266,7 @@ contract("Billing", function (accounts) {
           timestampA
         );
         expect(history1["paidTimestamp"]).to.be.bignumber.equal(new BN(0));
-        expect(history1["idProduct"]).to.be.bignumber.equal(idProduct1);
+        expect(history1["productId"]).to.be.bignumber.equal(productId1);
         expect(history1["status"]).to.be.bignumber.equal(activeProduct);
 
         // Customer 2
@@ -275,7 +275,7 @@ contract("Billing", function (accounts) {
           phoneHash2,
           ref2,
           timestampA,
-          idProduct2,
+          productId2,
           { from: owner }
         );
         const history2 = await this.BillingInstance.histories(
@@ -288,7 +288,7 @@ contract("Billing", function (accounts) {
           timestampA
         );
         expect(history2["paidTimestamp"]).to.be.bignumber.equal(new BN(0));
-        expect(history2["idProduct"]).to.be.bignumber.equal(idProduct2);
+        expect(history2["productId"]).to.be.bignumber.equal(productId2);
         expect(history2["status"]).to.be.bignumber.equal(activeProduct);
       });
 
@@ -299,7 +299,7 @@ contract("Billing", function (accounts) {
             phoneHash1,
             ref1,
             timestampA,
-            idProduct1,
+            productId1,
             { from: owner }
           ),
           "AcceptanceReceived",
@@ -307,7 +307,7 @@ contract("Billing", function (accounts) {
             phoneHash: phoneHash1,
             ref: ref1,
             acceptanceTimestamp: timestampA,
-            idProduct: idProduct1,
+            productId: productId1,
           }
         );
       });
@@ -319,7 +319,7 @@ contract("Billing", function (accounts) {
             phoneHash1,
             ref1,
             timestampA,
-            idProduct1,
+            productId1,
             { from: owner }
           ),
           "Confirmation",
@@ -327,7 +327,7 @@ contract("Billing", function (accounts) {
             phoneHash: phoneHash1,
             ref: ref1,
             acceptanceTimestamp: timestampA,
-            idProduct: idProduct1,
+            productId: productId1,
           }
         );
       });
@@ -340,7 +340,7 @@ contract("Billing", function (accounts) {
           phoneHash1,
           ref1,
           timestampA,
-          idProduct1,
+          productId1,
           { from: owner }
         );
         await expectRevert(
@@ -366,7 +366,7 @@ contract("Billing", function (accounts) {
           phoneHash1,
           ref1,
           timestampA,
-          idProduct1,
+          productId1,
           { from: owner }
         );
         await this.BillingInstance.topUpBilling(phoneHash1, timestampP, {
@@ -387,7 +387,7 @@ contract("Billing", function (accounts) {
           phoneHash1,
           ref1,
           timestampA,
-          idProduct1,
+          productId1,
           { from: owner }
         );
         await this.BillingInstance.topUpBilling(phoneHash1, timestampP, {
@@ -403,7 +403,7 @@ contract("Billing", function (accounts) {
           timestampA
         );
         expect(history1["paidTimestamp"]).to.be.bignumber.equal(timestampP);
-        expect(history1["idProduct"]).to.be.bignumber.equal(idProduct1);
+        expect(history1["productId"]).to.be.bignumber.equal(productId1);
         expect(history1["status"]).to.be.bignumber.equal(closeProduct);
 
         // Customer 2
@@ -412,7 +412,7 @@ contract("Billing", function (accounts) {
           phoneHash2,
           ref2,
           timestampA,
-          idProduct2,
+          productId2,
           { from: owner }
         );
         await this.BillingInstance.topUpBilling(phoneHash2, timestampP, {
@@ -428,7 +428,7 @@ contract("Billing", function (accounts) {
           timestampA
         );
         expect(history2["paidTimestamp"]).to.be.bignumber.equal(timestampP);
-        expect(history2["idProduct"]).to.be.bignumber.equal(idProduct2);
+        expect(history2["productId"]).to.be.bignumber.equal(productId2);
         expect(history2["status"]).to.be.bignumber.equal(closeProduct);
       });
 
@@ -438,7 +438,7 @@ contract("Billing", function (accounts) {
           phoneHash1,
           ref1,
           timestampA,
-          idProduct1,
+          productId1,
           { from: owner }
         );
         expectEvent(
@@ -456,7 +456,7 @@ contract("Billing", function (accounts) {
           phoneHash1,
           ref1,
           timestampA,
-          idProduct1,
+          productId1,
           { from: owner }
         );
         expectEvent(

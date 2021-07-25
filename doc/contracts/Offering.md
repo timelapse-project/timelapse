@@ -51,7 +51,7 @@ Number of proposals
 
 Return the number of proposals
 
-### `getProposalOfferSize(uint256 _idOffer) → uint256` (public)
+### `getProposalOfferSize(uint256 _offerId) → uint256` (public)
 
 Number of proposal in an offer
 
@@ -72,7 +72,7 @@ Get the size of all the offers
 
 Get the size of all the offers
 
-### `getIndexProposalOffer(uint256 _idOffer, uint256 _id) → uint256` (public)
+### `getIndexProposalOffer(uint256 _offerId, uint256 _id) → uint256` (public)
 
 Get the ID proposal in offer
 
@@ -86,12 +86,12 @@ Manage the "low balances" received and generate an offer
 
 Manage lowBalance (with reference `_ref`) of a customer (identified with `_phoneHash`) and generate an offer based on the score `_score`
 
-### `createProduct(address _phoneHash, uint256 _acceptanceTimestamp, uint256 _idOffer, uint256 _idProposal) → uint256` (public)
+### `createProduct(address _phoneHash, uint256 _acceptanceTimestamp, uint256 _offerId, uint256 _proposalId) → uint256` (public)
 
 Create a product
 
 
-Create a product with the following information: a customer (identified with `_phoneHash`), an offer ID `_idOffer`, a proposal ID `_idProposal` and a timestamp `_acceptanceTimestamp`
+Create a product with the following information: a customer (identified with `_phoneHash`), an offer ID `_offerId`, a proposal ID `_proposalId` and a timestamp `_acceptanceTimestamp`
 
 ### `getOfferProposals(uint8 _scoring) → uint256[]` (public)
 
@@ -108,19 +108,19 @@ Create a trimmed table of the proposals
 Return a proposals based on table `_offerProposals` with only the first `_offerProposalsCount` proposals
 
 
-### `ProposalAdded(uint256 idProposal, uint8 minScoring, uint256 capital, uint256 interest, string description)`
+### `ProposalAdded(uint256 proposalId, uint8 minScoring, uint256 capital, uint256 interest, string description)`
 
 
 
 Triggered when a proposal is added
 
-### `ClosedProposal(uint256 idProposal)`
+### `ClosedProposal(uint256 proposalId)`
 
 
 
 Triggered when a proposal is closed
 
-### `ProductCreated(address phoneHash, uint256 timestamp, uint256 idOffer, uint256 idProposal)`
+### `ProductCreated(address phoneHash, uint256 timestamp, uint256 offerId, uint256 proposalId)`
 
 
 
@@ -132,19 +132,19 @@ Triggered when a product is created
 
 Triggered when a lowBalance is received
 
-### `OfferSent(uint256 idOffer, address phoneHash, uint256 timestamp, enum Offering.EligibilityReason reason, uint256[] proposals, uint256 scoring, string ref)`
+### `OfferSent(uint256 offerId, address phoneHash, uint256 timestamp, enum Offering.EligibilityReason reason, uint256[] proposals, uint256 scoring, string ref)`
 
 
 
 Triggered when an offer has to be sent
 
-### `AcceptanceReceived(address phoneHash, uint256 idOffer, uint256 idProposal)`
+### `AcceptanceReceived(address phoneHash, uint256 offerId, uint256 proposalId)`
 
 
 
 Triggered when an acceptance is received
 
-### `ConfirmationSent(uint256 productId, uint256 idOffer, address phoneHash, uint256 timestamp)`
+### `ConfirmationSent(uint256 productId, uint256 offerId, address phoneHash, uint256 timestamp)`
 
 
 

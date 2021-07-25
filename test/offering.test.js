@@ -19,9 +19,9 @@ contract("Offering", function (accounts) {
   const ref3 = "EXTERNAL_REFERENCE 3";
 
   // Proposal Creation
-  const idProposal1 = new BN(0);
-  const idProposal2 = new BN(1);
-  const idProposal3 = new BN(2);
+  const proposalId1 = new BN(0);
+  const proposalId2 = new BN(1);
+  const proposalId3 = new BN(2);
   const minScore1 = new BN(49);
   const minScore2 = new BN(118);
   const minScore3 = new BN(185);
@@ -36,13 +36,13 @@ contract("Offering", function (accounts) {
   const description3 = "6 $ + 1.5 $";
 
   // Offer Creation
-  const idOffer1 = new BN(0);
-  const idOffer2 = new BN(1);
-  const idOffer3 = new BN(2);
+  const offerId1 = new BN(0);
+  const offerId2 = new BN(1);
+  const offerId3 = new BN(2);
 
   // Product Creation
-  const idProduct1 = new BN(0);
-  const idProduct2 = new BN(1);
+  const productId1 = new BN(0);
+  const productId2 = new BN(1);
 
   // Proposal Status
   const activeProposal = new BN(0);
@@ -84,7 +84,7 @@ contract("Offering", function (accounts) {
           description1,
           { from: owner }
         );
-        const proposal1 = await this.OfferingInstance.proposals(idProposal1);
+        const proposal1 = await this.OfferingInstance.proposals(proposalId1);
         expect(proposal1["minScoring"]).to.be.bignumber.equal(minScore1);
         expect(proposal1["capital"]).to.be.bignumber.equal(capital1);
         expect(proposal1["interest"]).to.be.bignumber.equal(interest1);
@@ -99,7 +99,7 @@ contract("Offering", function (accounts) {
           description2,
           { from: owner }
         );
-        const proposal2 = await this.OfferingInstance.proposals(idProposal2);
+        const proposal2 = await this.OfferingInstance.proposals(proposalId2);
         expect(proposal2["minScoring"]).to.be.bignumber.equal(minScore2);
         expect(proposal2["capital"]).to.be.bignumber.equal(capital2);
         expect(proposal2["interest"]).to.be.bignumber.equal(interest2);
@@ -114,7 +114,7 @@ contract("Offering", function (accounts) {
           description3,
           { from: owner }
         );
-        const proposal3 = await this.OfferingInstance.proposals(idProposal3);
+        const proposal3 = await this.OfferingInstance.proposals(proposalId3);
         expect(proposal3["minScoring"]).to.be.bignumber.equal(minScore3);
         expect(proposal3["capital"]).to.be.bignumber.equal(capital3);
         expect(proposal3["interest"]).to.be.bignumber.equal(interest3);
@@ -133,7 +133,7 @@ contract("Offering", function (accounts) {
           ),
           "ProposalAdded",
           {
-            idProposal: new BN(0),
+            proposalId: new BN(0),
             minScoring: minScore1,
             capital: capital1,
             interest: interest1,
@@ -174,8 +174,8 @@ contract("Offering", function (accounts) {
           description1,
           { from: owner }
         );
-        await this.OfferingInstance.closeProposal(idProposal1, { from: owner });
-        const proposal1 = await this.OfferingInstance.proposals(idProposal1);
+        await this.OfferingInstance.closeProposal(proposalId1, { from: owner });
+        const proposal1 = await this.OfferingInstance.proposals(proposalId1);
         expect(proposal1["status"]).to.be.bignumber.equal(closedProposal);
 
         // Proposal 2
@@ -186,8 +186,8 @@ contract("Offering", function (accounts) {
           description2,
           { from: owner }
         );
-        await this.OfferingInstance.closeProposal(idProposal2, { from: owner });
-        const proposal2 = await this.OfferingInstance.proposals(idProposal2);
+        await this.OfferingInstance.closeProposal(proposalId2, { from: owner });
+        const proposal2 = await this.OfferingInstance.proposals(proposalId2);
         expect(proposal2["status"]).to.be.bignumber.equal(closedProposal);
 
         // Proposal 1
@@ -198,8 +198,8 @@ contract("Offering", function (accounts) {
           description3,
           { from: owner }
         );
-        await this.OfferingInstance.closeProposal(idProposal3, { from: owner });
-        const proposal3 = await this.OfferingInstance.proposals(idProposal3);
+        await this.OfferingInstance.closeProposal(proposalId3, { from: owner });
+        const proposal3 = await this.OfferingInstance.proposals(proposalId3);
         expect(proposal3["status"]).to.be.bignumber.equal(closedProposal);
       });
 
@@ -214,7 +214,7 @@ contract("Offering", function (accounts) {
         expectEvent(
           await this.OfferingInstance.closeProposal(0, { from: owner }),
           "ClosedProposal",
-          { idProposal: new BN(0) }
+          { proposalId: new BN(0) }
         );
       });
     });
@@ -297,7 +297,7 @@ contract("Offering", function (accounts) {
           minScore1,
           { from: owner }
         );
-        const offer1 = await this.OfferingInstance.offers(idOffer1);
+        const offer1 = await this.OfferingInstance.offers(offerId1);
         expect(offer1["phoneHash"]).to.be.equal(phoneHash1);
         expect(offer1["ref"]).to.be.equal(ref1);
         expect(offer1["status"]).to.be.bignumber.equal(newOffer);
@@ -309,7 +309,7 @@ contract("Offering", function (accounts) {
           minScore2,
           { from: owner }
         );
-        const offer2 = await this.OfferingInstance.offers(idOffer2);
+        const offer2 = await this.OfferingInstance.offers(offerId2);
         expect(offer2["phoneHash"]).to.be.equal(phoneHash2);
         expect(offer2["ref"]).to.be.equal(ref2);
         expect(offer2["status"]).to.be.bignumber.equal(newOffer);
@@ -321,7 +321,7 @@ contract("Offering", function (accounts) {
           minScore3,
           { from: owner }
         );
-        const offer3 = await this.OfferingInstance.offers(idOffer3);
+        const offer3 = await this.OfferingInstance.offers(offerId3);
         expect(offer3["phoneHash"]).to.be.equal(phoneHash2);
         expect(offer3["ref"]).to.be.equal(ref3);
         expect(offer3["status"]).to.be.bignumber.equal(newOffer);
@@ -450,14 +450,14 @@ contract("Offering", function (accounts) {
         await this.OfferingInstance.createProduct(
           phoneHash1,
           timestampA,
-          idOffer1,
-          idProposal1
+          offerId1,
+          proposalId1
         );
-        const product1 = await this.OfferingInstance.products(idProduct1);
+        const product1 = await this.OfferingInstance.products(productId1);
         expect(product1["phoneHash"]).to.be.equal(phoneHash1);
         expect(product1["timestamp"]).to.be.bignumber.equal(timestampA);
-        expect(product1["idOffer"]).to.be.bignumber.equal(idOffer1);
-        expect(product1["idProposal"]).to.be.bignumber.equal(idProposal1);
+        expect(product1["offerId"]).to.be.bignumber.equal(offerId1);
+        expect(product1["proposalId"]).to.be.bignumber.equal(proposalId1);
         expect(product1["status"]).to.be.bignumber.equal(activeProduct);
 
         // Product 2
@@ -470,14 +470,14 @@ contract("Offering", function (accounts) {
         await this.OfferingInstance.createProduct(
           phoneHash2,
           timestampA,
-          idOffer2,
-          idProposal2
+          offerId2,
+          proposalId2
         );
-        const product2 = await this.OfferingInstance.products(idProduct2);
+        const product2 = await this.OfferingInstance.products(productId2);
         expect(product2["phoneHash"]).to.be.equal(phoneHash2);
         expect(product2["timestamp"]).to.be.bignumber.equal(timestampA);
-        expect(product2["idOffer"]).to.be.bignumber.equal(idOffer2);
-        expect(product2["idProposal"]).to.be.bignumber.equal(idProposal2);
+        expect(product2["offerId"]).to.be.bignumber.equal(offerId2);
+        expect(product2["proposalId"]).to.be.bignumber.equal(proposalId2);
         expect(product2["status"]).to.be.bignumber.equal(activeProduct);
       });
 
@@ -506,8 +506,8 @@ contract("Offering", function (accounts) {
           {
             phoneHash: phoneHash1,
             timestamp: timestampA,
-            idOffer: new BN(0),
-            idProposal: new BN(0),
+            offerId: new BN(0),
+            proposalId: new BN(0),
           }
         );
       });

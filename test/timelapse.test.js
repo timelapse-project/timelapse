@@ -18,8 +18,8 @@ contract("Timelapse", function (accounts) {
   const timestampFuture = new BN(2573846353);
 
   // ID expect for customer
-  const idCustomer1 = new BN(0);
-  const idCustomer2 = new BN(1);
+  const customerId1 = new BN(0);
+  const customerId2 = new BN(1);
 
   // Ref and Scoring
   const score1 = new BN(5);
@@ -29,9 +29,9 @@ contract("Timelapse", function (accounts) {
   const ref3 = "EXTERNAL_REFERENCE 3";
 
   // Proposal Creation
-  const idProposal1 = new BN(0);
-  const idProposal2 = new BN(1);
-  const idProposal3 = new BN(2);
+  const proposalId1 = new BN(0);
+  const proposalId2 = new BN(1);
+  const proposalId3 = new BN(2);
   const minScore1 = new BN(49);
   const minScore2 = new BN(118);
   const minScore3 = new BN(185);
@@ -46,13 +46,13 @@ contract("Timelapse", function (accounts) {
   const description3 = "6 $ + 1.5 $";
 
   // Offer Creation
-  const idOffer1 = new BN(0);
-  const idOffer2 = new BN(1);
-  const idOffer3 = new BN(2);
+  const offerId1 = new BN(0);
+  const offerId2 = new BN(1);
+  const offerId3 = new BN(2);
 
   // Product Creation
-  const idProduct1 = new BN(0);
-  const idProduct2 = new BN(1);
+  const productId1 = new BN(0);
+  const productId2 = new BN(1);
 
   // Customer Status
   const newCustomer = new BN(0);
@@ -101,25 +101,25 @@ contract("Timelapse", function (accounts) {
         // Customer 1
         await this.BillingInstance.addToScore(phoneHash1);
         expect(
-          (await this.BillingInstance.customerList(phoneHash1))["idCustomer"]
-        ).to.be.bignumber.equal(idCustomer1);
+          (await this.BillingInstance.customerList(phoneHash1))["customerId"]
+        ).to.be.bignumber.equal(customerId1);
         expect(
           (await this.BillingInstance.customerList(phoneHash1))["status"]
         ).to.be.bignumber.equal(activeCustomer);
         expect(
-          (await this.BillingInstance.customers(idCustomer1))["status"]
+          (await this.BillingInstance.customers(customerId1))["status"]
         ).to.be.bignumber.equal(activeCustomer);
         expect(
-          (await this.BillingInstance.customers(idCustomer1))["score"]
+          (await this.BillingInstance.customers(customerId1))["score"]
         ).to.be.bignumber.equal(new BN(12));
         expect(
-          (await this.BillingInstance.customers(idCustomer1))["nbTopUp"]
+          (await this.BillingInstance.customers(customerId1))["nbTopUp"]
         ).to.be.bignumber.equal(new BN(1));
         expect(
-          (await this.BillingInstance.customers(idCustomer1))["amount"]
+          (await this.BillingInstance.customers(customerId1))["amount"]
         ).to.be.bignumber.equal(new BN(0));
         expect(
-          (await this.BillingInstance.customers(idCustomer1))[
+          (await this.BillingInstance.customers(customerId1))[
             "lastAcceptanceID"
           ]
         ).to.be.bignumber.equal(new BN(0));
@@ -127,25 +127,25 @@ contract("Timelapse", function (accounts) {
         // Customer 2
         await this.BillingInstance.addToScore(phoneHash2);
         expect(
-          (await this.BillingInstance.customerList(phoneHash2))["idCustomer"]
-        ).to.be.bignumber.equal(idCustomer2);
+          (await this.BillingInstance.customerList(phoneHash2))["customerId"]
+        ).to.be.bignumber.equal(customerId2);
         expect(
           (await this.BillingInstance.customerList(phoneHash2))["status"]
         ).to.be.bignumber.equal(activeCustomer);
         expect(
-          (await this.BillingInstance.customers(idCustomer2))["status"]
+          (await this.BillingInstance.customers(customerId2))["status"]
         ).to.be.bignumber.equal(activeCustomer);
         expect(
-          (await this.BillingInstance.customers(idCustomer2))["score"]
+          (await this.BillingInstance.customers(customerId2))["score"]
         ).to.be.bignumber.equal(new BN(12));
         expect(
-          (await this.BillingInstance.customers(idCustomer2))["nbTopUp"]
+          (await this.BillingInstance.customers(customerId2))["nbTopUp"]
         ).to.be.bignumber.equal(new BN(1));
         expect(
-          (await this.BillingInstance.customers(idCustomer2))["amount"]
+          (await this.BillingInstance.customers(customerId2))["amount"]
         ).to.be.bignumber.equal(new BN(0));
         expect(
-          (await this.BillingInstance.customers(idCustomer2))[
+          (await this.BillingInstance.customers(customerId2))[
             "lastAcceptanceID"
           ]
         ).to.be.bignumber.equal(new BN(0));
@@ -260,7 +260,7 @@ contract("Timelapse", function (accounts) {
             phoneHash1,
             ref1,
             timestampA,
-            idProduct1,
+            productId1,
             { from: phoneHash1 }
           ),
           "Ownable: caller is not the owner"
@@ -279,7 +279,7 @@ contract("Timelapse", function (accounts) {
             phoneHash1,
             ref1,
             timestampA,
-            idProduct1,
+            productId1,
             { from: owner }
           ),
           "Blocked or Unknowed customer"
@@ -293,7 +293,7 @@ contract("Timelapse", function (accounts) {
           phoneHash1,
           ref1,
           timestampA,
-          idProduct1,
+          productId1,
           { from: owner }
         );
         const history1 = await this.BillingInstance.histories(
@@ -306,7 +306,7 @@ contract("Timelapse", function (accounts) {
           timestampA
         );
         expect(history1["paidTimestamp"]).to.be.bignumber.equal(new BN(0));
-        expect(history1["idProduct"]).to.be.bignumber.equal(idProduct1);
+        expect(history1["productId"]).to.be.bignumber.equal(productId1);
         expect(history1["status"]).to.be.bignumber.equal(activeProduct);
 
         // Customer 2
@@ -315,7 +315,7 @@ contract("Timelapse", function (accounts) {
           phoneHash2,
           ref2,
           timestampA,
-          idProduct2,
+          productId2,
           { from: owner }
         );
         const history2 = await this.BillingInstance.histories(
@@ -328,7 +328,7 @@ contract("Timelapse", function (accounts) {
           timestampA
         );
         expect(history2["paidTimestamp"]).to.be.bignumber.equal(new BN(0));
-        expect(history2["idProduct"]).to.be.bignumber.equal(idProduct2);
+        expect(history2["productId"]).to.be.bignumber.equal(productId2);
         expect(history2["status"]).to.be.bignumber.equal(activeProduct);
       });
 
@@ -339,7 +339,7 @@ contract("Timelapse", function (accounts) {
             phoneHash1,
             ref1,
             timestampA,
-            idProduct1,
+            productId1,
             { from: owner }
           ),
           "AcceptanceReceived",
@@ -347,7 +347,7 @@ contract("Timelapse", function (accounts) {
             phoneHash: phoneHash1,
             ref: ref1,
             acceptanceTimestamp: timestampA,
-            idProduct: idProduct1,
+            productId: productId1,
           }
         );
       });
@@ -359,7 +359,7 @@ contract("Timelapse", function (accounts) {
             phoneHash1,
             ref1,
             timestampA,
-            idProduct1,
+            productId1,
             { from: owner }
           ),
           "Confirmation",
@@ -367,7 +367,7 @@ contract("Timelapse", function (accounts) {
             phoneHash: phoneHash1,
             ref: ref1,
             acceptanceTimestamp: timestampA,
-            idProduct: idProduct1,
+            productId: productId1,
           }
         );
       });
@@ -380,7 +380,7 @@ contract("Timelapse", function (accounts) {
           phoneHash1,
           ref1,
           timestampA,
-          idProduct1,
+          productId1,
           { from: owner }
         );
         await expectRevert(
@@ -406,7 +406,7 @@ contract("Timelapse", function (accounts) {
           phoneHash1,
           ref1,
           timestampA,
-          idProduct1,
+          productId1,
           { from: owner }
         );
         await this.BillingInstance.topUpBilling(phoneHash1, timestampP, {
@@ -427,7 +427,7 @@ contract("Timelapse", function (accounts) {
           phoneHash1,
           ref1,
           timestampA,
-          idProduct1,
+          productId1,
           { from: owner }
         );
         await this.BillingInstance.topUpBilling(phoneHash1, timestampP, {
@@ -443,7 +443,7 @@ contract("Timelapse", function (accounts) {
           timestampA
         );
         expect(history1["paidTimestamp"]).to.be.bignumber.equal(timestampP);
-        expect(history1["idProduct"]).to.be.bignumber.equal(idProduct1);
+        expect(history1["productId"]).to.be.bignumber.equal(productId1);
         expect(history1["status"]).to.be.bignumber.equal(closeProduct);
 
         // Customer 2
@@ -452,7 +452,7 @@ contract("Timelapse", function (accounts) {
           phoneHash2,
           ref2,
           timestampA,
-          idProduct2,
+          productId2,
           { from: owner }
         );
         await this.BillingInstance.topUpBilling(phoneHash2, timestampP, {
@@ -468,7 +468,7 @@ contract("Timelapse", function (accounts) {
           timestampA
         );
         expect(history2["paidTimestamp"]).to.be.bignumber.equal(timestampP);
-        expect(history2["idProduct"]).to.be.bignumber.equal(idProduct2);
+        expect(history2["productId"]).to.be.bignumber.equal(productId2);
         expect(history2["status"]).to.be.bignumber.equal(closeProduct);
       });
 
@@ -478,7 +478,7 @@ contract("Timelapse", function (accounts) {
           phoneHash1,
           ref1,
           timestampA,
-          idProduct1,
+          productId1,
           { from: owner }
         );
         expectEvent(
@@ -496,7 +496,7 @@ contract("Timelapse", function (accounts) {
           phoneHash1,
           ref1,
           timestampA,
-          idProduct1,
+          productId1,
           { from: owner }
         );
         expectEvent(
@@ -543,7 +543,7 @@ contract("Timelapse", function (accounts) {
           description1,
           { from: owner }
         );
-        const proposal1 = await this.OfferingInstance.proposals(idProposal1);
+        const proposal1 = await this.OfferingInstance.proposals(proposalId1);
         expect(proposal1["minScoring"]).to.be.bignumber.equal(minScore1);
         expect(proposal1["capital"]).to.be.bignumber.equal(capital1);
         expect(proposal1["interest"]).to.be.bignumber.equal(interest1);
@@ -558,7 +558,7 @@ contract("Timelapse", function (accounts) {
           description2,
           { from: owner }
         );
-        const proposal2 = await this.OfferingInstance.proposals(idProposal2);
+        const proposal2 = await this.OfferingInstance.proposals(proposalId2);
         expect(proposal2["minScoring"]).to.be.bignumber.equal(minScore2);
         expect(proposal2["capital"]).to.be.bignumber.equal(capital2);
         expect(proposal2["interest"]).to.be.bignumber.equal(interest2);
@@ -573,7 +573,7 @@ contract("Timelapse", function (accounts) {
           description3,
           { from: owner }
         );
-        const proposal3 = await this.OfferingInstance.proposals(idProposal3);
+        const proposal3 = await this.OfferingInstance.proposals(proposalId3);
         expect(proposal3["minScoring"]).to.be.bignumber.equal(minScore3);
         expect(proposal3["capital"]).to.be.bignumber.equal(capital3);
         expect(proposal3["interest"]).to.be.bignumber.equal(interest3);
@@ -592,7 +592,7 @@ contract("Timelapse", function (accounts) {
           ),
           "ProposalAdded",
           {
-            idProposal: new BN(0),
+            proposalId: new BN(0),
             minScoring: minScore1,
             capital: capital1,
             interest: interest1,
@@ -633,8 +633,8 @@ contract("Timelapse", function (accounts) {
           description1,
           { from: owner }
         );
-        await this.OfferingInstance.closeProposal(idProposal1, { from: owner });
-        const proposal1 = await this.OfferingInstance.proposals(idProposal1);
+        await this.OfferingInstance.closeProposal(proposalId1, { from: owner });
+        const proposal1 = await this.OfferingInstance.proposals(proposalId1);
         expect(proposal1["status"]).to.be.bignumber.equal(closedProposal);
 
         // Proposal 2
@@ -645,8 +645,8 @@ contract("Timelapse", function (accounts) {
           description2,
           { from: owner }
         );
-        await this.OfferingInstance.closeProposal(idProposal2, { from: owner });
-        const proposal2 = await this.OfferingInstance.proposals(idProposal2);
+        await this.OfferingInstance.closeProposal(proposalId2, { from: owner });
+        const proposal2 = await this.OfferingInstance.proposals(proposalId2);
         expect(proposal2["status"]).to.be.bignumber.equal(closedProposal);
 
         // Proposal 1
@@ -657,8 +657,8 @@ contract("Timelapse", function (accounts) {
           description3,
           { from: owner }
         );
-        await this.OfferingInstance.closeProposal(idProposal3, { from: owner });
-        const proposal3 = await this.OfferingInstance.proposals(idProposal3);
+        await this.OfferingInstance.closeProposal(proposalId3, { from: owner });
+        const proposal3 = await this.OfferingInstance.proposals(proposalId3);
         expect(proposal3["status"]).to.be.bignumber.equal(closedProposal);
       });
 
@@ -673,7 +673,7 @@ contract("Timelapse", function (accounts) {
         expectEvent(
           await this.OfferingInstance.closeProposal(0, { from: owner }),
           "ClosedProposal",
-          { idProposal: new BN(0) }
+          { proposalId: new BN(0) }
         );
       });
     });
@@ -757,7 +757,7 @@ contract("Timelapse", function (accounts) {
           minScore1,
           { from: owner }
         );
-        const offer1 = await this.OfferingInstance.offers(idOffer1);
+        const offer1 = await this.OfferingInstance.offers(offerId1);
         expect(offer1["phoneHash"]).to.be.equal(phoneHash1);
         expect(offer1["ref"]).to.be.equal(ref1);
         expect(offer1["status"]).to.be.bignumber.equal(newOffer);
@@ -769,7 +769,7 @@ contract("Timelapse", function (accounts) {
           minScore2,
           { from: owner }
         );
-        const offer2 = await this.OfferingInstance.offers(idOffer2);
+        const offer2 = await this.OfferingInstance.offers(offerId2);
         expect(offer2["phoneHash"]).to.be.equal(phoneHash2);
         expect(offer2["ref"]).to.be.equal(ref2);
         expect(offer2["status"]).to.be.bignumber.equal(newOffer);
@@ -781,7 +781,7 @@ contract("Timelapse", function (accounts) {
           minScore3,
           { from: owner }
         );
-        const offer3 = await this.OfferingInstance.offers(idOffer3);
+        const offer3 = await this.OfferingInstance.offers(offerId3);
         expect(offer3["phoneHash"]).to.be.equal(phoneHash2);
         expect(offer3["ref"]).to.be.equal(ref3);
         expect(offer3["status"]).to.be.bignumber.equal(newOffer);
@@ -911,14 +911,14 @@ contract("Timelapse", function (accounts) {
         await this.OfferingInstance.createProduct(
           phoneHash1,
           timestampA,
-          idOffer1,
-          idProposal1
+          offerId1,
+          proposalId1
         );
-        const product1 = await this.OfferingInstance.products(idProduct1);
+        const product1 = await this.OfferingInstance.products(productId1);
         expect(product1["phoneHash"]).to.be.equal(phoneHash1);
         expect(product1["timestamp"]).to.be.bignumber.equal(timestampA);
-        expect(product1["idOffer"]).to.be.bignumber.equal(idOffer1);
-        expect(product1["idProposal"]).to.be.bignumber.equal(idProposal1);
+        expect(product1["offerId"]).to.be.bignumber.equal(offerId1);
+        expect(product1["proposalId"]).to.be.bignumber.equal(proposalId1);
         expect(product1["status"]).to.be.bignumber.equal(activeProduct);
 
         // Product 2
@@ -931,14 +931,14 @@ contract("Timelapse", function (accounts) {
         await this.OfferingInstance.createProduct(
           phoneHash2,
           timestampA,
-          idOffer2,
-          idProposal2
+          offerId2,
+          proposalId2
         );
-        const product2 = await this.OfferingInstance.products(idProduct2);
+        const product2 = await this.OfferingInstance.products(productId2);
         expect(product2["phoneHash"]).to.be.equal(phoneHash2);
         expect(product2["timestamp"]).to.be.bignumber.equal(timestampA);
-        expect(product2["idOffer"]).to.be.bignumber.equal(idOffer2);
-        expect(product2["idProposal"]).to.be.bignumber.equal(idProposal2);
+        expect(product2["offerId"]).to.be.bignumber.equal(offerId2);
+        expect(product2["proposalId"]).to.be.bignumber.equal(proposalId2);
         expect(product2["status"]).to.be.bignumber.equal(activeProduct);
       });
 
@@ -967,8 +967,8 @@ contract("Timelapse", function (accounts) {
           {
             phoneHash: phoneHash1,
             timestamp: timestampA,
-            idOffer: new BN(0),
-            idProposal: new BN(0),
+            offerId: new BN(0),
+            proposalId: new BN(0),
           }
         );
       });
@@ -1016,7 +1016,7 @@ contract("Timelapse", function (accounts) {
           description1,
           { from: owner }
         );
-        const proposal1 = await this.OfferingInstance.proposals(idProposal1);
+        const proposal1 = await this.OfferingInstance.proposals(proposalId1);
         expect(proposal1["minScoring"]).to.be.bignumber.equal(minScore1);
         expect(proposal1["capital"]).to.be.bignumber.equal(capital1);
         expect(proposal1["interest"]).to.be.bignumber.equal(interest1);
@@ -1031,7 +1031,7 @@ contract("Timelapse", function (accounts) {
           description2,
           { from: owner }
         );
-        const proposal2 = await this.OfferingInstance.proposals(idProposal2);
+        const proposal2 = await this.OfferingInstance.proposals(proposalId2);
         expect(proposal2["minScoring"]).to.be.bignumber.equal(minScore2);
         expect(proposal2["capital"]).to.be.bignumber.equal(capital2);
         expect(proposal2["interest"]).to.be.bignumber.equal(interest2);
@@ -1046,7 +1046,7 @@ contract("Timelapse", function (accounts) {
           description3,
           { from: owner }
         );
-        const proposal3 = await this.OfferingInstance.proposals(idProposal3);
+        const proposal3 = await this.OfferingInstance.proposals(proposalId3);
         expect(proposal3["minScoring"]).to.be.bignumber.equal(minScore3);
         expect(proposal3["capital"]).to.be.bignumber.equal(capital3);
         expect(proposal3["interest"]).to.be.bignumber.equal(interest3);
@@ -1067,7 +1067,7 @@ contract("Timelapse", function (accounts) {
           this.OfferingInstance,
           "ProposalAdded",
           {
-            idProposal: new BN(0),
+            proposalId: new BN(0),
             minScoring: minScore1,
             capital: capital1,
             interest: interest1,
@@ -1108,10 +1108,10 @@ contract("Timelapse", function (accounts) {
           description1,
           { from: owner }
         );
-        await this.TimelapseInstance.closeProposal(idProposal1, {
+        await this.TimelapseInstance.closeProposal(proposalId1, {
           from: owner,
         });
-        const proposal1 = await this.OfferingInstance.proposals(idProposal1);
+        const proposal1 = await this.OfferingInstance.proposals(proposalId1);
         expect(proposal1["status"]).to.be.bignumber.equal(closedProposal);
 
         // Proposal 2
@@ -1122,10 +1122,10 @@ contract("Timelapse", function (accounts) {
           description2,
           { from: owner }
         );
-        await this.TimelapseInstance.closeProposal(idProposal2, {
+        await this.TimelapseInstance.closeProposal(proposalId2, {
           from: owner,
         });
-        const proposal2 = await this.OfferingInstance.proposals(idProposal2);
+        const proposal2 = await this.OfferingInstance.proposals(proposalId2);
         expect(proposal2["status"]).to.be.bignumber.equal(closedProposal);
 
         // Proposal 1
@@ -1136,10 +1136,10 @@ contract("Timelapse", function (accounts) {
           description3,
           { from: owner }
         );
-        await this.TimelapseInstance.closeProposal(idProposal3, {
+        await this.TimelapseInstance.closeProposal(proposalId3, {
           from: owner,
         });
-        const proposal3 = await this.OfferingInstance.proposals(idProposal3);
+        const proposal3 = await this.OfferingInstance.proposals(proposalId3);
         expect(proposal3["status"]).to.be.bignumber.equal(closedProposal);
       });
 
@@ -1158,7 +1158,7 @@ contract("Timelapse", function (accounts) {
           receipt1.tx,
           this.OfferingInstance,
           "ClosedProposal",
-          { idProposal: new BN(0) }
+          { proposalId: new BN(0) }
         );
       });
     });
@@ -1175,25 +1175,25 @@ contract("Timelapse", function (accounts) {
         // Customer 1
         await this.TimelapseInstance.addToScore(phoneHash1);
         expect(
-          (await this.BillingInstance.customerList(phoneHash1))["idCustomer"]
-        ).to.be.bignumber.equal(idCustomer1);
+          (await this.BillingInstance.customerList(phoneHash1))["customerId"]
+        ).to.be.bignumber.equal(customerId1);
         expect(
           (await this.BillingInstance.customerList(phoneHash1))["status"]
         ).to.be.bignumber.equal(activeCustomer);
         expect(
-          (await this.BillingInstance.customers(idCustomer1))["status"]
+          (await this.BillingInstance.customers(customerId1))["status"]
         ).to.be.bignumber.equal(activeCustomer);
         expect(
-          (await this.BillingInstance.customers(idCustomer1))["score"]
+          (await this.BillingInstance.customers(customerId1))["score"]
         ).to.be.bignumber.equal(new BN(12));
         expect(
-          (await this.BillingInstance.customers(idCustomer1))["nbTopUp"]
+          (await this.BillingInstance.customers(customerId1))["nbTopUp"]
         ).to.be.bignumber.equal(new BN(1));
         expect(
-          (await this.BillingInstance.customers(idCustomer1))["amount"]
+          (await this.BillingInstance.customers(customerId1))["amount"]
         ).to.be.bignumber.equal(new BN(0));
         expect(
-          (await this.BillingInstance.customers(idCustomer1))[
+          (await this.BillingInstance.customers(customerId1))[
             "lastAcceptanceID"
           ]
         ).to.be.bignumber.equal(new BN(0));
@@ -1201,25 +1201,25 @@ contract("Timelapse", function (accounts) {
         // Customer 2
         await this.TimelapseInstance.addToScore(phoneHash2);
         expect(
-          (await this.BillingInstance.customerList(phoneHash2))["idCustomer"]
-        ).to.be.bignumber.equal(idCustomer2);
+          (await this.BillingInstance.customerList(phoneHash2))["customerId"]
+        ).to.be.bignumber.equal(customerId2);
         expect(
           (await this.BillingInstance.customerList(phoneHash2))["status"]
         ).to.be.bignumber.equal(activeCustomer);
         expect(
-          (await this.BillingInstance.customers(idCustomer2))["status"]
+          (await this.BillingInstance.customers(customerId2))["status"]
         ).to.be.bignumber.equal(activeCustomer);
         expect(
-          (await this.BillingInstance.customers(idCustomer2))["score"]
+          (await this.BillingInstance.customers(customerId2))["score"]
         ).to.be.bignumber.equal(new BN(12));
         expect(
-          (await this.BillingInstance.customers(idCustomer2))["nbTopUp"]
+          (await this.BillingInstance.customers(customerId2))["nbTopUp"]
         ).to.be.bignumber.equal(new BN(1));
         expect(
-          (await this.BillingInstance.customers(idCustomer2))["amount"]
+          (await this.BillingInstance.customers(customerId2))["amount"]
         ).to.be.bignumber.equal(new BN(0));
         expect(
-          (await this.BillingInstance.customers(idCustomer2))[
+          (await this.BillingInstance.customers(customerId2))[
             "lastAcceptanceID"
           ]
         ).to.be.bignumber.equal(new BN(0));
@@ -1278,7 +1278,7 @@ contract("Timelapse", function (accounts) {
         await this.TimelapseInstance.lowBalance(phoneHash1, ref1, {
           from: owner,
         });
-        const offer1 = await this.OfferingInstance.offers(idOffer1);
+        const offer1 = await this.OfferingInstance.offers(offerId1);
         expect(offer1["phoneHash"]).to.be.equal(phoneHash1);
         expect(offer1["ref"]).to.be.equal(ref1);
         expect(offer1["status"]).to.be.bignumber.equal(newOffer);
@@ -1289,7 +1289,7 @@ contract("Timelapse", function (accounts) {
         await this.TimelapseInstance.lowBalance(phoneHash2, ref2, {
           from: owner,
         });
-        const offer2 = await this.OfferingInstance.offers(idOffer2);
+        const offer2 = await this.OfferingInstance.offers(offerId2);
         expect(offer2["phoneHash"]).to.be.equal(phoneHash2);
         expect(offer2["ref"]).to.be.equal(ref2);
         expect(offer2["status"]).to.be.bignumber.equal(newOffer);
@@ -1300,7 +1300,7 @@ contract("Timelapse", function (accounts) {
         await this.TimelapseInstance.lowBalance(phoneHash2, ref3, {
           from: owner,
         });
-        const offer3 = await this.OfferingInstance.offers(idOffer3);
+        const offer3 = await this.OfferingInstance.offers(offerId3);
         expect(offer3["phoneHash"]).to.be.equal(phoneHash2);
         expect(offer3["ref"]).to.be.equal(ref3);
         expect(offer3["status"]).to.be.bignumber.equal(newOffer);
@@ -1415,8 +1415,8 @@ contract("Timelapse", function (accounts) {
             phoneHash1,
             ref1,
             timestampA,
-            idOffer1,
-            idProposal1,
+            offerId1,
+            proposalId1,
             { from: phoneHash1 }
           ),
           "Ownable: caller is not the owner"
@@ -1455,8 +1455,8 @@ contract("Timelapse", function (accounts) {
           phoneHash1,
           ref1,
           timestampA,
-          idOffer1,
-          idProposal1,
+          offerId1,
+          proposalId1,
           { from: owner }
         );
         const history1 = await this.BillingInstance.histories(
@@ -1469,7 +1469,7 @@ contract("Timelapse", function (accounts) {
           timestampA
         );
         expect(history1["paidTimestamp"]).to.be.bignumber.equal(new BN(0));
-        expect(history1["idProduct"]).to.be.bignumber.equal(idProduct1);
+        expect(history1["productId"]).to.be.bignumber.equal(productId1);
         expect(history1["status"]).to.be.bignumber.equal(activeProduct);
 
         // Customer 2
@@ -1481,8 +1481,8 @@ contract("Timelapse", function (accounts) {
           phoneHash2,
           ref2,
           timestampA,
-          idOffer2,
-          idProposal2,
+          offerId2,
+          proposalId2,
           { from: owner }
         );
         const history2 = await this.BillingInstance.histories(
@@ -1495,7 +1495,7 @@ contract("Timelapse", function (accounts) {
           timestampA
         );
         expect(history2["paidTimestamp"]).to.be.bignumber.equal(new BN(0));
-        expect(history2["idProduct"]).to.be.bignumber.equal(idProduct2);
+        expect(history2["productId"]).to.be.bignumber.equal(productId2);
         expect(history2["status"]).to.be.bignumber.equal(activeProduct);
       });
 
@@ -1529,8 +1529,8 @@ contract("Timelapse", function (accounts) {
           phoneHash1,
           ref1,
           timestampA,
-          idOffer1,
-          idProposal1,
+          offerId1,
+          proposalId1,
           { from: owner }
         );
         await expectEvent.inTransaction(
@@ -1541,7 +1541,7 @@ contract("Timelapse", function (accounts) {
             phoneHash: phoneHash1,
             ref: ref1,
             acceptanceTimestamp: timestampA,
-            idProduct: idProduct1,
+            productId: productId1,
           }
         );
       });
@@ -1576,8 +1576,8 @@ contract("Timelapse", function (accounts) {
           phoneHash1,
           ref1,
           timestampA,
-          idOffer1,
-          idProposal1,
+          offerId1,
+          proposalId1,
           { from: owner }
         );
         await expectEvent.inTransaction(
@@ -1588,7 +1588,7 @@ contract("Timelapse", function (accounts) {
             phoneHash: phoneHash1,
             ref: ref1,
             acceptanceTimestamp: timestampA,
-            idProduct: idProduct1,
+            productId: productId1,
           }
         );
       });
@@ -1625,8 +1625,8 @@ contract("Timelapse", function (accounts) {
           phoneHash1,
           ref1,
           timestampA,
-          idOffer1,
-          idProposal1,
+          offerId1,
+          proposalId1,
           { from: owner }
         );
         await expectRevert(
@@ -1668,8 +1668,8 @@ contract("Timelapse", function (accounts) {
           phoneHash1,
           ref1,
           timestampA,
-          idOffer1,
-          idProposal1,
+          offerId1,
+          proposalId1,
           { from: owner }
         );
         await this.TimelapseInstance.topUp(phoneHash1, timestampP, {
@@ -1685,7 +1685,7 @@ contract("Timelapse", function (accounts) {
           timestampA
         );
         expect(history1["paidTimestamp"]).to.be.bignumber.equal(timestampP);
-        expect(history1["idProduct"]).to.be.bignumber.equal(idProduct1);
+        expect(history1["productId"]).to.be.bignumber.equal(productId1);
         expect(history1["status"]).to.be.bignumber.equal(closeProduct);
 
         // Customer 2
@@ -1718,8 +1718,8 @@ contract("Timelapse", function (accounts) {
           phoneHash2,
           ref2,
           timestampA,
-          idOffer2,
-          idProposal2,
+          offerId2,
+          proposalId2,
           { from: owner }
         );
         await this.TimelapseInstance.topUp(phoneHash2, timestampP, {
@@ -1735,7 +1735,7 @@ contract("Timelapse", function (accounts) {
           timestampA
         );
         expect(history2["paidTimestamp"]).to.be.bignumber.equal(timestampP);
-        expect(history2["idProduct"]).to.be.bignumber.equal(idProduct2);
+        expect(history2["productId"]).to.be.bignumber.equal(productId2);
         expect(history2["status"]).to.be.bignumber.equal(closeProduct);
       });
 
@@ -1769,8 +1769,8 @@ contract("Timelapse", function (accounts) {
           phoneHash1,
           ref1,
           timestampA,
-          idOffer1,
-          idProposal1,
+          offerId1,
+          proposalId1,
           { from: owner }
         );
         const receipt1 = await this.TimelapseInstance.topUp(
@@ -1816,8 +1816,8 @@ contract("Timelapse", function (accounts) {
           phoneHash1,
           ref1,
           timestampA,
-          idOffer1,
-          idProposal1,
+          offerId1,
+          proposalId1,
           { from: owner }
         );
         const receipt1 = await this.TimelapseInstance.topUp(
@@ -1865,8 +1865,8 @@ contract("Timelapse", function (accounts) {
           phoneHash1,
           ref1,
           timestampA,
-          idOffer1,
-          idProposal1,
+          offerId1,
+          proposalId1,
           { from: owner }
         );
         await this.TimelapseInstance.topUp(phoneHash1, timestampP, {
@@ -1918,8 +1918,8 @@ contract("Timelapse", function (accounts) {
           phoneHash1,
           ref1,
           timestampA,
-          idOffer1,
-          idProposal1,
+          offerId1,
+          proposalId1,
           { from: owner }
         );
         await this.TimelapseInstance.topUp(phoneHash1, timestampP, {
@@ -1935,8 +1935,8 @@ contract("Timelapse", function (accounts) {
           phoneHash2,
           ref2,
           timestampA,
-          idOffer2,
-          idProposal2,
+          offerId2,
+          proposalId2,
           { from: owner }
         );
         await this.TimelapseInstance.topUp(phoneHash2, timestampP, {
@@ -1985,8 +1985,8 @@ contract("Timelapse", function (accounts) {
           phoneHash1,
           ref1,
           timestampA,
-          idOffer1,
-          idProposal1,
+          offerId1,
+          proposalId1,
           { from: owner }
         );
         await this.TimelapseInstance.topUp(phoneHash1, timestampP, {
@@ -2002,8 +2002,8 @@ contract("Timelapse", function (accounts) {
           phoneHash2,
           ref2,
           timestampA,
-          idOffer2,
-          idProposal2,
+          offerId2,
+          proposalId2,
           { from: owner }
         );
         const reporting = await this.TimelapseInstance.generateReporting(
@@ -2133,7 +2133,7 @@ contract("Timelapse", function (accounts) {
           from: owner,
         });
         const proposalOfferSize =
-          await this.OfferingInstance.getProposalOfferSize(idOffer1, {
+          await this.OfferingInstance.getProposalOfferSize(offerId1, {
             from: owner,
           });
         expect(proposalOfferSize).to.be.bignumber.equal(new BN(2));
@@ -2171,11 +2171,11 @@ contract("Timelapse", function (accounts) {
         });
         const proposalOfferIndex =
           await this.OfferingInstance.getIndexProposalOffer(
-            idOffer1,
+            offerId1,
             new BN(0),
             { from: owner }
           );
-        expect(proposalOfferIndex).to.be.bignumber.equal(idProposal1);
+        expect(proposalOfferIndex).to.be.bignumber.equal(proposalId1);
       });
     });
   });

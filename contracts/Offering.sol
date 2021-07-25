@@ -62,8 +62,8 @@ contract Offering is Ownable {
     struct Product {
         address phoneHash;
         uint256 timestamp;
-        uint256 idOffer;
-        uint256 idProposal;
+        uint256 offerId;
+        uint256 proposalId;
         ProductStatus status;
     }
 
@@ -103,7 +103,7 @@ contract Offering is Ownable {
      * @dev Triggered when a proposal is added
      */
     event ProposalAdded(
-        uint256 idProposal,
+        uint256 proposalId,
         uint8 minScoring,
         uint256 capital,
         uint256 interest,
@@ -112,7 +112,7 @@ contract Offering is Ownable {
     /**
      * @dev Triggered when a proposal is closed
      */
-    event ClosedProposal(uint256 idProposal);
+    event ClosedProposal(uint256 proposalId);
 
     /**
      * @dev Triggered when a product is created
@@ -120,8 +120,8 @@ contract Offering is Ownable {
     event ProductCreated(
         address phoneHash,
         uint256 timestamp,
-        uint256 idOffer,
-        uint256 idProposal
+        uint256 offerId,
+        uint256 proposalId
     );
 
     /**
@@ -133,7 +133,7 @@ contract Offering is Ownable {
      * @dev Triggered when an offer has to be sent
      */
     event OfferSent(
-        uint256 idOffer,
+        uint256 offerId,
         address phoneHash,
         uint256 timestamp,
         EligibilityReason reason,
@@ -147,15 +147,15 @@ contract Offering is Ownable {
      */
     event AcceptanceReceived(
         address phoneHash,
-        uint256 idOffer,
-        uint256 idProposal
+        uint256 offerId,
+        uint256 proposalId
     );
     /**
      * @dev Triggered when a confirmation has to be sent
      */
     event ConfirmationSent(
         uint256 productId,
-        uint256 idOffer,
+        uint256 offerId,
         address phoneHash,
         uint256 timestamp
     );
@@ -248,16 +248,16 @@ contract Offering is Ownable {
 
     /**
      * @notice Number of proposal in an offer
-     * @param _idOffer The ID of the offer
+     * @param _offerId The ID of the offer
      * @dev Return the number of proposal in an offer
      */
-    function getProposalOfferSize(uint256 _idOffer)
+    function getProposalOfferSize(uint256 _offerId)
         public
         view
-        existOffer(_idOffer)
+        existOffer(_offerId)
         returns (uint256)
     {
-        return offers[_idOffer].proposals.length;
+        return offers[_offerId].proposals.length;
     }
 
     /**
@@ -279,18 +279,18 @@ contract Offering is Ownable {
 
     /**
      * @notice Get the ID proposal in offer
-     * @param _idOffer The ID of the offer
+     * @param _offerId The ID of the offer
      * @param _id The ID of the array proposal in an offer
      * @dev Return the ID proposal in offer
      */
-    function getIndexProposalOffer(uint256 _idOffer, uint256 _id)
+    function getIndexProposalOffer(uint256 _offerId, uint256 _id)
         public
         view
-        existOffer(_idOffer)
+        existOffer(_offerId)
         returns (uint256)
     {
-        require(_id < offers[_idOffer].proposals.length, "Invalid index");
-        return offers[_idOffer].proposals[_id];
+        require(_id < offers[_offerId].proposals.length, "Invalid index");
+        return offers[_offerId].proposals[_id];
     }
 
     /**
@@ -329,36 +329,36 @@ contract Offering is Ownable {
      * @notice Create a product
      * @param _phoneHash The address that identifies to the customer
      * @param _acceptanceTimestamp Timestamp of the acceptance
-     * @param _idOffer ID of the offer
-     * @param _idProposal ID of the proposal
-     * @dev Create a product with the following information: a customer (identified with `_phoneHash`), an offer ID `_idOffer`, a proposal ID `_idProposal` and a timestamp `_acceptanceTimestamp`
+     * @param _offerId ID of the offer
+     * @param _proposalId ID of the proposal
+     * @dev Create a product with the following information: a customer (identified with `_phoneHash`), an offer ID `_offerId`, a proposal ID `_proposalId` and a timestamp `_acceptanceTimestamp`
      */
     function createProduct(
         address _phoneHash,
         uint256 _acceptanceTimestamp,
-        uint256 _idOffer,
-        uint256 _idProposal
+        uint256 _offerId,
+        uint256 _proposalId
     )
         public
         onlyOwner
-        existProposal(_idProposal)
-        existOffer(_idOffer)
+        existProposal(_proposalId)
+        existOffer(_offerId)
         returns (uint256)
     {
-        offers[_idOffer].status = OfferStatus.Accepted;
+        offers[_offerId].status = OfferStatus.Accepted;
         Product memory product = Product(
             _phoneHash,
             _acceptanceTimestamp,
-            _idOffer,
-            _idProposal,
+            _offerId,
+            _proposalId,
             ProductStatus.Active
         );
         products.push(product);
         emit ProductCreated(
             _phoneHash,
             _acceptanceTimestamp,
-            _idOffer,
-            _idProposal
+            _offerId,
+            _proposalId
         );
         return (products.length - 1);
     }

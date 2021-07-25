@@ -124,7 +124,7 @@ getProposal = async (data) => {
   LOG_LEVEL > 0 && console.log("<-- getProposal");
 
   let proposalItem = [];
-  proposalItem.id = parseInt(data.idProposal);
+  proposalItem.id = parseInt(data.proposalId);
   proposalItem.minScoring = data.minScoring;
   proposalItem.capital = data.capital;
   proposalItem.interest = data.interest;
@@ -145,7 +145,7 @@ sendOffer = async (data) => {
   var responseBody = {
     type: 1,
     phoneHash: data.phoneHash,
-    offerId: parseInt(data.idOffer),
+    offerId: parseInt(data.offerId),
     timeStamp: data.timestamp,
     proposals: [],
   };
@@ -202,7 +202,7 @@ sendConfirmation = async (data) => {
   var responseBody = {
     type: 3,
     phoneHash: data.phoneHash,
-    productId: parseInt(data.idProduct),
+    productId: parseInt(data.productId),
     timestamp: data.acceptanceTimestamp,
   };
   LOG_LEVEL > 0 && console.log(responseBody);

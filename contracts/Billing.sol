@@ -34,7 +34,7 @@ contract Billing is Ownable {
         uint256 acceptanceTimestamp;
         uint256 paidTimestamp;
         HistoryStatus status;
-        uint256 idProduct;
+        uint256 productId;
     }
 
     /**
@@ -53,7 +53,7 @@ contract Billing is Ownable {
      * @dev Customer index information
      */
     struct CustomerInfo {
-        uint256 idCustomer;
+        uint256 customerId;
         CustomerStatus status;
     }
 
@@ -79,7 +79,7 @@ contract Billing is Ownable {
         address phoneHash,
         string ref,
         uint256 acceptanceTimestamp,
-        uint256 idProduct
+        uint256 productId
     );
 
     /**
@@ -89,7 +89,7 @@ contract Billing is Ownable {
         address phoneHash,
         string ref,
         uint256 acceptanceTimestamp,
-        uint256 idProduct
+        uint256 productId
     );
 
     /**
@@ -152,7 +152,7 @@ contract Billing is Ownable {
             customerList[_phoneHash].status != CustomerStatus.New,
             "Unknow customer"
         );
-        return customers[customerList[_phoneHash].idCustomer];
+        return customers[customerList[_phoneHash].customerId];
     }
 
     /**
@@ -179,7 +179,7 @@ contract Billing is Ownable {
         onlyOwner
     {
         customerList[_phoneHash].status = _status;
-        customers[customerList[_phoneHash].idCustomer].status = _status;
+        customers[customerList[_phoneHash].customerId].status = _status;
         emit CustomerStatusChange(_phoneHash, customerList[_phoneHash].status);
     }
 
@@ -195,7 +195,7 @@ contract Billing is Ownable {
         activeCustomer(_phoneHash)
         returns (uint8)
     {
-        return customers[customerList[_phoneHash].idCustomer].score;
+        return customers[customerList[_phoneHash].customerId].score;
     }
 
     /**
@@ -208,13 +208,13 @@ contract Billing is Ownable {
             customers.push(
                 Customer(CustomerStatus.Active, 0, 0, 0, block.timestamp, 0)
             );
-            customerList[_phoneHash].idCustomer = (customers.length - 1);
+            customerList[_phoneHash].customerId = (customers.length - 1);
             customerList[_phoneHash].status = CustomerStatus.Active;
         }
-        customers[customerList[_phoneHash].idCustomer].nbTopUp++;
+        customers[customerList[_phoneHash].customerId].nbTopUp++;
         changeScore(
             _phoneHash,
-            process(customers[customerList[_phoneHash].idCustomer])
+            process(customers[customerList[_phoneHash].customerId])
         );
     }
 
@@ -224,10 +224,10 @@ contract Billing is Ownable {
      * @dev This function informs if the customer (identified with `_phoneHash`) is active
      */
     function changeScore(address _phoneHash, uint8 _score) public onlyOwner {
-        customers[customerList[_phoneHash].idCustomer].score = _score;
+        customers[customerList[_phoneHash].customerId].score = _score;
         emit ScoreChange(
             _phoneHash,
-            customers[customerList[_phoneHash].idCustomer].score
+            customers[customerList[_phoneHash].customerId].score
         );
     }
 
@@ -263,8 +263,8 @@ contract Billing is Ownable {
         onlyOwner
         activeCustomer(_phoneHash)
     {
-        customers[customerList[_phoneHash].idCustomer].amount += _amount;
-        customers[customerList[_phoneHash].idCustomer].nbTopUp++;
+        customers[customerList[_phoneHash].customerId].amount += _amount;
+        customers[customerList[_phoneHash].customerId].nbTopUp++;
     }
 
     /**
@@ -272,20 +272,20 @@ contract Billing is Ownable {
      * @param _phoneHash The address that identifies to the customer
      * @param _ref Reference of the telecom provider
      * @param _acceptanceTimestamp Timestamp of the acceptance
-     * @param _idProduct ID of the product
-     * @dev Add a customer product history (using reference `_ref`, product `_idProduct`, timestamp `_acceptanceTimestamp`) for a customer (identified with `_phoneHash`)
+     * @param _productId ID of the product
+     * @dev Add a customer product history (using reference `_ref`, product `_productId`, timestamp `_acceptanceTimestamp`) for a customer (identified with `_phoneHash`)
      */
     function acceptanceBilling(
         address _phoneHash,
         string memory _ref,
         uint256 _acceptanceTimestamp,
-        uint256 _idProduct
+        uint256 _productId
     ) public onlyOwner activeCustomer(_phoneHash) {
         emit AcceptanceReceived(
             _phoneHash,
             _ref,
             _acceptanceTimestamp,
-            _idProduct
+            _productId
         );
         histories.push(
             History(
@@ -293,13 +293,13 @@ contract Billing is Ownable {
                 _acceptanceTimestamp,
                 0,
                 HistoryStatus.Active,
-                _idProduct
+                _productId
             )
         );
-        customers[customerList[_phoneHash].idCustomer]
+        customers[customerList[_phoneHash].customerId]
         .lastAcceptanceID = (histories.length - 1);
         Customer memory customer = customers[
-            customerList[_phoneHash].idCustomer
+            customerList[_phoneHash].customerId
         ];
         historyList[_phoneHash].push(histories.length - 1);
         History memory lastAcceptance = histories[customer.lastAcceptanceID];
@@ -307,7 +307,7 @@ contract Billing is Ownable {
             _phoneHash,
             lastAcceptance.ref,
             lastAcceptance.acceptanceTimestamp,
-            lastAcceptance.idProduct
+            lastAcceptance.productId
         );
     }
 
@@ -330,8 +330,8 @@ contract Billing is Ownable {
             "The customer has no product to refund"
         );
         emit TopUpReceived(_phoneHash, histories[index].ref);
-        if (customers[customerList[_phoneHash].idCustomer].firstTopUp == 0) {
-            customers[customerList[_phoneHash].idCustomer].firstTopUp = block
+        if (customers[customerList[_phoneHash].customerId].firstTopUp == 0) {
+            customers[customerList[_phoneHash].customerId].firstTopUp = block
             .timestamp;
         }
         histories[index].paidTimestamp = _paidTimestamp;

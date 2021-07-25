@@ -33,12 +33,12 @@ Increase scoring information of a customer
 
 This function is directly called when API receives a topUp for a customer (identified with `_phoneHash`) with a target other than Timelapse
 
-### `acceptance(address _phoneHash, string _ref, uint256 _acceptanceTimestamp, uint256 _idOffer, uint256 _idProposal)` (public)
+### `acceptance(address _phoneHash, string _ref, uint256 _acceptanceTimestamp, uint256 _offerId, uint256 _proposalId)` (public)
 
 Accept the offer
 
 
-Accept the offer `_idOffer` (By choosing proposal `_idProposal`) of a customer (identified with `_phoneHash`) with reference `_ref` at timestamp `_acceptanceTimestamp`
+Accept the offer `_offerId` (By choosing proposal `_proposalId`) of a customer (identified with `_phoneHash`) with reference `_ref` at timestamp `_acceptanceTimestamp`
 
 ### `topUp(address _phoneHash, uint256 _paidTimestamp)` (public)
 

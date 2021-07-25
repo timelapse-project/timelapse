@@ -81,12 +81,12 @@ Add amount to customer total amount
 
 Add amount to customer (identified with `_phoneHash`) total amount
 
-### `acceptanceBilling(address _phoneHash, string _ref, uint256 _acceptanceTimestamp, uint256 _idProduct)` (public)
+### `acceptanceBilling(address _phoneHash, string _ref, uint256 _acceptanceTimestamp, uint256 _productId)` (public)
 
 Add an acceptance in the customer history
 
 
-Add a customer product history (using reference `_ref`, product `_idProduct`, timestamp `_acceptanceTimestamp`) for a customer (identified with `_phoneHash`)
+Add a customer product history (using reference `_ref`, product `_productId`, timestamp `_acceptanceTimestamp`) for a customer (identified with `_phoneHash`)
 
 ### `topUpBilling(address _phoneHash, uint256 _paidTimestamp)` (public)
 
@@ -121,13 +121,13 @@ Triggered when score of a customer has changed
 
 Triggered when a customer has been deleted
 
-### `AcceptanceReceived(address phoneHash, string ref, uint256 acceptanceTimestamp, uint256 idProduct)`
+### `AcceptanceReceived(address phoneHash, string ref, uint256 acceptanceTimestamp, uint256 productId)`
 
 
 
 Triggered when an Acceptance is received
 
-### `Confirmation(address phoneHash, string ref, uint256 acceptanceTimestamp, uint256 idProduct)`
+### `Confirmation(address phoneHash, string ref, uint256 acceptanceTimestamp, uint256 productId)`
 
 
 
