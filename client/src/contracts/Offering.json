@@ -29063,6 +29063,287 @@
     "version": "0.8.6+commit.11564f7e.Emscripten.clang"
   },
   "networks": {
+    "3": {
+      "events": {
+        "0xfd633a42d4f218d97cbfecb6472186609432d2d07e3a7eb52d0da4e6c1be5172": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "phoneHash",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "offerId",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "proposalId",
+              "type": "uint256"
+            }
+          ],
+          "name": "AcceptanceReceived",
+          "type": "event"
+        },
+        "0x86df561c035f1d98da81b75467ad3e7b09a98da6f2a88802d99a10a21439de7a": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "phoneHash",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "productId",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "AcknowledgeSent",
+          "type": "event"
+        },
+        "0x95be977bdc5b7c8f1f7966571689b718b5b948029f3a5377ec2b1cc3dbb8985f": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "proposalId",
+              "type": "uint256"
+            }
+          ],
+          "name": "ClosedProposal",
+          "type": "event"
+        },
+        "0x91551a88382be7835ce01fbf21484723623079542a670d5ab836ef55c6b60885": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "productId",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "offerId",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "phoneHash",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "timestamp",
+              "type": "uint256"
+            }
+          ],
+          "name": "ConfirmationSent",
+          "type": "event"
+        },
+        "0x251fc0df7e56c36cfc4f618ef67296b8e2c41ce1ce473e5187bfec66743b38d3": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "phoneHash",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "ref",
+              "type": "string"
+            }
+          ],
+          "name": "LowBalanceReceived",
+          "type": "event"
+        },
+        "0x6a2d36566113fdc14dbc5b9458a0ba3a3eb54e394c2eb29fb26efdfee664f55e": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "offerId",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "phoneHash",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "timestamp",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "enum Offering.EligibilityReason",
+              "name": "reason",
+              "type": "uint8"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256[]",
+              "name": "proposals",
+              "type": "uint256[]"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "scoring",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "ref",
+              "type": "string"
+            }
+          ],
+          "name": "OfferSent",
+          "type": "event"
+        },
+        "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "previousOwner",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "newOwner",
+              "type": "address"
+            }
+          ],
+          "name": "OwnershipTransferred",
+          "type": "event"
+        },
+        "0xf6e4d5991d43b8f0508a8ded04e4b8f555c903a7bcba3ccb4d8486480c1ba947": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "phoneHash",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "timestamp",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "offerId",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "proposalId",
+              "type": "uint256"
+            }
+          ],
+          "name": "ProductCreated",
+          "type": "event"
+        },
+        "0x0dd92ec7c9e4620459d0f39f48975327d855d61513c1e839e5ae03d1ca764472": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "proposalId",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint8",
+              "name": "minScoring",
+              "type": "uint8"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "capital",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "interest",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "description",
+              "type": "string"
+            }
+          ],
+          "name": "ProposalAdded",
+          "type": "event"
+        },
+        "0xd38c4fe5b0a3cb3196c58af9fa89da00b028573ffb3fd8f08d41a4b5966c52e9": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "phoneHash",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "productId",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "TopUpReceived",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x41a7351C52Bc5A93fE5108187080131a88d4757F",
+      "transactionHash": "0x5afb67a1afd59ce707f5f67c8b4df03186eb7a1ec0f589305baf9ff4a2c13b09"
+    },
     "1000": {
       "events": {
         "0xfd633a42d4f218d97cbfecb6472186609432d2d07e3a7eb52d0da4e6c1be5172": {
@@ -29341,12 +29622,12 @@
         }
       },
       "links": {},
-      "address": "0x0Ad0553F5111eaC3fe6120A331C23237150a712F",
-      "transactionHash": "0x14baa0a6e686a33b99a4a2354cba2fea029be340adef06d2896bd9bb5f6b9f46"
+      "address": "0x9D3248A9FeC35F2b3eFaeBBb2D06Fa3816af34ac",
+      "transactionHash": "0x79d247c7f23c46cf835f1c2af136b03c878b705b1eccf05bd9036bf7a7dd894c"
     }
   },
   "schemaVersion": "3.4.1",
-  "updatedAt": "2021-07-25T16:13:06.194Z",
+  "updatedAt": "2021-07-26T21:40:02.420Z",
   "networkType": "ethereum",
   "devdoc": {
     "author": "Keeymon, DavidRochus",

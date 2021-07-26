@@ -48074,15 +48074,41 @@
     "version": "0.8.6+commit.11564f7e.Emscripten.clang"
   },
   "networks": {
-    "1000": {
+    "3": {
       "events": {},
       "links": {},
-      "address": "0x63290C479A9125CADaf8085cE31C020704d85dF2",
-      "transactionHash": "0xa67d21c22188ef12f8187da1528511ef237bbda4c156e2f1dc971d4cd11d1c33"
+      "address": "0xC1223993EfDC477C6baACa78e1bEC4118a85da46",
+      "transactionHash": "0xa42f49816bfa09b4fd2c5bb052d8e78c30d94ed8a87d95f822f06c71e8066b46"
+    },
+    "1000": {
+      "events": {
+        "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "previousOwner",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "newOwner",
+              "type": "address"
+            }
+          ],
+          "name": "OwnershipTransferred",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x39c800F3999Dd9c85dDA471cA975bE86d81cc6B7",
+      "transactionHash": "0x920e8ce4a3a1c32a9c69fe9ef241673f4038a368af9380c28e322332869900b1"
     }
   },
   "schemaVersion": "3.4.1",
-  "updatedAt": "2021-07-25T16:13:06.222Z",
+  "updatedAt": "2021-07-26T21:40:02.447Z",
   "networkType": "ethereum",
   "devdoc": {
     "author": "Keeymon, DavidRochus",

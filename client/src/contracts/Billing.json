@@ -33517,6 +33517,183 @@
     "version": "0.8.6+commit.11564f7e.Emscripten.clang"
   },
   "networks": {
+    "3": {
+      "events": {
+        "0x031870b979bdc77dc0b1037a1aac37c55a178ab3bec4f8ba1ca1fc452e30578b": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "phoneHash",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "ref",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "acceptanceTimestamp",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "productId",
+              "type": "uint256"
+            }
+          ],
+          "name": "AcceptanceReceived",
+          "type": "event"
+        },
+        "0xd3866d48a40f2de06c735e96a984d47ce6783b334002603c31e3f4bc05bd51c5": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "phoneHash",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "ref",
+              "type": "string"
+            }
+          ],
+          "name": "Acknowledge",
+          "type": "event"
+        },
+        "0x52420d39a0f366bd8078120494fcd7ffb3971e79291fa625dd9de26e85607524": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "phoneHash",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "ref",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "acceptanceTimestamp",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "productId",
+              "type": "uint256"
+            }
+          ],
+          "name": "Confirmation",
+          "type": "event"
+        },
+        "0x1eacdda6365a7f824e9b515212eda6b8fb050f25bc505f857ac21c025a64e6f1": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "phoneHash",
+              "type": "address"
+            }
+          ],
+          "name": "CustomerIsDeleted",
+          "type": "event"
+        },
+        "0xb23cc8d2c435b48098fc64e3bfd632e00ba00d1b8be3f25b0a973438951eae7f": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "phoneHash",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "enum Billing.CustomerStatus",
+              "name": "status",
+              "type": "uint8"
+            }
+          ],
+          "name": "CustomerStatusChange",
+          "type": "event"
+        },
+        "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "previousOwner",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "newOwner",
+              "type": "address"
+            }
+          ],
+          "name": "OwnershipTransferred",
+          "type": "event"
+        },
+        "0x67300a8a7a64e6ba305144189169d4bf615482b42e8fd241a6c5fc20879374a7": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "phoneHash",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint8",
+              "name": "score",
+              "type": "uint8"
+            }
+          ],
+          "name": "ScoreChange",
+          "type": "event"
+        },
+        "0xa3a756c9361873f5cd34cb71ba3b6ebc76b90321aa2767387c016991dfb4f63a": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "phoneHash",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "ref",
+              "type": "string"
+            }
+          ],
+          "name": "TopUpReceived",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0xC947e784796595a86D7db6f3F90Ab72151DF469D",
+      "transactionHash": "0x90b4bf03b963ef5ead07a2b15dc51879efa9a0a47991a73f9fad2b8a634cb5b9"
+    },
     "1000": {
       "events": {
         "0x031870b979bdc77dc0b1037a1aac37c55a178ab3bec4f8ba1ca1fc452e30578b": {
@@ -33691,12 +33868,12 @@
         }
       },
       "links": {},
-      "address": "0x94d3Ac8efBe100fcA10F39186b3cebC7B764833B",
-      "transactionHash": "0x56f0abb011c93689300c558178e86db7356974a50834fa16ffed4c259c8f1cb4"
+      "address": "0xC579795C11784fB61bEd4526747890503997318B",
+      "transactionHash": "0x2f7385707cd4ac514a12e2fc65319158b59e07516fb5fcd36a18b0c9b35103a2"
     }
   },
   "schemaVersion": "3.4.1",
-  "updatedAt": "2021-07-25T16:13:06.168Z",
+  "updatedAt": "2021-07-26T21:40:02.395Z",
   "networkType": "ethereum",
   "devdoc": {
     "author": "Keeymon, DavidRochus",
