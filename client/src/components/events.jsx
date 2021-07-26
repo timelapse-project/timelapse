@@ -18,11 +18,11 @@ class Events extends Component {
     const billingInstance = this.props.billingInstance;
     offeringInstance.events
       .allEvents()
-      .on("data", (event) => this.doWhenEvent(event))
+      .on("data", (event) => this.doWhenOfferingEvent(event))
       .on("error", console.error);
     billingInstance.events
       .allEvents()
-      .on("data", (event) => this.doWhenEvent(event))
+      .on("data", (event) => this.doWhenBillingEvent(event))
       .on("error", console.error);
     this.setState(
       { web3, accounts, timelapseInstance, offeringInstance, billingInstance },
@@ -61,8 +61,8 @@ class Events extends Component {
     return JSON.stringify(JSONLog, null, 4);
   }
 
-  doWhenEvent = async (data) => {
-    console.log("==> doWhenEvent");
+  doWhenOfferingEvent = async (data) => {
+    console.log("==> doWhenOfferingEvent");
     switch (data.event) {
       case "LowBalanceReceived":
       case "OfferSent":
@@ -70,6 +70,21 @@ class Events extends Component {
       case "ConfirmationSent":
       case "TopUpReceived":
       case "AcknowledgeSent":
+      case "ProposalAdded":
+      case "ClosedProposal":
+        this.addEventLog(
+          "### " + data.event + " ###\n" + this.formatJSONLog(data.returnValues)
+        );
+        break;
+      default:
+        console.log("Event not managed");
+    }
+  };
+
+  doWhenBillingEvent = async (data) => {
+    console.log("==> doWhenBillingEvent");
+    switch (data.event) {
+      case "ScoreChange":
         this.addEventLog(
           "### " + data.event + " ###\n" + this.formatJSONLog(data.returnValues)
         );

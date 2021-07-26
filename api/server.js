@@ -3,7 +3,7 @@
  *    Description: This script manage the rest calls coming from Telecom Operator and send it to the blockchain
  */
 var express = require("express");
-const { web3 } = require("./getWeb3");
+const { web3 } = require("./getServerWeb3");
 var app = express();
 var fs = require("fs");
 

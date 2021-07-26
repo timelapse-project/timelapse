@@ -14,6 +14,12 @@ import Reporting from "./components/reporting";
 import Invoicing from "./components/invoicing";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 
+import "bootstrap/dist/css/bootstrap.min.css";
+import "react-toastify/dist/ReactToastify.css";
+
+import { toast } from "react-toastify";
+toast.configure();
+
 class App extends Component {
   state = {
     storageValue: 0,
@@ -29,8 +35,8 @@ class App extends Component {
     proposalDescriptionError: null,
   };
 
-  componentWillMount = async () => {
-    console.log("==> componentWillMount");
+  componentDidMount = async () => {
+    console.log("==> componentDidMount");
     try {
       // Get network provider and web3 instance.
       const web3 = await getWeb3();
@@ -40,11 +46,11 @@ class App extends Component {
 
       // Get the contract instance.
       const networkId = await web3.eth.net.getId();
-      if (networkId !== 1000 && networkId !== 1337) {
+      if (networkId !== 3 && networkId !== 1000) {
         alert(
           "Wrong Network(" +
             networkId +
-            "). Please Switch to Timelapse Network(1000) "
+            "). Please Switch to Ropsten (3) or Timelapse Network(1000)"
         );
         return;
       }
@@ -66,12 +72,30 @@ class App extends Component {
         billingNetwork && billingNetwork.address
       );
 
+      offeringInstance.events
+        .allEvents()
+        .on("data", (event) => this.doWhenOfferingEvent(event))
+        .on("error", console.error);
+      billingInstance.events
+        .allEvents()
+        .on("data", (event) => this.doWhenBillingEvent(event))
+        .on("error", console.error);
+
       // Set a timer to refresh the page every 10 seconds
       this.updateTimer = setInterval(() => this.runInit(), 10000);
 
       // Set web3, accounts, and contract to the state, and then proceed with an
       // example of interacting with the contract's methods.
-      this.setState({ web3, accounts, timelapseInstance, offeringInstance, billingInstance }, this.runInit);
+      this.setState(
+        {
+          web3,
+          accounts,
+          timelapseInstance,
+          offeringInstance,
+          billingInstance,
+        },
+        this.runInit
+      );
     } catch (error) {
       // Catch any errors for any of the above operations.
       alert(
@@ -94,6 +118,43 @@ class App extends Component {
     this.setState({
       contractOwner: contractOwner,
     });
+  };
+
+  doWhenOfferingEvent = async (data) => {
+    console.log("==> doWhenOfferingEvent");
+    switch (data.event) {
+      case "LowBalanceReceived":
+      case "OfferSent":
+      case "AcceptanceReceived":
+      case "ConfirmationSent":
+      case "TopUpReceived":
+      case "AcknowledgeSent":
+      case "ProposalAdded":
+      case "ClosedProposal":
+        toast.success(
+          <p>
+            New <b>{data.event}</b> (Offering) detected
+          </p>
+        );
+        break;
+      default:
+        console.log("Event not managed");
+    }
+  };
+
+  doWhenBillingEvent = async (data) => {
+    console.log("==> doWhenBillingEvent");
+    switch (data.event) {
+      case "ScoreChange":
+        toast.info(
+          <p>
+            New <b>{data.event}</b> (Billing) detected
+          </p>
+        );
+        break;
+      default:
+        console.log("Event not managed");
+    }
   };
 
   render() {

@@ -3,7 +3,7 @@
  *    Description: This script manage the emitted events from the blockchain and send back to the Telecom Operator
  */
 var Request = require("request");
-const { web3 } = require("./getWeb3");
+const { web3 } = require("./getWatcherWeb3");
 const TimelapseContract = require("../client/src/contracts/Timelapse.json");
 const BillingContract = require("../client/src/contracts/Billing.json");
 const OfferingContract = require("../client/src/contracts/Offering.json");
