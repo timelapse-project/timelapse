@@ -10,8 +10,8 @@ class Proposals extends Component {
     proposalList: null,
   };
 
-  componentDidMount = async () => {
-    console.log("==> componentDidMount");
+  componentWillMount = async () => {
+    console.log("==> componentWillMount");
     const web3 = this.props.web3;
     const accounts = this.props.accounts;
     const timelapseInstance = this.props.timelapseInstance;
