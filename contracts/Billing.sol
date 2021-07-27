@@ -65,7 +65,7 @@ contract Billing is Ownable {
     /**
      * @dev Triggered when score of a customer has changed
      */
-    event ScoreChange(address phoneHash, uint8 score);
+    event ScoreChanged(address phoneHash, uint8 score);
 
     /**
      * @dev Triggered when a customer has been deleted
@@ -85,7 +85,7 @@ contract Billing is Ownable {
     /**
      * @dev Triggered when confirmation has to be sent
      */
-    event Confirmation(
+    event ConfirmationSent(
         address phoneHash,
         string ref,
         uint256 acceptanceTimestamp,
@@ -100,7 +100,7 @@ contract Billing is Ownable {
     /**
      * @dev Triggered when an acknowledge has to be sent
      */
-    event Acknowledge(address phoneHash, string ref);
+    event AcknowledgeSent(address phoneHash, string ref);
 
     /**
      * @dev Customer table
@@ -225,7 +225,7 @@ contract Billing is Ownable {
      */
     function changeScore(address _phoneHash, uint8 _score) public onlyOwner {
         customers[customerList[_phoneHash].customerId].score = _score;
-        emit ScoreChange(
+        emit ScoreChanged(
             _phoneHash,
             customers[customerList[_phoneHash].customerId].score
         );
@@ -303,7 +303,7 @@ contract Billing is Ownable {
         ];
         historyList[_phoneHash].push(histories.length - 1);
         History memory lastAcceptance = histories[customer.lastAcceptanceID];
-        emit Confirmation(
+        emit ConfirmationSent(
             _phoneHash,
             lastAcceptance.ref,
             lastAcceptance.acceptanceTimestamp,
@@ -336,7 +336,7 @@ contract Billing is Ownable {
         }
         histories[index].paidTimestamp = _paidTimestamp;
         histories[index].status = HistoryStatus.Closed;
-        emit Acknowledge(_phoneHash, histories[index].ref);
+        emit AcknowledgeSent(_phoneHash, histories[index].ref);
     }
 
     /**

@@ -112,7 +112,7 @@ contract Offering is Ownable {
     /**
      * @dev Triggered when a proposal is closed
      */
-    event ClosedProposal(uint256 proposalId);
+    event ProposalClosed(uint256 proposalId);
 
     /**
      * @dev Triggered when a product is created
@@ -141,34 +141,6 @@ contract Offering is Ownable {
         uint256 scoring,
         string ref
     );
-
-    /**
-     * @dev Triggered when an acceptance is received
-     */
-    event AcceptanceReceived(
-        address phoneHash,
-        uint256 offerId,
-        uint256 proposalId
-    );
-    /**
-     * @dev Triggered when a confirmation has to be sent
-     */
-    event ConfirmationSent(
-        uint256 productId,
-        uint256 offerId,
-        address phoneHash,
-        uint256 timestamp
-    );
-
-    /**
-     * @dev Triggered when a topUp is received
-     */
-    event TopUpReceived(address phoneHash, uint256 productId, uint256 amount);
-
-    /**
-     * @dev Triggered when an acknowledge has to be sent
-     */
-    event AcknowledgeSent(address phoneHash, uint256 productId, uint256 amount);
 
     /**
      * @dev Check if proposal exists
@@ -235,7 +207,7 @@ contract Offering is Ownable {
      */
     function closeProposal(uint256 _id) external onlyOwner existProposal(_id) {
         proposals[_id].status = ProposalStatus.Closed;
-        emit ClosedProposal(_id);
+        emit ProposalClosed(_id);
     }
 
     /**

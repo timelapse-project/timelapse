@@ -9,8 +9,8 @@ class Events extends Component {
     eventLog: [],
   };
 
-  componentWillMount = async () => {
-    console.log("==> componentWillMount");
+  componentDidMount = async () => {
+    console.log("==> componentDidMount");
     const web3 = this.props.web3;
     const accounts = this.props.accounts;
     const timelapseInstance = this.props.timelapseInstance;
@@ -66,12 +66,8 @@ class Events extends Component {
     switch (data.event) {
       case "LowBalanceReceived":
       case "OfferSent":
-      case "AcceptanceReceived":
-      case "ConfirmationSent":
-      case "TopUpReceived":
-      case "AcknowledgeSent":
       case "ProposalAdded":
-      case "ClosedProposal":
+      case "ProposalClosed":
         this.addEventLog(
           "### " + data.event + " ###\n" + this.formatJSONLog(data.returnValues)
         );
@@ -84,7 +80,11 @@ class Events extends Component {
   doWhenBillingEvent = async (data) => {
     console.log("==> doWhenBillingEvent");
     switch (data.event) {
-      case "ScoreChange":
+      case "ScoreChanged":
+      case "TopUpReceived":
+      case "AcceptanceReceived":
+      case "ConfirmationSent":
+      case "AcknowledgeSent":
         this.addEventLog(
           "### " + data.event + " ###\n" + this.formatJSONLog(data.returnValues)
         );

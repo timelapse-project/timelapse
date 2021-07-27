@@ -10,12 +10,13 @@ class Proposals extends Component {
     proposalList: null,
   };
 
-  componentWillMount = async () => {
-    console.log("==> componentWillMount");
+  componentDidMount = async () => {
+    console.log("==> componentDidMount");
     const web3 = this.props.web3;
     const accounts = this.props.accounts;
     const timelapseInstance = this.props.timelapseInstance;
     const offeringInstance = this.props.offeringInstance;
+    const contractOwner = this.props.contractOwner;
     timelapseInstance.events
       .allEvents()
       .on("data", (event) => this.doWhenEvent(event))
@@ -25,7 +26,7 @@ class Proposals extends Component {
       .on("data", (event) => this.doWhenEvent(event))
       .on("error", console.error);
     this.setState(
-      { web3, accounts, timelapseInstance, offeringInstance },
+      { web3, accounts, timelapseInstance, offeringInstance, contractOwner },
       this.runInit
     );
   };
@@ -280,7 +281,8 @@ class Proposals extends Component {
                           <th scope="col">Interest</th>
                           <th scope="col">Description</th>
                           <th scope="col">Status</th>
-                          <th scope="col"></th>
+                          {this.state.contractOwner ===
+                            this.state.accounts[0] && <th scope="col"></th>}
                         </tr>
                       </thead>
                       <tbody>
@@ -300,23 +302,25 @@ class Proposals extends Component {
                                   ? "Active"
                                   : "Closed"}
                               </td>
-                              {parseInt(row["status"]) === 0 ? (
-                                <td>
-                                  <div className="col-sm-3 offset-1">
-                                    <button
-                                      type="button"
-                                      className="btn btn-danger"
-                                      onClick={() =>
-                                        this.handleCloseProposal(index)
-                                      }
-                                    >
-                                      <b>Close</b>
-                                    </button>
-                                  </div>
-                                </td>
-                              ) : (
-                                <td>&nbsp;</td>
-                              )}
+                              {this.state.contractOwner ===
+                                this.state.accounts[0] &&
+                                (parseInt(row["status"]) === 0 ? (
+                                  <td>
+                                    <div className="col-sm-3 offset-1">
+                                      <button
+                                        type="button"
+                                        className="btn btn-danger"
+                                        onClick={() =>
+                                          this.handleCloseProposal(index)
+                                        }
+                                      >
+                                        <b>Close</b>
+                                      </button>
+                                    </div>
+                                  </td>
+                                ) : (
+                                  <td>&nbsp;</td>
+                                ))}
                             </tr>
                           ))}
                       </tbody>
@@ -338,7 +342,9 @@ class Proposals extends Component {
   render() {
     return (
       <div className="container">
-        <div className="col-12 text-center">{this.renderProposalAdd()}</div>
+        {this.state.contractOwner === this.state.accounts[0] && (
+          <div className="col-12 text-center">{this.renderProposalAdd()}</div>
+        )}
         <div className="col-12 text-center">{this.renderProposalList()}</div>
       </div>
     );

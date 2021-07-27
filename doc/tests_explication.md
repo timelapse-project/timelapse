@@ -28,7 +28,7 @@ Test the `Billing.sol` smart-contract
 - `Function: addToScore`
   - `Revert: addToScore is onlyOwner` makes sure that `.addToScore()` reverts if not called by the contract owner
   - `addToScore` makes sure that `.addToScore()` updates correctly the customer(s) information
-  - `Event: ScoreChange for addToScore` makes sure that `.addToScore()` generates the event `ScoreChange`
+  - `Event: ScoreChanged for addToScore` makes sure that `.addToScore()` generates the event `ScoreChanged`
 - `Function: changeCustomerStatus`
   - `Revert: changeCustomerStatus is onlyOwner` makes sure that `.changeCustomerStatus()` reverts if not called by the contract owner
   - `changeCustomerStatus` makes sure that `.changeCustomerStatus()` updates correctly the customer(s) status
@@ -36,20 +36,20 @@ Test the `Billing.sol` smart-contract
 - `Function: changeScore`
   - `Revert: changeScore is onlyOwner` makes sure that `.changeScore()` reverts if not called by the contract owner
   - `changeScore` makes sure that `.changeScore()` updates correctly the customer(s) score
-  - `Event: ScoreChange for changeScore` makes sure that `.changeCustomerStatus()` generates the event `ScoreChange`
+  - `Event: ScoreChanged for changeScore` makes sure that `.changeCustomerStatus()` generates the event `ScoreChanged`
 - `Function: acceptanceBilling`
   - `Revert: acceptanceBilling is onlyOwner` makes sure that `.acceptanceBilling()` reverts if not called by the contract owner
   - `Revert: acceptanceBilling is activeCustomer` makes sure that `.acceptanceBilling()` reverts if called for an unknown customer
   - `acceptanceBilling` makes sure that `.acceptanceBilling()` updates correctly the customer(s) history
   - `Event: AcceptanceReceived for acceptanceBilling` makes sure that `.acceptanceBilling()` generates the event `AcceptanceReceived`
-  - `Event: Confirmation for acceptanceBilling` makes sure that `.acceptanceBilling()` generates the event `Confirmation`
+  - `Event: ConfirmationSent for acceptanceBilling` makes sure that `.acceptanceBilling()` generates the event `ConfirmationSent`
 - `Function: topUpBilling`
   - `Revert: topUpBilling is onlyOwner` makes sure that `.topUpBilling()` reverts if not called by the contract owner
   - `Revert: topUpBilling is for registered phone` makes sure that `.topUpBilling()` reverts if called for an unknown customer
   - `Revert: topUpBilling is for actived product` makes sure that `.topUpBilling()` reverts if called for an unknown product
   - `topUpBilling` makes sure that `.topUpBilling()` updates correctly the customer(s) history
   - `Event: TopUpReceived for topUpBilling` makes sure that `.topUpBilling()` generates the event `TopUpReceived`
-  - `Event: Acknowledge for topUpBilling` makes sure that `.topUpBilling()` generates the event `Acknowledge`
+  - `Event: AcknowledgeSent for topUpBilling` makes sure that `.topUpBilling()` generates the event `AcknowledgeSent`
 
 ## `test/offering.test.js`
 
@@ -63,7 +63,7 @@ Test the `Offering.sol` smart-contract
   - `Revert: closeProposal is onlyOwner` makes sure that `.closeProposal()` reverts if not called by the contract owner
   - `Revert: closeProposal for existing proposal` makes sure that `.closeProposal()` reverts if called for an unknown proposal
   - `closeProposal` makes sure that `.closeProposal()` closes correctly proposal(s)
-  - `Event: ClosedProposal for closeProposal` makes sure that `.closeProposal()` generates the event `ClosedProposal`
+  - `Event: ProposalClosed for closeProposal` makes sure that `.closeProposal()` generates the event `ProposalClosed`
 - `Function: proposalsCount`
   - `proposalsCount` makes sure that `.proposalsCount()` returns the correct number of proposal(s)
 - `Function: lowBalanceOffering`
@@ -88,7 +88,7 @@ Test the `Timelapse.sol` smart-contract
   - `Function: addToScore`
     - `Revert: addToScore is onlyOwner` makes sure that `.addToScore()` reverts if not called by the contract owner
     - `addToScore` makes sure that `.addToScore()` updates correctly the customer(s) information
-    - `Event: ScoreChange for addToScore` makes sure that `.addToScore()` generates the event `ScoreChange`
+    - `Event: ScoreChanged for addToScore` makes sure that `.addToScore()` generates the event `ScoreChanged`
   - `Function: changeCustomerStatus`
     - `Revert: changeCustomerStatus is onlyOwner` makes sure that `.changeCustomerStatus()` reverts if not called by the contract owner
     - `changeCustomerStatus` makes sure that `.changeCustomerStatus()` updates correctly the customer(s) status
@@ -96,20 +96,20 @@ Test the `Timelapse.sol` smart-contract
   - `Function: changeScore`
     - `Revert: changeScore is onlyOwner` makes sure that `.changeScore()` reverts if not called by the contract owner
     - `changeScore` makes sure that `.changeScore()` updates correctly the customer(s) score
-    - `Event: ScoreChange for changeScore` makes sure that `.changeCustomerStatus()` generates the event `ScoreChange`
+    - `Event: ScoreChanged for changeScore` makes sure that `.changeCustomerStatus()` generates the event `ScoreChanged`
   - `Function: acceptanceBilling`
     - `Revert: acceptanceBilling is onlyOwner` makes sure that `.acceptanceBilling()` reverts if not called by the contract owner
     - `Revert: acceptanceBilling is activeCustomer` makes sure that `.acceptanceBilling()` reverts if called for an unknown customer
     - `acceptanceBilling` makes sure that `.acceptanceBilling()` updates correctly the customer(s) history
     - `Event: AcceptanceReceived for acceptanceBilling` makes sure that `.acceptanceBilling()` generates the event `AcceptanceReceived`
-    - `Event: Confirmation for acceptanceBilling` makes sure that `.acceptanceBilling()` generates the event `Confirmation`
+    - `Event: ConfirmationSent for acceptanceBilling` makes sure that `.acceptanceBilling()` generates the event `ConfirmationSent`
   - `Function: topUpBilling`
     - `Revert: topUpBilling is onlyOwner` makes sure that `.topUpBilling()` reverts if not called by the contract owner
     - `Revert: topUpBilling is for registered phone` makes sure that `.topUpBilling()` reverts if called for an unknown customer
     - `Revert: topUpBilling is for actived product` makes sure that `.topUpBilling()` reverts if called for an unknown product
     - `topUpBilling` makes sure that `.topUpBilling()` updates correctly the customer(s) history
     - `Event: TopUpReceived for topUpBilling` makes sure that `.topUpBilling()` generates the event `TopUpReceived`
-    - `Event: Acknowledge for topUpBilling` makes sure that `.topUpBilling()` generates the event `Acknowledge`
+    - `Event: AcknowledgeSent for topUpBilling` makes sure that `.topUpBilling()` generates the event `AcknowledgeSent`
 - `Test Offering.sol, Owner = Timelapse`
   - `Function: addProposal`
     - `Revert: addProposal is onlyOwner` makes sure that `.addProposal()` reverts if not called by the contract owner
@@ -119,7 +119,7 @@ Test the `Timelapse.sol` smart-contract
     - `Revert: closeProposal is onlyOwner` makes sure that `.closeProposal()` reverts if not called by the contract owner
     - `Revert: closeProposal for existing proposal` makes sure that `.closeProposal()` reverts if called for an unknown proposal
     - `closeProposal` makes sure that `.closeProposal()` closes correctly proposal(s)
-    - `Event: ClosedProposal for closeProposal` makes sure that `.closeProposal()` generates the event `ClosedProposal`
+    - `Event: ProposalClosed for closeProposal` makes sure that `.closeProposal()` generates the event `ProposalClosed`
   - `Function: lowBalanceOffering`
     - `Revert: lowBalanceOffering is onlyOwner` makes sure that `.lowBalanceOffering()` reverts if not called by the contract owner
     - `lowBalanceOffering` makes sure that `.lowBalanceOffering()` generates a new offer
@@ -140,11 +140,11 @@ Test the `Timelapse.sol` smart-contract
     - `Revert: closeProposal is onlyOwner` makes sure that `.closeProposal()` reverts if not called by the contract owner
     - `Revert: closeProposal for existing proposal` makes sure that `.closeProposal()` reverts if called for an unknown proposal
     - `closeProposal` makes sure that `.closeProposal()` closes correctly proposal(s)
-    - `Event: ClosedProposal for closeProposal` makes sure that `.closeProposal()` generates the event `ClosedProposal`
+    - `Event: ProposalClosed for closeProposal` makes sure that `.closeProposal()` generates the event `ProposalClosed`
   - `Function: addToScore`
     - `Revert: addToScore is onlyOwner` makes sure that `.addToScore()` reverts if not called by the contract owner
     - `addToScore` makes sure that `.addToScore()` updates correctly the customer(s) information
-    - `Event: ScoreChange for addToScore` makes sure that `.addToScore()` generates the event `ScoreChange`
+    - `Event: ScoreChanged for addToScore` makes sure that `.addToScore()` generates the event `ScoreChanged`
   - `Function: lowBalance`
     - `Revert: lowBalance is onlyOwner` makes sure that `.lowBalance()` reverts if not called by the contract owner
     - `lowBalance` makes sure that `.lowBalance()` generates a new offer
@@ -154,12 +154,12 @@ Test the `Timelapse.sol` smart-contract
     - `Revert: acceptance is onlyOwner` makes sure that `.acceptance()` reverts if not called by the contract owner
     - `acceptance` makes sure that `.acceptance()` updates correctly the customer(s) history
     - `Event: AcceptanceReceived for acceptance` makes sure that `.acceptance()` generates the event `AcceptanceReceived`
-    - `Event: Confirmation for acceptance` makes sure that `.acceptance()` generates the event `Confirmation`
+    - `Event: ConfirmationSent for acceptance` makes sure that `.acceptance()` generates the event `ConfirmationSent`
   - `Function: topUp`
     - `Revert: topUp is onlyOwner` makes sure that `.topUp()` reverts if not called by the contract owner
     - `topUp` makes sure that `.topUp()` updates correctly the customer(s) history
     - `Event: TopUpReceived for topUp` makes sure that `.topUp()` generates the event `TopUpReceived`
-    - `Event: Acknowledge for topUp` makes sure that `.topUp()` generates the event `Acknowledge`
+    - `Event: AcknowledgeSent for topUp` makes sure that `.topUp()` generates the event `AcknowledgeSent`
   - `Function: getCustomerActivitiesLog`
     - `getCustomerActivitiesLog` makes sure that `.getCustomerActivitiesLog()` returns the correct Activities Logs
   - `Function: generateInvoicing`

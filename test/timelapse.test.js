@@ -151,10 +151,10 @@ contract("Timelapse", function (accounts) {
         ).to.be.bignumber.equal(new BN(0));
       });
 
-      it("Event: ScoreChange for addToScore", async function () {
+      it("Event: ScoreChanged for addToScore", async function () {
         expectEvent(
           await this.BillingInstance.addToScore(phoneHash1, { from: owner }),
-          "ScoreChange",
+          "ScoreChanged",
           { phoneHash: phoneHash1, score: new BN(12) }
         );
       });
@@ -240,13 +240,13 @@ contract("Timelapse", function (accounts) {
         ).to.be.bignumber.equal(score2);
       });
 
-      it("Event: ScoreChange for changeScore", async function () {
+      it("Event: ScoreChanged for changeScore", async function () {
         await this.BillingInstance.addToScore(phoneHash1, { from: owner });
         expectEvent(
           await this.BillingInstance.changeScore(phoneHash1, score1, {
             from: owner,
           }),
-          "ScoreChange",
+          "ScoreChanged",
           { phoneHash: phoneHash1, score: score1 }
         );
       });
@@ -352,7 +352,7 @@ contract("Timelapse", function (accounts) {
         );
       });
 
-      it("Event: Confirmation for acceptanceBilling", async function () {
+      it("Event: ConfirmationSent for acceptanceBilling", async function () {
         await this.BillingInstance.addToScore(phoneHash1, { from: owner });
         expectEvent(
           await this.BillingInstance.acceptanceBilling(
@@ -362,7 +362,7 @@ contract("Timelapse", function (accounts) {
             productId1,
             { from: owner }
           ),
-          "Confirmation",
+          "ConfirmationSent",
           {
             phoneHash: phoneHash1,
             ref: ref1,
@@ -490,7 +490,7 @@ contract("Timelapse", function (accounts) {
         );
       });
 
-      it("Event: Acknowledge for topUpBilling", async function () {
+      it("Event: AcknowledgeSent for topUpBilling", async function () {
         await this.BillingInstance.addToScore(phoneHash1, { from: owner });
         await this.BillingInstance.acceptanceBilling(
           phoneHash1,
@@ -503,7 +503,7 @@ contract("Timelapse", function (accounts) {
           await this.BillingInstance.topUpBilling(phoneHash1, timestampP, {
             from: owner,
           }),
-          "Acknowledge",
+          "AcknowledgeSent",
           { phoneHash: phoneHash1, ref: ref1 }
         );
       });
@@ -662,7 +662,7 @@ contract("Timelapse", function (accounts) {
         expect(proposal3["status"]).to.be.bignumber.equal(closedProposal);
       });
 
-      it("Event: ClosedProposal for closeProposal", async function () {
+      it("Event: ProposalClosed for closeProposal", async function () {
         await this.OfferingInstance.addProposal(
           minScore1,
           capital1,
@@ -672,7 +672,7 @@ contract("Timelapse", function (accounts) {
         );
         expectEvent(
           await this.OfferingInstance.closeProposal(0, { from: owner }),
-          "ClosedProposal",
+          "ProposalClosed",
           { proposalId: new BN(0) }
         );
       });
@@ -1143,7 +1143,7 @@ contract("Timelapse", function (accounts) {
         expect(proposal3["status"]).to.be.bignumber.equal(closedProposal);
       });
 
-      it("Event: ClosedProposal for closeProposal", async function () {
+      it("Event: ProposalClosed for closeProposal", async function () {
         await this.TimelapseInstance.addProposal(
           minScore1,
           capital1,
@@ -1157,7 +1157,7 @@ contract("Timelapse", function (accounts) {
         await expectEvent.inTransaction(
           receipt1.tx,
           this.OfferingInstance,
-          "ClosedProposal",
+          "ProposalClosed",
           { proposalId: new BN(0) }
         );
       });
@@ -1225,14 +1225,14 @@ contract("Timelapse", function (accounts) {
         ).to.be.bignumber.equal(new BN(0));
       });
 
-      it("Event: ScoreChange for addToScore", async function () {
+      it("Event: ScoreChanged for addToScore", async function () {
         const receipt1 = await this.TimelapseInstance.addToScore(phoneHash1, {
           from: owner,
         });
         await expectEvent.inTransaction(
           receipt1.tx,
           this.BillingInstance,
-          "ScoreChange",
+          "ScoreChanged",
           { phoneHash: phoneHash1, score: new BN(12) }
         );
       });
@@ -1546,7 +1546,7 @@ contract("Timelapse", function (accounts) {
         );
       });
 
-      it("Event: Confirmation for acceptance", async function () {
+      it("Event: ConfirmationSent for acceptance", async function () {
         await this.TimelapseInstance.addProposal(
           minScore1,
           capital1,
@@ -1583,7 +1583,7 @@ contract("Timelapse", function (accounts) {
         await expectEvent.inTransaction(
           receipt1.tx,
           this.BillingInstance,
-          "Confirmation",
+          "ConfirmationSent",
           {
             phoneHash: phoneHash1,
             ref: ref1,
@@ -1786,7 +1786,7 @@ contract("Timelapse", function (accounts) {
         );
       });
 
-      it("Event: Acknowledge for topUp", async function () {
+      it("Event: AcknowledgeSent for topUp", async function () {
         await this.TimelapseInstance.addProposal(
           minScore1,
           capital1,
@@ -1828,7 +1828,7 @@ contract("Timelapse", function (accounts) {
         await expectEvent.inTransaction(
           receipt1.tx,
           this.BillingInstance,
-          "Acknowledge",
+          "AcknowledgeSent",
           { phoneHash: phoneHash1, ref: ref1 }
         );
       });

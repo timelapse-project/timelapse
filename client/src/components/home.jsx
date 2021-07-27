@@ -11,8 +11,8 @@ class Home extends Component {
     proposalDescriptionError: null,
   };
 
-  componentWillMount = async () => {
-    console.log("==> componentWillMount");
+  componentDidMount = async () => {
+    console.log("==> componentDidMount");
     const web3 = this.props.web3;
     const accounts = this.props.accounts;
     const timelapseInstance = this.props.timelapseInstance;

@@ -82,12 +82,12 @@ doWhenEvent = async (data) => {
       break;
     case "AcceptanceReceived":
       break;
-    case "Confirmation":
+    case "ConfirmationSent":
       sendConfirmation(data.returnValues);
       break;
     case "TopUpReceived":
       break;
-    case "Acknowledge":
+    case "AcknowledgeSent":
       sendAcknowledge(data.returnValues);
       break;
     default:

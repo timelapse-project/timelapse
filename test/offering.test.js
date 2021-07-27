@@ -203,7 +203,7 @@ contract("Offering", function (accounts) {
         expect(proposal3["status"]).to.be.bignumber.equal(closedProposal);
       });
 
-      it("Event: ClosedProposal for closeProposal", async function () {
+      it("Event: ProposalClosed for closeProposal", async function () {
         await this.OfferingInstance.addProposal(
           minScore1,
           capital1,
@@ -213,7 +213,7 @@ contract("Offering", function (accounts) {
         );
         expectEvent(
           await this.OfferingInstance.closeProposal(0, { from: owner }),
-          "ClosedProposal",
+          "ProposalClosed",
           { proposalId: new BN(0) }
         );
       });

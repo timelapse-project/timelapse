@@ -107,7 +107,7 @@ Return the proposals that correspond to the given scoring `_scoring`
 
 Triggered when a proposal is added
 
-### `ClosedProposal(uint256 proposalId)`
+### `ProposalClosed(uint256 proposalId)`
 
 
 
@@ -130,28 +130,4 @@ Triggered when a lowBalance is received
 
 
 Triggered when an offer has to be sent
-
-### `AcceptanceReceived(address phoneHash, uint256 offerId, uint256 proposalId)`
-
-
-
-Triggered when an acceptance is received
-
-### `ConfirmationSent(uint256 productId, uint256 offerId, address phoneHash, uint256 timestamp)`
-
-
-
-Triggered when a confirmation has to be sent
-
-### `TopUpReceived(address phoneHash, uint256 productId, uint256 amount)`
-
-
-
-Triggered when a topUp is received
-
-### `AcknowledgeSent(address phoneHash, uint256 productId, uint256 amount)`
-
-
-
-Triggered when an acknowledge has to be sent
 

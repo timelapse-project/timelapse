@@ -109,7 +109,7 @@ Compute the score of a customer `_customer`
 
 Triggered when status of a customer has changed
 
-### `ScoreChange(address phoneHash, uint8 score)`
+### `ScoreChanged(address phoneHash, uint8 score)`
 
 
 
@@ -127,7 +127,7 @@ Triggered when a customer has been deleted
 
 Triggered when an Acceptance is received
 
-### `Confirmation(address phoneHash, string ref, uint256 acceptanceTimestamp, uint256 productId)`
+### `ConfirmationSent(address phoneHash, string ref, uint256 acceptanceTimestamp, uint256 productId)`
 
 
 
@@ -139,7 +139,7 @@ Triggered when confirmation has to be sent
 
 Triggered when a topUp is received
 
-### `Acknowledge(address phoneHash, string ref)`
+### `AcknowledgeSent(address phoneHash, string ref)`
 
 
 

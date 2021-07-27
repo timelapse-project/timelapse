@@ -125,12 +125,8 @@ class App extends Component {
     switch (data.event) {
       case "LowBalanceReceived":
       case "OfferSent":
-      case "AcceptanceReceived":
-      case "ConfirmationSent":
-      case "TopUpReceived":
-      case "AcknowledgeSent":
       case "ProposalAdded":
-      case "ClosedProposal":
+      case "ProposalClosed":
         toast.success(
           <p>
             New <b>{data.event}</b> (Offering) detected
@@ -138,14 +134,18 @@ class App extends Component {
         );
         break;
       default:
-        console.log("Event not managed");
+        console.log("Event not managed1", data.event);
     }
   };
 
   doWhenBillingEvent = async (data) => {
     console.log("==> doWhenBillingEvent");
     switch (data.event) {
-      case "ScoreChange":
+      case "ScoreChanged":
+      case "TopUpReceived":
+      case "AcceptanceReceived":
+      case "ConfirmationSent":
+      case "AcknowledgeSent":
         toast.info(
           <p>
             New <b>{data.event}</b> (Billing) detected
@@ -153,7 +153,7 @@ class App extends Component {
         );
         break;
       default:
-        console.log("Event not managed");
+        console.log("Event not managed2", data.event);
     }
   };
 
@@ -182,6 +182,7 @@ class App extends Component {
               accounts={this.state.accounts}
               timelapseInstance={this.state.timelapseInstance}
               offeringInstance={this.state.offeringInstance}
+              contractOwner={this.state.contractOwner}
             />
           </Route>
           <Route path="/events" exact>

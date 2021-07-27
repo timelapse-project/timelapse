@@ -111,10 +111,10 @@ contract("Billing", function (accounts) {
         ).to.be.bignumber.equal(new BN(0));
       });
 
-      it("Event: ScoreChange for addToScore", async function () {
+      it("Event: ScoreChanged for addToScore", async function () {
         expectEvent(
           await this.BillingInstance.addToScore(phoneHash1, { from: owner }),
-          "ScoreChange",
+          "ScoreChanged",
           { phoneHash: phoneHash1, score: new BN(12) }
         );
       });
@@ -200,13 +200,13 @@ contract("Billing", function (accounts) {
         ).to.be.bignumber.equal(score2);
       });
 
-      it("Event: ScoreChange for changeScore", async function () {
+      it("Event: ScoreChanged for changeScore", async function () {
         await this.BillingInstance.addToScore(phoneHash1, { from: owner });
         expectEvent(
           await this.BillingInstance.changeScore(phoneHash1, score1, {
             from: owner,
           }),
-          "ScoreChange",
+          "ScoreChanged",
           { phoneHash: phoneHash1, score: score1 }
         );
       });
@@ -312,7 +312,7 @@ contract("Billing", function (accounts) {
         );
       });
 
-      it("Event: Confirmation for acceptanceBilling", async function () {
+      it("Event: ConfirmationSent for acceptanceBilling", async function () {
         await this.BillingInstance.addToScore(phoneHash1, { from: owner });
         expectEvent(
           await this.BillingInstance.acceptanceBilling(
@@ -322,7 +322,7 @@ contract("Billing", function (accounts) {
             productId1,
             { from: owner }
           ),
-          "Confirmation",
+          "ConfirmationSent",
           {
             phoneHash: phoneHash1,
             ref: ref1,
@@ -450,7 +450,7 @@ contract("Billing", function (accounts) {
         );
       });
 
-      it("Event: Acknowledge for topUpBilling", async function () {
+      it("Event: AcknowledgeSent for topUpBilling", async function () {
         await this.BillingInstance.addToScore(phoneHash1, { from: owner });
         await this.BillingInstance.acceptanceBilling(
           phoneHash1,
@@ -463,7 +463,7 @@ contract("Billing", function (accounts) {
           await this.BillingInstance.topUpBilling(phoneHash1, timestampP, {
             from: owner,
           }),
-          "Acknowledge",
+          "AcknowledgeSent",
           { phoneHash: phoneHash1, ref: ref1 }
         );
       });
