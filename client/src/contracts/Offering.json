@@ -28225,12 +28225,12 @@
         }
       },
       "links": {},
-      "address": "0xaf667240A7401bF1842d977E2aE2cc46b0a43D5b",
-      "transactionHash": "0x1ffa88a96aa1b79676eed5adc1d3ad4139939f2303a731a37b818a7304c47df4"
+      "address": "0x76f676cb18F3EDa8A326d2EEEeF71455BE4Be4D2",
+      "transactionHash": "0xec9ab1c15867967a6852a6d6023c8173d66efaff589c9120ec6268f8d560b5eb"
     }
   },
   "schemaVersion": "3.4.1",
-  "updatedAt": "2021-07-28T05:24:46.670Z",
+  "updatedAt": "2021-07-28T09:57:33.222Z",
   "networkType": "ethereum",
   "devdoc": {
     "author": "Keeymon, DavidRochus",

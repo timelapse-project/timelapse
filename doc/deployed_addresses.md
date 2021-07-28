@@ -6,7 +6,7 @@ This section contains the list of the deployed contract addresses on the private
 
 | Contract Name | Address                                    |
 | ------------- | ------------------------------------------ |
-| `Timelapse`   | 0x7DD6de6B2D0bebc9E0d052802587C359EE54c8Ab |
-| `Offering`    | 0xaf667240A7401bF1842d977E2aE2cc46b0a43D5b |
-| `Billing`     | 0x5F2cEEAcC777355041967A013c0d160d66e20bB3 |
+| `Timelapse`   | 0xC7BF8380c87C91B174B8AeE2Dc5F35AD7d9E1ba1 |
+| `Offering`    | 0x76f676cb18F3EDa8A326d2EEEeF71455BE4Be4D2 |
+| `Billing`     | 0xedc3c76d025Be719AC25D62ec7689b5a17Fa56e2 |
 | `Migrations`  | 0xB83a6A21193364930AeDAA88F3E28Da334967F6d |

@@ -33691,12 +33691,12 @@
         }
       },
       "links": {},
-      "address": "0x5F2cEEAcC777355041967A013c0d160d66e20bB3",
-      "transactionHash": "0x4304cde14660e7e30ddb2c129dac647f6682e064415e47bb7dcd092ba641aa54"
+      "address": "0xedc3c76d025Be719AC25D62ec7689b5a17Fa56e2",
+      "transactionHash": "0x614dc19894507f43b46d79f75bd986a2545596d0f1fa3f4f0a6f2f2e3c939d51"
     }
   },
   "schemaVersion": "3.4.1",
-  "updatedAt": "2021-07-28T05:24:46.651Z",
+  "updatedAt": "2021-07-28T09:57:33.199Z",
   "networkType": "ethereum",
   "devdoc": {
     "author": "Keeymon, DavidRochus",
