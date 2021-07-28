@@ -48074,15 +48074,21 @@
     "version": "0.8.6+commit.11564f7e.Emscripten.clang"
   },
   "networks": {
+    "3": {
+      "events": {},
+      "links": {},
+      "address": "0xd394Dc364DDA545e19BFF8Ea2273Ba560bCe009C",
+      "transactionHash": "0xb3675fe320510a38e4c29efab7cf3cbad8e4c50ef0f42454e08a240cb9ba2ef9"
+    },
     "1000": {
       "events": {},
       "links": {},
-      "address": "0xC7BF8380c87C91B174B8AeE2Dc5F35AD7d9E1ba1",
-      "transactionHash": "0x5331b64fd71f3af2e517f7801cc6607091a37694235de0884bd1f8eb94ca5110"
+      "address": "0x7ADdC9D72711DA33E7C62EAe829459005d280602",
+      "transactionHash": "0x5bda192a70ec16857dcda2536f509590e2c30a2621d6c7f7026880a172c8b59d"
     }
   },
   "schemaVersion": "3.4.1",
-  "updatedAt": "2021-07-28T09:57:33.247Z",
+  "updatedAt": "2021-07-28T13:56:30.123Z",
   "networkType": "ethereum",
   "devdoc": {
     "author": "Keeymon, DavidRochus",

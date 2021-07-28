@@ -6,7 +6,16 @@ This section contains the list of the deployed contract addresses on the private
 
 | Contract Name | Address                                    |
 | ------------- | ------------------------------------------ |
-| `Timelapse`   | 0xC7BF8380c87C91B174B8AeE2Dc5F35AD7d9E1ba1 |
-| `Offering`    | 0x76f676cb18F3EDa8A326d2EEEeF71455BE4Be4D2 |
-| `Billing`     | 0xedc3c76d025Be719AC25D62ec7689b5a17Fa56e2 |
-| `Migrations`  | 0xB83a6A21193364930AeDAA88F3E28Da334967F6d |
+| ` Timelapse`  | 0x7ADdC9D72711DA33E7C62EAe829459005d280602 |
+| ` Offering`   | 0xCDfb3c7cE8f5D8DABfc1da2287293e91B5c92243 |
+| ` Billing`    | 0x136d73C63F621Aa14Af1bB5cA307809250b9E4DF |
+| ` Migrations` | 0x33133101fE04355890760cb85c5e681900885dF9 |
+
+### Ropsten Network
+
+| Contract Name | Address                                    |
+| ------------- | ------------------------------------------ |
+| `Timelapse `  | 0xd394Dc364DDA545e19BFF8Ea2273Ba560bCe009C |
+| `Offering `   | 0x64360aa4B5Ba241c9c072A3037f00e3dcEe585CF |
+| `Billing `    | 0xeD5fe047B2B07482C7DcC87E53603b234A946D56 |
+| `Migrations ` | 0x73675fAF4608C9Fd1096D9210bF38a6c68bFEc1e |
