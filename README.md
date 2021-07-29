@@ -104,6 +104,8 @@ Here is the connection configuration:
 - Network ID: 1000
 - Symbol: ETH
 
+**_Remark_**: For demo purpose, the contracts have also been deployed on Ropsten Network. See **[`deployed_addresses.md`](doc/deployed_addresses.md)**, for more details.
+
 ## Environment Parameters
 
 To deploy the project, you need to create a **`.env`** file in the project's root folder. You can use the **`.env.template`** file to determine which variables can be set.
@@ -172,7 +174,7 @@ Here is the procedure to deploy **Timelapse Core**:
   truffle deploy --network timelapse
   ```
 
-**_Remark_**: This contracts deployment is not mandatory. In the file **[`deployed_addresses.md`](doc/deployed_addresses.md)**, you can always find the current **_Contracts Addresses_** that are published to the Timelapse Private Blockchain.
+**_Remark_**: This contracts deployment is not mandatory. In the file **[`deployed_addresses.md`](doc/deployed_addresses.md)**, you can always find the current **_Contracts Addresses_** that are published to the Timelapse Private Blockchain and Ropsten Network.
 
 ## Timelapse Client
 

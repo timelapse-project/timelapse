@@ -33517,6 +33517,183 @@
     "version": "0.8.6+commit.11564f7e.Emscripten.clang"
   },
   "networks": {
+    "3": {
+      "events": {
+        "0x031870b979bdc77dc0b1037a1aac37c55a178ab3bec4f8ba1ca1fc452e30578b": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "phoneHash",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "ref",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "acceptanceTimestamp",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "productId",
+              "type": "uint256"
+            }
+          ],
+          "name": "AcceptanceReceived",
+          "type": "event"
+        },
+        "0x6a01b0e16a2517c05520520dd407c35aebc38e048e735a051fe156e3af09ef4a": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "phoneHash",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "ref",
+              "type": "string"
+            }
+          ],
+          "name": "AcknowledgeSent",
+          "type": "event"
+        },
+        "0xdedb5d607fb18c23dfe4149f54a3ba5b1edfc3ade9c0afe61940032a9e6a9a14": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "phoneHash",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "ref",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "acceptanceTimestamp",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "productId",
+              "type": "uint256"
+            }
+          ],
+          "name": "ConfirmationSent",
+          "type": "event"
+        },
+        "0x1eacdda6365a7f824e9b515212eda6b8fb050f25bc505f857ac21c025a64e6f1": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "phoneHash",
+              "type": "address"
+            }
+          ],
+          "name": "CustomerIsDeleted",
+          "type": "event"
+        },
+        "0xb23cc8d2c435b48098fc64e3bfd632e00ba00d1b8be3f25b0a973438951eae7f": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "phoneHash",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "enum Billing.CustomerStatus",
+              "name": "status",
+              "type": "uint8"
+            }
+          ],
+          "name": "CustomerStatusChange",
+          "type": "event"
+        },
+        "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "previousOwner",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "newOwner",
+              "type": "address"
+            }
+          ],
+          "name": "OwnershipTransferred",
+          "type": "event"
+        },
+        "0x6f738e5caa984202ad1f23dac3912cbecc4635cab65476ab4b3a6b4337062276": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "phoneHash",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint8",
+              "name": "score",
+              "type": "uint8"
+            }
+          ],
+          "name": "ScoreChanged",
+          "type": "event"
+        },
+        "0xa3a756c9361873f5cd34cb71ba3b6ebc76b90321aa2767387c016991dfb4f63a": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "phoneHash",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "ref",
+              "type": "string"
+            }
+          ],
+          "name": "TopUpReceived",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x7319c5B0105c111c52237dCb9492d3ada06a87E9",
+      "transactionHash": "0xf9656f140cffa7e08c96d09882b82643ac74bc23a1d173f7ceffe24df65cb0a9"
+    },
     "1000": {
       "events": {
         "0x031870b979bdc77dc0b1037a1aac37c55a178ab3bec4f8ba1ca1fc452e30578b": {
@@ -33696,7 +33873,7 @@
     }
   },
   "schemaVersion": "3.4.1",
-  "updatedAt": "2021-07-29T04:45:59.258Z",
+  "updatedAt": "2021-07-29T05:06:30.433Z",
   "networkType": "ethereum",
   "devdoc": {
     "author": "Keeymon, DavidRochus",
