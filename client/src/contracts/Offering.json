@@ -28053,181 +28053,6 @@
     "version": "0.8.6+commit.11564f7e.Emscripten.clang"
   },
   "networks": {
-    "3": {
-      "events": {
-        "0x251fc0df7e56c36cfc4f618ef67296b8e2c41ce1ce473e5187bfec66743b38d3": {
-          "anonymous": false,
-          "inputs": [
-            {
-              "indexed": false,
-              "internalType": "address",
-              "name": "phoneHash",
-              "type": "address"
-            },
-            {
-              "indexed": false,
-              "internalType": "string",
-              "name": "ref",
-              "type": "string"
-            }
-          ],
-          "name": "LowBalanceReceived",
-          "type": "event"
-        },
-        "0x6a2d36566113fdc14dbc5b9458a0ba3a3eb54e394c2eb29fb26efdfee664f55e": {
-          "anonymous": false,
-          "inputs": [
-            {
-              "indexed": false,
-              "internalType": "uint256",
-              "name": "offerId",
-              "type": "uint256"
-            },
-            {
-              "indexed": false,
-              "internalType": "address",
-              "name": "phoneHash",
-              "type": "address"
-            },
-            {
-              "indexed": false,
-              "internalType": "uint256",
-              "name": "timestamp",
-              "type": "uint256"
-            },
-            {
-              "indexed": false,
-              "internalType": "enum Offering.EligibilityReason",
-              "name": "reason",
-              "type": "uint8"
-            },
-            {
-              "indexed": false,
-              "internalType": "uint256[]",
-              "name": "proposals",
-              "type": "uint256[]"
-            },
-            {
-              "indexed": false,
-              "internalType": "uint256",
-              "name": "scoring",
-              "type": "uint256"
-            },
-            {
-              "indexed": false,
-              "internalType": "string",
-              "name": "ref",
-              "type": "string"
-            }
-          ],
-          "name": "OfferSent",
-          "type": "event"
-        },
-        "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0": {
-          "anonymous": false,
-          "inputs": [
-            {
-              "indexed": true,
-              "internalType": "address",
-              "name": "previousOwner",
-              "type": "address"
-            },
-            {
-              "indexed": true,
-              "internalType": "address",
-              "name": "newOwner",
-              "type": "address"
-            }
-          ],
-          "name": "OwnershipTransferred",
-          "type": "event"
-        },
-        "0xf6e4d5991d43b8f0508a8ded04e4b8f555c903a7bcba3ccb4d8486480c1ba947": {
-          "anonymous": false,
-          "inputs": [
-            {
-              "indexed": false,
-              "internalType": "address",
-              "name": "phoneHash",
-              "type": "address"
-            },
-            {
-              "indexed": false,
-              "internalType": "uint256",
-              "name": "timestamp",
-              "type": "uint256"
-            },
-            {
-              "indexed": false,
-              "internalType": "uint256",
-              "name": "offerId",
-              "type": "uint256"
-            },
-            {
-              "indexed": false,
-              "internalType": "uint256",
-              "name": "proposalId",
-              "type": "uint256"
-            }
-          ],
-          "name": "ProductCreated",
-          "type": "event"
-        },
-        "0x0dd92ec7c9e4620459d0f39f48975327d855d61513c1e839e5ae03d1ca764472": {
-          "anonymous": false,
-          "inputs": [
-            {
-              "indexed": false,
-              "internalType": "uint256",
-              "name": "proposalId",
-              "type": "uint256"
-            },
-            {
-              "indexed": false,
-              "internalType": "uint8",
-              "name": "minScoring",
-              "type": "uint8"
-            },
-            {
-              "indexed": false,
-              "internalType": "uint256",
-              "name": "capital",
-              "type": "uint256"
-            },
-            {
-              "indexed": false,
-              "internalType": "uint256",
-              "name": "interest",
-              "type": "uint256"
-            },
-            {
-              "indexed": false,
-              "internalType": "string",
-              "name": "description",
-              "type": "string"
-            }
-          ],
-          "name": "ProposalAdded",
-          "type": "event"
-        },
-        "0x887777ccf43690541bed9e00b10d0fccfa7520b11875f09847a57b3085d8ab92": {
-          "anonymous": false,
-          "inputs": [
-            {
-              "indexed": false,
-              "internalType": "uint256",
-              "name": "proposalId",
-              "type": "uint256"
-            }
-          ],
-          "name": "ProposalClosed",
-          "type": "event"
-        }
-      },
-      "links": {},
-      "address": "0x64360aa4B5Ba241c9c072A3037f00e3dcEe585CF",
-      "transactionHash": "0xcb7a86c4d151ad9bf46570ccace913b7014ec769de76d1bdbf32bf636dad7cc6"
-    },
     "1000": {
       "events": {
         "0x251fc0df7e56c36cfc4f618ef67296b8e2c41ce1ce473e5187bfec66743b38d3": {
@@ -28400,12 +28225,12 @@
         }
       },
       "links": {},
-      "address": "0xCDfb3c7cE8f5D8DABfc1da2287293e91B5c92243",
-      "transactionHash": "0xc1714a6c01b33e7f94372e394ba268e1cd60730a272f09c406fd0882f942a5d3"
+      "address": "0x76f676cb18F3EDa8A326d2EEEeF71455BE4Be4D2",
+      "transactionHash": "0xec9ab1c15867967a6852a6d6023c8173d66efaff589c9120ec6268f8d560b5eb"
     }
   },
   "schemaVersion": "3.4.1",
-  "updatedAt": "2021-07-28T13:56:30.101Z",
+  "updatedAt": "2021-07-29T04:45:59.280Z",
   "networkType": "ethereum",
   "devdoc": {
     "author": "Keeymon, DavidRochus",

@@ -13,9 +13,9 @@ reference=0
 offerId=0
 serverURL=http://localhost:8081
 partnerCode="TL";
-thinkTime=15
+thinkTime=5
 scenarioLoop=100
-scenarioThinkTime=20
+scenarioThinkTime=10
 nextCustomer=$phoneHash1
 nextProposal=0
 
@@ -24,9 +24,6 @@ generateRandomPhoneHash() {
 }
 
 getNextCustomer() {
-    phoneHash1="0x718CEA3706787aa03Bd936b76303fA00660C5f42"
-    phoneHash2="0x3ad53d26D15A658A84Fe8cA9FFc8aA3a7240C1a0"
-    phoneHash3="0x8f748A5f24C9Bb2ee47727fB07018614B0b25897"
     NUMBER=$[ ( $RANDOM % 3 )  + 1 ]
     phoneHashx=phoneHash${NUMBER}
     nextCustomer=${!phoneHashx}
@@ -70,8 +67,14 @@ while [ TRUE ];do
     echo "22: Send acceptance"
     echo "23: Send topUp"
     echo ""
-    echo "Scenario C (Demo)"
-    echo "30: Launch Scenario"
+    echo "Scenario C (" ${phoneHash3} ")"
+    echo "30: Send external topUp"
+    echo "31: Send lowBalance"
+    echo "32: Send acceptance"
+    echo "33: Send topUp"
+    echo ""
+    echo "Scenario D (Demo)"
+    echo "40: Launch Scenario"
     echo ""
     read -p "Your choice: " choice
     if [ "${choice}" -eq "${choice}" 2>/dev/null ];then
@@ -194,10 +197,46 @@ while [ TRUE ];do
                 ${serverURL}/topUp
             echo " "
             read -p "Press any key to continue"
-        elif [ ${choice} -eq 30 ];then 
+        elif [ ${choice} -eq 30 ];then
+            generateReference
+            curl --header "Content-Type: application/json" \
+                --request POST \
+                --data '{"type":4,"phoneHash":"'${phoneHash3}'","ref":"'$(printf "%010d" $reference)'","timestamp":'$(timestamp)',"partner":"XX"}' \
+                ${serverURL}/topUp
+            echo " "
+            read -p "Press any key to continue"
+        elif [ ${choice} -eq 31 ];then
+            generateReference
+            curl --header "Content-Type: application/json" \
+                --request POST \
+                --data '{"type":0,"phoneHash":"'${phoneHash3}'","ref":"'$(printf "%010d" $reference)'"}' \
+                ${serverURL}/lowBalance
+            echo " "
+            read -p "Press any key to continue"
+        elif [ ${choice} -eq 32 ];then
+            generateReference
+            echo " "
+            read -p "Enter offerId: " offerId 
+            read -p "Enter proposalId: " proposalId
+            curl --header "Content-Type: application/json" \
+                --request POST \
+                --data '{"type":2,"phoneHash":"'${phoneHash3}'","offerId":'${offerId}',"proposalId":'${proposalId}',"ref":"'$(printf "%010d" $reference)'","timestamp":'$(timestamp)'}' \
+                ${serverURL}/acceptance
+            echo " "
+            read -p "Press any key to continue"
+        elif [ ${choice} -eq 33 ];then 
+            generateReference
+            echo " "
+            curl --header "Content-Type: application/json" \
+                --request POST \
+                --data '{"type":4,"phoneHash":"'${phoneHash3}'","ref":"'$(printf "%010d" $reference)'","timestamp":'$(timestamp)',"partner":"'${partnerCode}'"}' \
+                ${serverURL}/topUp
+            echo " "
+            read -p "Press any key to continue"
+        elif [ ${choice} -eq 40 ];then 
             read -p "Enter initial offerId: " offerId 
             for ((n=0;n<${scenarioLoop};n++));do
-                echo "Scenario C - Loop ${n}"
+                echo "Scenario D - Loop ${n}"
                 # 1 External topUp
                 getNextCustomer
                 generateReference
