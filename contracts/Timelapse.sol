@@ -19,7 +19,7 @@ contract Timelapse is Ownable {
     /**
      * @dev Customer Offering Activity
      */
-    Offering offering;
+    Offering public offering;
 
     /**
      * @dev Customer Activity
@@ -189,7 +189,7 @@ contract Timelapse is Ownable {
         for (uint8 i = 0; i < billing.getHistorySize(_phoneHash); i++) {
             uint256 historyIndex = billing.historyList(_phoneHash, i);
             (, uint256 acceptanceTimestamp, uint256 paidTimestamp, , ) = billing
-            .histories(historyIndex);
+                .histories(historyIndex);
             if (
                 acceptanceTimestamp >= _startTimestamp &&
                 acceptanceTimestamp <= _endTimestamp
@@ -220,7 +220,7 @@ contract Timelapse is Ownable {
                     );
                     if (j == 0) {
                         customerActivities[customerActivitiesIndex]
-                        .log = string(
+                            .log = string(
                             abi.encodePacked(
                                 customerActivities[customerActivitiesIndex].log,
                                 description
@@ -228,7 +228,7 @@ contract Timelapse is Ownable {
                         );
                     } else {
                         customerActivities[customerActivitiesIndex]
-                        .log = string(
+                            .log = string(
                             abi.encodePacked(
                                 customerActivities[customerActivitiesIndex].log,
                                 " / ",
@@ -238,7 +238,7 @@ contract Timelapse is Ownable {
                     }
                 }
                 customerActivities[customerActivitiesIndex]
-                .timestamp = timestamp;
+                    .timestamp = timestamp;
                 customerActivities[customerActivitiesIndex].status = "Offer";
                 customerActivitiesIndex++;
             }
@@ -264,7 +264,7 @@ contract Timelapse is Ownable {
                     abi.encodePacked("Accepted: ", descriptionProposal)
                 );
                 customerActivities[customerActivitiesIndex]
-                .timestamp = acceptanceTimestamp;
+                    .timestamp = acceptanceTimestamp;
                 customerActivities[customerActivitiesIndex].status = "Accepted";
                 customerActivitiesIndex++;
             }
@@ -274,7 +274,7 @@ contract Timelapse is Ownable {
             ) {
                 customerActivities[customerActivitiesIndex].log = "Topup";
                 customerActivities[customerActivitiesIndex]
-                .timestamp = paidTimestamp;
+                    .timestamp = paidTimestamp;
                 customerActivities[customerActivitiesIndex].status = "Closed";
                 customerActivitiesIndex++;
             }
@@ -322,7 +322,7 @@ contract Timelapse is Ownable {
             ) {
                 (, , uint256 proposalId, , ) = offering.products(productId);
                 (, , uint256 capital, uint256 interest, , ) = offering
-                .proposals(proposalId);
+                    .proposals(proposalId);
                 invoice[invoiceIndex].totalCapital += capital;
                 invoice[invoiceIndex].totalInterest += interest;
             }
@@ -356,7 +356,7 @@ contract Timelapse is Ownable {
             i--
         ) {
             (, uint256 timestamp, , , Offering.OfferStatus status) = offering
-            .offers(i - 1);
+                .offers(i - 1);
             if (timestamp < _startTimestamp) {
                 outOfReportingWindow1 = true;
             }
@@ -394,7 +394,7 @@ contract Timelapse is Ownable {
                 ) {
                     (, , uint256 proposalId, , ) = offering.products(productId);
                     (, , uint256 capital, uint256 interest, , ) = offering
-                    .proposals(proposalId);
+                        .proposals(proposalId);
                     reporting[reportingIndex].totalCapitalLoans += capital;
                     reporting[reportingIndex].totalInterestLoans += interest;
                 }
@@ -409,7 +409,7 @@ contract Timelapse is Ownable {
                 ) {
                     (, , uint256 proposalId, , ) = offering.products(productId);
                     (, , uint256 capital, uint256 interest, , ) = offering
-                    .proposals(proposalId);
+                        .proposals(proposalId);
                     reporting[reportingIndex].closedTopupsCount += 1;
                     reporting[reportingIndex].totalCapitalGain += capital;
                     reporting[reportingIndex].totalInterestGain += interest;

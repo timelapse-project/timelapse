@@ -270,6 +270,7 @@ Here are a few links to resources that we used while building bet-no-loss.
   - [Solidity Patterns](https://fravoll.github.io/solidity-patterns/)
 - Security
   - [Security Hacks](https://solidity-by-example.org/)
+  - [Solidity known attacks (Consensys)](https://consensys.github.io/smart-contract-best-practices/known_attacks/)
 - Private BlockcChain
   - [Geth](https://geth.ethereum.org/docs/)
 - Test
