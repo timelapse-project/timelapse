@@ -12,56 +12,48 @@
 
 ## Links
 
-- Open Application: [https://timelapse-project.herokuapp.com/][heroku-url]
+- [White Paper](doc/Timelapse_Whitepaper.pdf)
 - [Documentation](#documentation)
-- [Github](https://github.com/timelapse-project/timelapse) (this repository: code, issues, wiki)
+- [Github](https://github.com/timelapse-project/timelapse)
+- dApp (deployed on Heroku): [https://timelapse-project.herokuapp.com/][heroku-url]
 
 ## Architecture
 
-Timelapse software is composed of 3 parts:
+### Description
 
-- **Timelapse Core**:  
-  The **Ethereum smart-contracts** deployed on the testnets. They are written in Solidity.
-- **Timelapse Client** (DApp):  
-  A **ReactJS client app** written in ReactJS and deployed on Heroku.
-  It provides the User Interface to interact with the contracts.
-- **Timelapse API**:  
-  The **Server/Watcher** APIs written in NodeJS.
+The Timelapse architecture is divided into 3 modules:
 
-This Github **repository** gather the **back-end and**, the **front-end** and the **API** code.
+- **_Timelapse Core_**:
+  This module is the heart of the solution which contains the different smart contracts (developed in **Solidity**) and which are responsible for all the logic.
 
-### High Level Architecture
+  Each contract has its own responsibilities:
 
-![High Level Architecture](doc/img/Timelapse_TechnicalArchitecture_HL.png)
+  - [`Timelapse.sol`](contracts/Timelapse.sol): It is the parent contract which acts as an entry point and will orchestrate all requests (LowBalalance, Acceptance, TopUp, Reporting, Billing, etc.)
+  - [`Offering.sol`](contracts/Offering.sol): This contract will take care of the management of proposals and offers.
+  - [`Billing.sol`](contracts/Billing.sol): This contract will take care of the historization of user data and the management of scoring.
 
-### Low Level Architecture
+- **_Timelapse API_**:
+  This module is an interface between the blockchain and Telecom operators (who are outside the blockchain). Concretely, it will allow the establishment of asynchronous and transparent communication between these 2 worlds.
 
-![Low Level Architecture](doc/img/Timelapse_TechnicalArchitecture_LL.png)
+  It is composed of 2 parts, developed in **NodeJS**:
 
-### Timelapse Core
+  - [`server.js`](api/server.js): This part is responsible for listening and handling calls (REST endpoint) from Telecom operators, interpreting the request and calling the corresponding functions in the blockchain
+  - [`watcher.js`](api/watcher.js): This part is responsible for listening to the events emitted by smart contracts, interpreting them and calling the corresponding REST services of Telecom operators
 
-Timelapse Core is composed of the following Ethereum **smart-contracts**:
+- **_Timelapse Client_**:
+  This module is a decentralized web interface (**dApp**), developed in **ReactJS**, which allows users to access and interact with our smart contracts but in a controlled manner.
 
-- [`Timelapse`](contracts/Timelapse.sol) The entry point of Timelapse application.
-- [`Offering`](contracts/Offering.sol) Manage all aspects related to offering. The contract is in charge of:
-  - proposals management
-  - customers management
-  - products management
-- [`Billing`](contracts/Billing.sol) Manage all aspects related to billing. The contract is in charge of:
-  - customers management
-  - accounting management
-  - billing management
+This Github **repository** gather the **Timelapse Core**, the **Timelapse API** and the **Timelapse Client** code.
 
-### Timelapse Client
+### Schema
 
-Our **DApp** is a **Front-End** application written in **ReactJS** and deployed on Heroku.
+| ![High Level Architecture](doc/img/Timelapse_TechnicalArchitecture_HL.png) |
+| :------------------------------------------------------------------------: |
+|                   <b>Fig.1 - High Level Architecture</b>                   |
 
-### Timelapse API
-
-Our **Timelapse API** application, written in **NodeJS**, is responsible for the communication with Telecom Operator and is composed of the following parts:
-
-- [`server.js`](server/server.js) Manage incoming Rest calls from Telecom Operator and call blockchain.
-- [`watcher.js`](server/watcher.js) Listen to blockchain and initiate Rest calls to Telecom Operator.
+| ![Low Level Architecture](doc/img/Timelapse_TechnicalArchitecture_LL.png "Title") |
+| :-------------------------------------------------------------------------------: |
+|                       <b>Fig.2 - Low Level Architecture</b>                       |
 
 # Installation
 
@@ -262,7 +254,7 @@ See COPYING for more information or https://opensource.org/licenses/MIT .
 
 # Sources
 
-Here are a few links to resources that we used while building bet-no-loss.
+Here are a few links to resources that we used while building **Timelapse**.
 
 - Solidity
   - https://docs.soliditylang.org/en/v0.8.6
@@ -276,6 +268,7 @@ Here are a few links to resources that we used while building bet-no-loss.
 - Test
   - [@openzeppelin/test-helpers](https://docs.openzeppelin.com/test-helpers/)
   - [Chai](https://www.chaijs.com/) TDD assertion library
+  - [Mocha](https://mochajs.org/) Test Framework
 
 <!-- Github Badges: Images and URLs -->
 
