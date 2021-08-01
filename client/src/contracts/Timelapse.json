@@ -47,7 +47,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [],
@@ -60,7 +61,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [],
@@ -73,7 +75,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [],
@@ -262,7 +265,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -298,7 +302,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -369,7 +374,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     }
   ],
   "metadata": "{\"compiler\":{\"version\":\"0.8.6+commit.11564f7e\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_billingAddress\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_offeringAddress\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_phoneHash\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"_ref\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"_acceptanceTimestamp\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_offerId\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_proposalId\",\"type\":\"uint256\"}],\"name\":\"acceptance\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint8\",\"name\":\"_minScoring\",\"type\":\"uint8\"},{\"internalType\":\"uint256\",\"name\":\"_capital\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_interest\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"_description\",\"type\":\"string\"}],\"name\":\"addProposal\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_phoneHash\",\"type\":\"address\"}],\"name\":\"addToScore\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"billing\",\"outputs\":[{\"internalType\":\"contract Billing\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_id\",\"type\":\"uint256\"}],\"name\":\"closeProposal\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_startTimestamp\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_endTimestamp\",\"type\":\"uint256\"}],\"name\":\"generateInvoicing\",\"outputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"totalCapital\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"totalInterest\",\"type\":\"uint256\"}],\"internalType\":\"struct Timelapse.Invoice[]\",\"name\":\"\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_startTimestamp\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_endTimestamp\",\"type\":\"uint256\"}],\"name\":\"generateReporting\",\"outputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"offersCount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"acceptedOffersCount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"totalCapitalLoans\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"totalInterestLoans\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"closedTopupsCount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"totalCapitalGain\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"totalInterestGain\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"acceptanceTimestamp\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"paidTimestamp\",\"type\":\"uint256\"}],\"internalType\":\"struct Timelapse.Reporting[]\",\"name\":\"\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_phoneHash\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_startTimestamp\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_endTimestamp\",\"type\":\"uint256\"}],\"name\":\"getCustomerActivitiesLog\",\"outputs\":[{\"components\":[{\"internalType\":\"string\",\"name\":\"log\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"status\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"}],\"internalType\":\"struct Timelapse.CustomerActivity[]\",\"name\":\"\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_phoneHash\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"_ref\",\"type\":\"string\"}],\"name\":\"lowBalance\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"offering\",\"outputs\":[{\"internalType\":\"contract Offering\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"renounceOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_phoneHash\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_paidTimestamp\",\"type\":\"uint256\"}],\"name\":\"topUp\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"author\":\"Keeymon, DavidRochus\",\"kind\":\"dev\",\"methods\":{\"acceptance(address,string,uint256,uint256,uint256)\":{\"details\":\"Accept the offer `_offerId` (By choosing proposal `_proposalId`) of a customer (identified with `_phoneHash`) with reference `_ref` at timestamp `_acceptanceTimestamp`\",\"params\":{\"_acceptanceTimestamp\":\"Timestamp of the acceptance\",\"_offerId\":\"ID of the offer\",\"_phoneHash\":\"The address that identifies to the customer\",\"_proposalId\":\"ID of the proposal\",\"_ref\":\"Reference of the telecom provider\"}},\"addProposal(uint8,uint256,uint256,string)\":{\"details\":\"Add a proposal with the following information: minimum scoring `_minScoring`, amount `_capital` + `_interest`, description `_description`\",\"params\":{\"_capital\":\"Capital part of the proposal amount\",\"_description\":\"A description of the proposal\",\"_interest\":\"Interest part of the proposal amount\",\"_minScoring\":\"The minimum score needed by customer to receive this proposal\"}},\"addToScore(address)\":{\"details\":\"This function is directly called when API receives a topUp for a customer (identified with `_phoneHash`) with a target other than Timelapse\",\"params\":{\"_phoneHash\":\"The address that identifies to the customer\"}},\"closeProposal(uint256)\":{\"details\":\"Close the proposal with the ID `_id`\",\"params\":{\"_id\":\"ID of the proposal to close\"}},\"constructor\":{\"details\":\"Smart Contract constructor\"},\"generateInvoicing(uint256,uint256)\":{\"details\":\"Generate invoicing for a given period (between _startTimestamp and _endTimestamp)\",\"params\":{\"_endTimestamp\":\"End of the invoicing period\",\"_startTimestamp\":\"Start of the invoicing period\"},\"returns\":{\"_0\":\"The invoice\"}},\"generateReporting(uint256,uint256)\":{\"details\":\"Generate reporting for a given period (between _startTimestamp and _endTimestamp)\",\"params\":{\"_endTimestamp\":\"End of the reporting period\",\"_startTimestamp\":\"Start of the reporting period\"},\"returns\":{\"_0\":\"The reporting\"}},\"getCustomerActivitiesLog(address,uint256,uint256)\":{\"details\":\"Get activities log of a customer (identified with `_phoneHash`)\",\"params\":{\"_endTimestamp\":\"End of the search timeframe\",\"_phoneHash\":\"The address that identifies to the customer\",\"_startTimestamp\":\"Start of the search timeframe\"},\"returns\":{\"_0\":\"Score The computed customer score\"}},\"lowBalance(address,string)\":{\"details\":\"Manage lowBalance (with reference `_ref`) of a customer (identified with `_phoneHash`)\",\"params\":{\"_phoneHash\":\"The address that identifies to the customer\",\"_ref\":\"Reference of the telecom provider\"}},\"owner()\":{\"details\":\"Returns the address of the current owner.\"},\"renounceOwnership()\":{\"details\":\"Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.\"},\"topUp(address,uint256)\":{\"details\":\"TopUp the last product of a customer (identified with `_phoneHash`) at timestamp `_paidTimestamp`\",\"params\":{\"_paidTimestamp\":\"Timestamp of the acceptance\",\"_phoneHash\":\"The address that identifies to the customer\"}},\"transferOwnership(address)\":{\"details\":\"Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.\"}},\"stateVariables\":{\"billing\":{\"details\":\"Customer Billing Activity\"},\"offering\":{\"details\":\"Customer Offering Activity\"}},\"title\":\"This Smart Contract is the entry point of Timelapse.\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"acceptance(address,string,uint256,uint256,uint256)\":{\"notice\":\"Accept the offer\"},\"addProposal(uint8,uint256,uint256,string)\":{\"notice\":\"Add a proposal\"},\"addToScore(address)\":{\"notice\":\"Increase scoring information of a customer\"},\"closeProposal(uint256)\":{\"notice\":\"Close a proposal\"},\"generateInvoicing(uint256,uint256)\":{\"notice\":\"Generate invoicing for a given period\"},\"generateReporting(uint256,uint256)\":{\"notice\":\"Generate reporting for a given period\"},\"getCustomerActivitiesLog(address,uint256,uint256)\":{\"notice\":\"Get customer activities log\"},\"lowBalance(address,string)\":{\"notice\":\"Manage the \\\"low balances\\\" received and generate an offer\"},\"topUp(address,uint256)\":{\"notice\":\"TopUp the last product of a customer\"}},\"notice\":\"Communicate with API(server/watcher) part and dApp\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"/Users/davidrochus/Dev/workspace/timelapse/contracts/Timelapse.sol\":\"Timelapse\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/Users/davidrochus/Dev/workspace/timelapse/contracts/Billing.sol\":{\"keccak256\":\"0x71094bc13eb437b34c208c95f534e1990667c38ff7f906eee7967a589a04f6e1\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://24f2baf0071093b8c91d7301310d620595b5f599e48741039f92f18ec088e595\",\"dweb:/ipfs/QmZzJn35DHY5vmy9DEfnai7HYLCiThtQvp1KfNHSwmwFLK\"]},\"/Users/davidrochus/Dev/workspace/timelapse/contracts/Offering.sol\":{\"keccak256\":\"0x43e46ff9e2fcbb549cdc0ec68d9ebd1a7378e09d6983d86151a5bd6890d068a7\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://bb04ec01c7e099ce68edd2423b60c36ac4df56cbd714c4c9381cd962f5f40edc\",\"dweb:/ipfs/QmRWDEeohdJAC7k51wDBKNogQzSUW4q6SZaUQpffdU29av\"]},\"/Users/davidrochus/Dev/workspace/timelapse/contracts/Timelapse.sol\":{\"keccak256\":\"0x56abc208e92e755a59e6a56828f5cea582b959c86ad9bcae1a966be88afcd1e6\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://6f4ac513446cf9a0369e3a91a0f0137833d4b9a4514f32ffa2131e4c4f3a8337\",\"dweb:/ipfs/QmQiVqSVMNoL6u7QmnKMSECzkiQSHCb83vRjMWG4NbQBxX\"]},\"@openzeppelin/contracts/access/Ownable.sol\":{\"keccak256\":\"0x6bb804a310218875e89d12c053e94a13a4607cdf7cc2052f3e52bd32a0dc50a1\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://b2ebbbe6d0011175bd9e7268b83de3f9c2f9d8d4cbfbaef12aff977d7d727163\",\"dweb:/ipfs/Qmd5c7Vxtis9wzkDNhxwc6A2QT5H9xn9kfjhx7qx44vpro\"]},\"@openzeppelin/contracts/utils/Context.sol\":{\"keccak256\":\"0x95098bd1d9c8dec4d80d3dedb88a0d949fa0d740ee99f2aa466bc308216ca6d5\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://7fec968dcd68e13961521fa3c7dd87baecad91a2653b19240e81f21cc4f3ba85\",\"dweb:/ipfs/QmaXtsYt4Mphm8XHNUfk2me1cF3ssS2SqDBNFpYAzMjomC\"]}},\"version\":1}",
@@ -48370,14 +48376,35 @@
       "transactionHash": "0x8f29e503c43d22af57785c498ae27ff22d1384130dcbb6af5b0d216e01373291"
     },
     "1000": {
-      "events": {},
+      "events": {
+        "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "previousOwner",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "newOwner",
+              "type": "address"
+            }
+          ],
+          "name": "OwnershipTransferred",
+          "type": "event"
+        }
+      },
       "links": {},
       "address": "0xC7BF8380c87C91B174B8AeE2Dc5F35AD7d9E1ba1",
-      "transactionHash": "0x5331b64fd71f3af2e517f7801cc6607091a37694235de0884bd1f8eb94ca5110"
+      "transactionHash": "0xf5074e5f3351026a2e475aad2c8fe3f2793d5f40cc90d8c82f04f428c6fb5dda"
     }
   },
   "schemaVersion": "3.4.1",
-  "updatedAt": "2021-07-29T14:49:07.025Z",
+  "updatedAt": "2021-08-01T12:07:18.380Z",
+  "networkType": "ethereum",
   "devdoc": {
     "author": "Keeymon, DavidRochus",
     "kind": "dev",

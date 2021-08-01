@@ -198,7 +198,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -242,7 +243,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -281,7 +283,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -305,7 +308,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [],
@@ -318,7 +322,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [],
@@ -389,7 +394,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -408,7 +414,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -445,7 +452,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -495,7 +503,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [],
@@ -508,7 +517,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -623,7 +633,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     }
   ],
   "metadata": "{\"compiler\":{\"version\":\"0.8.6+commit.11564f7e\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"phoneHash\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"ref\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"acceptanceTimestamp\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"productId\",\"type\":\"uint256\"}],\"name\":\"AcceptanceReceived\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"phoneHash\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"ref\",\"type\":\"string\"}],\"name\":\"AcknowledgeSent\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"phoneHash\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"ref\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"acceptanceTimestamp\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"productId\",\"type\":\"uint256\"}],\"name\":\"ConfirmationSent\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"phoneHash\",\"type\":\"address\"}],\"name\":\"CustomerIsDeleted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"phoneHash\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"enum Billing.CustomerStatus\",\"name\":\"status\",\"type\":\"uint8\"}],\"name\":\"CustomerStatusChange\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"phoneHash\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint8\",\"name\":\"score\",\"type\":\"uint8\"}],\"name\":\"ScoreChanged\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"phoneHash\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"ref\",\"type\":\"string\"}],\"name\":\"TopUpReceived\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_phoneHash\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"_ref\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"_acceptanceTimestamp\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_productId\",\"type\":\"uint256\"}],\"name\":\"acceptanceBilling\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_phoneHash\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"}],\"name\":\"addToCustomerAmount\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_phoneHash\",\"type\":\"address\"}],\"name\":\"addToScore\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_phoneHash\",\"type\":\"address\"},{\"internalType\":\"enum Billing.CustomerStatus\",\"name\":\"_status\",\"type\":\"uint8\"}],\"name\":\"changeCustomerStatus\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_phoneHash\",\"type\":\"address\"},{\"internalType\":\"uint8\",\"name\":\"_score\",\"type\":\"uint8\"}],\"name\":\"changeScore\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"customerList\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"customerId\",\"type\":\"uint256\"},{\"internalType\":\"enum Billing.CustomerStatus\",\"name\":\"status\",\"type\":\"uint8\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"customers\",\"outputs\":[{\"internalType\":\"uint8\",\"name\":\"score\",\"type\":\"uint8\"},{\"internalType\":\"uint256\",\"name\":\"nbTopUp\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"firstTopUp\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"lastAcceptanceID\",\"type\":\"uint256\"},{\"internalType\":\"enum Billing.CustomerStatus\",\"name\":\"status\",\"type\":\"uint8\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_phoneHash\",\"type\":\"address\"}],\"name\":\"getCustomer\",\"outputs\":[{\"components\":[{\"internalType\":\"uint8\",\"name\":\"score\",\"type\":\"uint8\"},{\"internalType\":\"uint256\",\"name\":\"nbTopUp\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"firstTopUp\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"lastAcceptanceID\",\"type\":\"uint256\"},{\"internalType\":\"enum Billing.CustomerStatus\",\"name\":\"status\",\"type\":\"uint8\"}],\"internalType\":\"struct Billing.Customer\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getHistoriesSize\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_phoneHash\",\"type\":\"address\"}],\"name\":\"getHistorySize\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_phoneHash\",\"type\":\"address\"}],\"name\":\"getScore\",\"outputs\":[{\"internalType\":\"uint8\",\"name\":\"\",\"type\":\"uint8\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"histories\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"ref\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"acceptanceTimestamp\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"paidTimestamp\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"productId\",\"type\":\"uint256\"},{\"internalType\":\"enum Billing.HistoryStatus\",\"name\":\"status\",\"type\":\"uint8\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"historyList\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_phoneHash\",\"type\":\"address\"}],\"name\":\"isActiveCustomer\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"uint8\",\"name\":\"score\",\"type\":\"uint8\"},{\"internalType\":\"uint256\",\"name\":\"nbTopUp\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"firstTopUp\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"lastAcceptanceID\",\"type\":\"uint256\"},{\"internalType\":\"enum Billing.CustomerStatus\",\"name\":\"status\",\"type\":\"uint8\"}],\"internalType\":\"struct Billing.Customer\",\"name\":\"_customer\",\"type\":\"tuple\"}],\"name\":\"process\",\"outputs\":[{\"internalType\":\"uint8\",\"name\":\"\",\"type\":\"uint8\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"renounceOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_phoneHash\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_paidTimestamp\",\"type\":\"uint256\"}],\"name\":\"topUpBilling\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"author\":\"Keeymon, DavidRochus\",\"events\":{\"AcceptanceReceived(address,string,uint256,uint256)\":{\"details\":\"Triggered when an Acceptance is received\"},\"AcknowledgeSent(address,string)\":{\"details\":\"Triggered when an acknowledge has to be sent\"},\"ConfirmationSent(address,string,uint256,uint256)\":{\"details\":\"Triggered when confirmation has to be sent\"},\"CustomerIsDeleted(address)\":{\"details\":\"Triggered when a customer has been deleted\"},\"CustomerStatusChange(address,uint8)\":{\"details\":\"Triggered when status of a customer has changed\"},\"ScoreChanged(address,uint8)\":{\"details\":\"Triggered when score of a customer has changed\"},\"TopUpReceived(address,string)\":{\"details\":\"Triggered when a topUp is received\"}},\"kind\":\"dev\",\"methods\":{\"acceptanceBilling(address,string,uint256,uint256)\":{\"details\":\"Add a customer product history (using reference `_ref`, product `_productId`, timestamp `_acceptanceTimestamp`) for a customer (identified with `_phoneHash`)\",\"params\":{\"_acceptanceTimestamp\":\"Timestamp of the acceptance\",\"_phoneHash\":\"The address that identifies to the customer\",\"_productId\":\"ID of the product\",\"_ref\":\"Reference of the telecom provider\"}},\"addToCustomerAmount(address,uint256)\":{\"details\":\"Add amount to customer (identified with `_phoneHash`) total amount\",\"params\":{\"_phoneHash\":\"The address that identifies to the customer\"}},\"addToScore(address)\":{\"details\":\"This function is directly called when API receives a topUp for a customer (identified with `_phoneHash`) with a target other than Timelapse\",\"params\":{\"_phoneHash\":\"The address that identifies to the customer\"}},\"changeCustomerStatus(address,uint8)\":{\"details\":\"This function change the customer's status (using CustomerStatus `_status`) ofr a customer (identified with `_phoneHash`)\",\"params\":{\"_phoneHash\":\"The address that identifies to the customer\",\"_status\":\"The new state for the customer\"}},\"changeScore(address,uint8)\":{\"details\":\"This function informs if the customer (identified with `_phoneHash`) is active\",\"params\":{\"_phoneHash\":\"The address that identifies to the customer\"}},\"constructor\":{\"details\":\"Smart Contract constructor\"},\"getCustomer(address)\":{\"details\":\"This function get the customer (identified with `_phoneHash`)\",\"params\":{\"_phoneHash\":\"The address that identifies to the customer\"}},\"getHistoriesSize()\":{\"details\":\"Get the size of all the histories\"},\"getHistorySize(address)\":{\"details\":\"Get the size of the history of a customer (identified with `_phoneHash`)\",\"params\":{\"_phoneHash\":\"The address that identifies to the customer\"}},\"getScore(address)\":{\"details\":\"This function is directly called when API receives a topUp for a customer (identified with `_phoneHash`) with a target other than Timelapse\",\"params\":{\"_phoneHash\":\"The address that identifies to the customer\"}},\"isActiveCustomer(address)\":{\"details\":\"This function informs if the customer (identified with `_phoneHash`) is active\",\"params\":{\"_phoneHash\":\"The address that identifies to the customer\"}},\"owner()\":{\"details\":\"Returns the address of the current owner.\"},\"process((uint8,uint256,uint256,uint256,uint256,uint8))\":{\"details\":\"Compute the score of a customer `_customer`\",\"params\":{\"_customer\":\"The customer\"},\"returns\":{\"_0\":\"Score The computed customer score\"}},\"renounceOwnership()\":{\"details\":\"Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.\"},\"topUpBilling(address,uint256)\":{\"details\":\"TopUp the last product of a customer (identified with `_phoneHash`) at timestamp `_paidTimestamp`\",\"params\":{\"_paidTimestamp\":\"Timestamp of the acceptance\",\"_phoneHash\":\"The address that identifies to the customer\"}},\"transferOwnership(address)\":{\"details\":\"Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.\"}},\"stateVariables\":{\"customerList\":{\"details\":\"Mapping to access customer information with a phoneHash\"},\"customers\":{\"details\":\"Customer table\"},\"histories\":{\"details\":\"History table\"},\"historyList\":{\"details\":\"Mapping to access history information with a phoneHash\"}},\"title\":\"This Smart Contract is responsible of the Billing.\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"acceptanceBilling(address,string,uint256,uint256)\":{\"notice\":\"Add an acceptance in the customer history\"},\"addToCustomerAmount(address,uint256)\":{\"notice\":\"Add amount to customer total amount\"},\"addToScore(address)\":{\"notice\":\"Add customer if unknow and increase scoring information of a customer\"},\"changeCustomerStatus(address,uint8)\":{\"notice\":\"Change the customer status\"},\"changeScore(address,uint8)\":{\"notice\":\"Change the score of a customer\"},\"getCustomer(address)\":{\"notice\":\"Get a Customer with phoneHash\"},\"getHistoriesSize()\":{\"notice\":\"Get the size of all the histories\"},\"getHistorySize(address)\":{\"notice\":\"Get the size of the history of a customer\"},\"getScore(address)\":{\"notice\":\"Increase scoring information of a customer\"},\"isActiveCustomer(address)\":{\"notice\":\"Inform if the customer is active\"},\"process((uint8,uint256,uint256,uint256,uint256,uint8))\":{\"notice\":\"Compute the score of a customer\"},\"topUpBilling(address,uint256)\":{\"notice\":\"TopUp the last product of a customer\"}},\"notice\":\"Manage all aspects related to billing (customers, accounting and billing management)\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"/Users/davidrochus/Dev/workspace/timelapse/contracts/Billing.sol\":\"Billing\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/Users/davidrochus/Dev/workspace/timelapse/contracts/Billing.sol\":{\"keccak256\":\"0x71094bc13eb437b34c208c95f534e1990667c38ff7f906eee7967a589a04f6e1\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://24f2baf0071093b8c91d7301310d620595b5f599e48741039f92f18ec088e595\",\"dweb:/ipfs/QmZzJn35DHY5vmy9DEfnai7HYLCiThtQvp1KfNHSwmwFLK\"]},\"@openzeppelin/contracts/access/Ownable.sol\":{\"keccak256\":\"0x6bb804a310218875e89d12c053e94a13a4607cdf7cc2052f3e52bd32a0dc50a1\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://b2ebbbe6d0011175bd9e7268b83de3f9c2f9d8d4cbfbaef12aff977d7d727163\",\"dweb:/ipfs/Qmd5c7Vxtis9wzkDNhxwc6A2QT5H9xn9kfjhx7qx44vpro\"]},\"@openzeppelin/contracts/utils/Context.sol\":{\"keccak256\":\"0x95098bd1d9c8dec4d80d3dedb88a0d949fa0d740ee99f2aa466bc308216ca6d5\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://7fec968dcd68e13961521fa3c7dd87baecad91a2653b19240e81f21cc4f3ba85\",\"dweb:/ipfs/QmaXtsYt4Mphm8XHNUfk2me1cF3ssS2SqDBNFpYAzMjomC\"]}},\"version\":1}",
@@ -33862,7 +33873,8 @@
     }
   },
   "schemaVersion": "3.4.1",
-  "updatedAt": "2021-07-29T14:49:06.988Z",
+  "updatedAt": "2021-08-01T12:07:18.326Z",
+  "networkType": "ethereum",
   "devdoc": {
     "author": "Keeymon, DavidRochus",
     "events": {
