@@ -226,7 +226,7 @@ There are several way to execute **Timelapse Core**:
 ## General
 
 - [avoiding_common_attacks.md](doc/avoiding_common_attacks.md) describes the measures we have taken to make our smart-contracts as resistant as possible to common attacks and potential hacks
-- [deployed_addresses.md](doc/deployed_addresses.md) contains the addresses of smart-contracts deployed on the private network of `Timelapse`
+- [deployed_addresses.md](doc/deployed_addresses.md) contains the addresses of smart-contracts deployed on the private network of `Timelapse` and on `Ropsten` (for demo purpose).
 - [design_pattern_decisions.md](doc/design_pattern_decisions.md) explains why we chose the design patterns we are using in the code.
 - [tests_explication.md](doc/tests_explication.md) explains for each test why we wrote it and what it is aimed at.
 

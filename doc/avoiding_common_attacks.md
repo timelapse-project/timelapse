@@ -15,7 +15,7 @@ Not applicable because we don't call any unknow contracts/addresses.
 
 ## Arithmetic Overflow and Underflow
 
-We are use [Solidity 0.8.6](https://docs.soliditylang.org/en/v0.8.6/080-breaking-changes.html) that handles this problematic natively so, we don't need to use `SaFeMath` from _@openzeppelin_.
+We use [Solidity 0.8.6](https://docs.soliditylang.org/en/v0.8.6/080-breaking-changes.html) that handles this problematic natively so, we don't need to use `SaFeMath` from _@openzeppelin_.
 
 [Reference](https://solidity-by-example.org/hacks/overflow)
 
