@@ -41,6 +41,13 @@ contract("Billing", function (accounts) {
       this.BillingInstance = await Billing.new();
     });
 
+    describe("Function: getCustomer", async function() {
+      it("getCustomer is for registered Customer", async function() {
+        await expectRevert(this.BillingInstance.getCustomer(phoneHash1),
+        "Unknow customer");
+      });
+    });
+
     describe("Function: isActiveCustomer", async function () {
       it("isActiveCustomer", async function () {
         expect(
@@ -209,6 +216,18 @@ contract("Billing", function (accounts) {
           "ScoreChanged",
           { phoneHash: phoneHash1, score: score1 }
         );
+      });
+    });
+
+    describe("Function: getScore", async function() {
+      it("getScore is onlyOwner", async function() {
+        await expectRevert(this.BillingInstance.getScore(phoneHash1, {from:phoneHash1}),
+        "Ownable: caller is not the owner");
+      });
+
+      it("getScore is for activeCustomer", async function() {
+        await expectRevert(this.BillingInstance.getScore(phoneHash1, {from:owner}),
+        "Blocked or Unknowed customer");
       });
     });
 

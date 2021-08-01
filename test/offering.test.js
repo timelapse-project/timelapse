@@ -254,6 +254,53 @@ contract("Offering", function (accounts) {
       });
     });
 
+    describe("Function: getProposalOfferSize", async function() {
+      it("getProposalOfferSize is for existOffer", async function() {
+        await expectRevert(this.OfferingInstance.getProposalOfferSize(offerId1),
+        "Offer doesn't exist");
+      });
+
+      it("getProposalOfferSize", async function() {
+        await this.OfferingInstance.addProposal(minScore1, capital1, interest1, description1, { from: owner });
+        await this.OfferingInstance.addProposal(minScore2, capital2, interest2, description2, { from: owner });
+        await this.OfferingInstance.addProposal(minScore3, capital3, interest3, description3, { from: owner });
+
+        // LowBalance 1
+        await this.OfferingInstance.lowBalanceOffering(phoneHash1, ref1, new BN(0), { from: owner });
+        expect(await this.OfferingInstance.getProposalOfferSize(0)).to.be.bignumber.equal(new BN(0));
+
+        // LowBalance 2
+        await this.OfferingInstance.lowBalanceOffering(phoneHash1, ref1, minScore1, { from: owner });
+        expect(await this.OfferingInstance.getProposalOfferSize(1)).to.be.bignumber.equal(new BN(1));
+
+        // LowBalance 3
+        await this.OfferingInstance.lowBalanceOffering(phoneHash1, ref1, minScore2, { from: owner });
+        expect(await this.OfferingInstance.getProposalOfferSize(2)).to.be.bignumber.equal(new BN(2));
+
+        // LowBalance 4
+        await this.OfferingInstance.lowBalanceOffering(phoneHash1, ref1, minScore3, { from: owner });
+        expect(await this.OfferingInstance.getProposalOfferSize(3)).to.be.bignumber.equal(new BN(3));
+      });
+    });
+
+    describe("Function: getIndexProposalOffer", async function() {
+      it("Revert: getIndexProposalOffer is for existOffer", async function() {
+        await expectRevert(this.OfferingInstance.getIndexProposalOffer(offerId1, 0),
+        "Offer doesn't exist");
+      });
+
+      it("Revert: getIndexPrpoposalOffer is for existing proposal ID", async function() {
+        await this.OfferingInstance.addProposal(minScore1, capital1, interest1, description1, { from: owner });
+        await this.OfferingInstance.addProposal(minScore2, capital2, interest2, description2, { from: owner });
+        await this.OfferingInstance.addProposal(minScore3, capital3, interest3, description3, { from: owner });
+
+        await this.OfferingInstance.lowBalanceOffering(phoneHash1, ref1, minScore1, { from: owner });
+
+        await expectRevert(this.OfferingInstance.getIndexProposalOffer(offerId1, 1),
+        "Invalid index");
+      });
+    });
+
     describe("Function: lowBalanceOffering", async function () {
       it("Revert: lowBalanceOffering is onlyOwner", async function () {
         await expectRevert(

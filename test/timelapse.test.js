@@ -71,7 +71,7 @@ contract("Timelapse", function (accounts) {
   const newOffer = new BN(0);
   const acceptedOffer = new BN(1);
 
-  describe("Début des tests pour Billing.sol, Owner = Timelapse", async function () {
+  describe("Début des tests pour Billing.sol", async function () {
     beforeEach(async function () {
       this.BillingInstance = await Billing.new();
       this.OfferingInstance = await Offering.new();
@@ -79,6 +79,13 @@ contract("Timelapse", function (accounts) {
         this.BillingInstance.address,
         this.OfferingInstance.address
       );
+    });
+
+    describe("Function: getCustomer", async function() {
+      it("getCustomer is for registered Customer", async function() {
+        await expectRevert(this.BillingInstance.getCustomer(phoneHash1),
+        "Unknow customer");
+      });
     });
 
     describe("Function: isActiveCustomer", async function () {
@@ -114,7 +121,7 @@ contract("Timelapse", function (accounts) {
         ).to.be.bignumber.equal(new BN(12));
         expect(
           (await this.BillingInstance.customers(customerId1))["nbTopUp"]
-        ).to.be.bignumber.equal(new BN(1));
+        ).to.be.bignumber.equal(new BN(1)); // A voir
         expect(
           (await this.BillingInstance.customers(customerId1))["amount"]
         ).to.be.bignumber.equal(new BN(0));
@@ -140,7 +147,7 @@ contract("Timelapse", function (accounts) {
         ).to.be.bignumber.equal(new BN(12));
         expect(
           (await this.BillingInstance.customers(customerId2))["nbTopUp"]
-        ).to.be.bignumber.equal(new BN(1));
+        ).to.be.bignumber.equal(new BN(1)); // A voir
         expect(
           (await this.BillingInstance.customers(customerId2))["amount"]
         ).to.be.bignumber.equal(new BN(0));
@@ -249,6 +256,18 @@ contract("Timelapse", function (accounts) {
           "ScoreChanged",
           { phoneHash: phoneHash1, score: score1 }
         );
+      });
+    });
+
+    describe("Function: getScore", async function() {
+      it("getScore is onlyOwner", async function() {
+        await expectRevert(this.BillingInstance.getScore(phoneHash1, {from:phoneHash1}),
+        "Ownable: caller is not the owner");
+      });
+
+      it("getScore is for activeCustomer", async function() {
+        await expectRevert(this.BillingInstance.getScore(phoneHash1, {from:owner}),
+        "Blocked or Unknowed customer");
       });
     });
 
@@ -510,7 +529,7 @@ contract("Timelapse", function (accounts) {
     });
   });
 
-  describe("Début des tests pour Offering.sol, Owner = Timelapse", async function () {
+  describe("Début des tests pour Offering.sol", async function () {
     beforeEach(async function () {
       this.BillingInstance = await Billing.new();
       this.OfferingInstance = await Offering.new();
@@ -713,6 +732,53 @@ contract("Timelapse", function (accounts) {
       });
     });
 
+    describe("Function: getProposalOfferSize", async function() {
+      it("getProposalOfferSize is for existOffer", async function() {
+        await expectRevert(this.OfferingInstance.getProposalOfferSize(offerId1),
+        "Offer doesn't exist");
+      });
+
+      it("getProposalOfferSize", async function() {
+        await this.OfferingInstance.addProposal(minScore1, capital1, interest1, description1, { from: owner });
+        await this.OfferingInstance.addProposal(minScore2, capital2, interest2, description2, { from: owner });
+        await this.OfferingInstance.addProposal(minScore3, capital3, interest3, description3, { from: owner });
+
+        // LowBalance 1
+        await this.OfferingInstance.lowBalanceOffering(phoneHash1, ref1, new BN(0), { from: owner });
+        expect(await this.OfferingInstance.getProposalOfferSize(0)).to.be.bignumber.equal(new BN(0));
+
+        // LowBalance 2
+        await this.OfferingInstance.lowBalanceOffering(phoneHash1, ref1, minScore1, { from: owner });
+        expect(await this.OfferingInstance.getProposalOfferSize(1)).to.be.bignumber.equal(new BN(1));
+
+        // LowBalance 3
+        await this.OfferingInstance.lowBalanceOffering(phoneHash1, ref1, minScore2, { from: owner });
+        expect(await this.OfferingInstance.getProposalOfferSize(2)).to.be.bignumber.equal(new BN(2));
+
+        // LowBalance 4
+        await this.OfferingInstance.lowBalanceOffering(phoneHash1, ref1, minScore3, { from: owner });
+        expect(await this.OfferingInstance.getProposalOfferSize(3)).to.be.bignumber.equal(new BN(3));
+      });
+    });
+
+    describe("Function: getIndexProposalOffer", async function() {
+      it("Revert: getIndexProposalOffer is for existOffer", async function() {
+        await expectRevert(this.OfferingInstance.getIndexProposalOffer(offerId1, 0),
+        "Offer doesn't exist");
+      });
+
+      it("Revert: getIndexPrpoposalOffer is for existing proposal ID", async function() {
+        await this.OfferingInstance.addProposal(minScore1, capital1, interest1, description1, { from: owner });
+        await this.OfferingInstance.addProposal(minScore2, capital2, interest2, description2, { from: owner });
+        await this.OfferingInstance.addProposal(minScore3, capital3, interest3, description3, { from: owner });
+
+        await this.OfferingInstance.lowBalanceOffering(phoneHash1, ref1, minScore1, { from: owner });
+
+        await expectRevert(this.OfferingInstance.getIndexProposalOffer(offerId1, 1),
+        "Invalid index");
+      });
+    });
+
     describe("Function: lowBalanceOffering", async function () {
       it("Revert: lowBalanceOffering is onlyOwner", async function () {
         await expectRevert(
@@ -727,7 +793,6 @@ contract("Timelapse", function (accounts) {
       });
 
       it("lowBalanceOffering", async function () {
-        // Add Proposal
         await this.OfferingInstance.addProposal(
           minScore1,
           capital1,
@@ -878,7 +943,6 @@ contract("Timelapse", function (accounts) {
       });
 
       it("createProduct", async function () {
-        // Add Proposal
         await this.OfferingInstance.addProposal(
           minScore1,
           capital1,
