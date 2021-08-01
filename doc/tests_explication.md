@@ -23,6 +23,8 @@ Inside the test, functions are grouped (using `describe`) by feature, or state o
 
 Test the `Billing.sol` smart-contract
 
+- `Function: getCustomer`
+  - `getCustomer` makes sur that `.getCustomer()` reverts if called for a unknow customer
 - `Function: isActiveCustomer`
   - `isActiveCustomer` makes sure that `.isActiveCustomer()` reverts if called for an unknown customer
 - `Function: addToScore`
@@ -37,6 +39,9 @@ Test the `Billing.sol` smart-contract
   - `Revert: changeScore is onlyOwner` makes sure that `.changeScore()` reverts if not called by the contract owner
   - `changeScore` makes sure that `.changeScore()` updates correctly the customer(s) score
   - `Event: ScoreChanged for changeScore` makes sure that `.changeCustomerStatus()` generates the event `ScoreChanged`
+- `Function: getScore`
+  - `Revert: getScore is onlyOwner` makes sure that `.getScore()` reverts if not called by the owner
+  - `Revert: getScore is for activeCustomer` makes sure that `.getScore()` reverts if customer is not active
 - `Function: acceptanceBilling`
   - `Revert: acceptanceBilling is onlyOwner` makes sure that `.acceptanceBilling()` reverts if not called by the contract owner
   - `Revert: acceptanceBilling is activeCustomer` makes sure that `.acceptanceBilling()` reverts if called for an unknown customer
@@ -66,6 +71,12 @@ Test the `Offering.sol` smart-contract
   - `Event: ProposalClosed for closeProposal` makes sure that `.closeProposal()` generates the event `ProposalClosed`
 - `Function: proposalsCount`
   - `proposalsCount` makes sure that `.proposalsCount()` returns the correct number of proposal(s)
+- `Function: getProposalOfferSize`
+  - `Revert: getProposalOfferSize is for existOffer` makes sure taht `.getProposalOfferSize()` reverts if offer doesn't exist
+  - `getProposalOfferSize` makes sure that `.getProposalOfferSize()` return the correct size
+- `Function: getIndexProposalOffer`
+  - `Revert: getIndexProposalOffer is for existOffer` makes sure that `.getIndexProposalOffer()` reverts if offer doesn't exist
+  - `Revert: getIndexProposalOffer is for existing proposal ID` make sure that `.getIndexProposalOffer()` reverts if invalid index
 - `Function: lowBalanceOffering`
   - `Revert: lowBalanceOffering is onlyOwner` makes sure that `.lowBalanceOffering()` reverts if not called by the contract owner
   - `lowBalanceOffering` makes sure that `.lowBalanceOffering()` generates a new offer
