@@ -82,7 +82,7 @@ contract("Timelapse", function (accounts) {
     });
 
     describe("Function: getCustomer", async function() {
-      it("getCustomer is for registered Customer", async function() {
+      it("Revert: getCustomer is for registered Customer", async function() {
         await expectRevert(this.BillingInstance.getCustomer(phoneHash1),
         "Unknow customer");
       });
@@ -260,12 +260,12 @@ contract("Timelapse", function (accounts) {
     });
 
     describe("Function: getScore", async function() {
-      it("getScore is onlyOwner", async function() {
+      it("Revert: getScore is onlyOwner", async function() {
         await expectRevert(this.BillingInstance.getScore(phoneHash1, {from:phoneHash1}),
         "Ownable: caller is not the owner");
       });
 
-      it("getScore is for activeCustomer", async function() {
+      it("Revert: getScore is for activeCustomer", async function() {
         await expectRevert(this.BillingInstance.getScore(phoneHash1, {from:owner}),
         "Blocked or Unknowed customer");
       });
@@ -733,7 +733,7 @@ contract("Timelapse", function (accounts) {
     });
 
     describe("Function: getProposalOfferSize", async function() {
-      it("getProposalOfferSize is for existOffer", async function() {
+      it("Revert: getProposalOfferSize is for existOffer", async function() {
         await expectRevert(this.OfferingInstance.getProposalOfferSize(offerId1),
         "Offer doesn't exist");
       });

@@ -220,12 +220,12 @@ contract("Billing", function (accounts) {
     });
 
     describe("Function: getScore", async function() {
-      it("getScore is onlyOwner", async function() {
+      it("Revert: getScore is onlyOwner", async function() {
         await expectRevert(this.BillingInstance.getScore(phoneHash1, {from:phoneHash1}),
         "Ownable: caller is not the owner");
       });
 
-      it("getScore is for activeCustomer", async function() {
+      it("Revert: getScore is for activeCustomer", async function() {
         await expectRevert(this.BillingInstance.getScore(phoneHash1, {from:owner}),
         "Blocked or Unknowed customer");
       });

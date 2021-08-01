@@ -255,7 +255,7 @@ contract("Offering", function (accounts) {
     });
 
     describe("Function: getProposalOfferSize", async function() {
-      it("getProposalOfferSize is for existOffer", async function() {
+      it("Revert: getProposalOfferSize is for existOffer", async function() {
         await expectRevert(this.OfferingInstance.getProposalOfferSize(offerId1),
         "Offer doesn't exist");
       });
