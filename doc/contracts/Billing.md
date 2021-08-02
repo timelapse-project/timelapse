@@ -95,7 +95,7 @@ TopUp the last product of a customer
 
 TopUp the last product of a customer (identified with `_phoneHash`) at timestamp `_paidTimestamp`
 
-### `process(struct Billing.Customer _customer) → uint8` (public)
+### `scoring(struct Billing.Customer _customer) → uint8` (public)
 
 Compute the score of a customer
 

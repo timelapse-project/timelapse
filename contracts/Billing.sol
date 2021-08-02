@@ -214,7 +214,7 @@ contract Billing is Ownable {
         customers[customerList[_phoneHash].customerId].nbTopUp++;
         changeScore(
             _phoneHash,
-            process(customers[customerList[_phoneHash].customerId])
+            scoring(customers[customerList[_phoneHash].customerId])
         );
     }
 
@@ -297,7 +297,7 @@ contract Billing is Ownable {
             )
         );
         customers[customerList[_phoneHash].customerId]
-        .lastAcceptanceID = (histories.length - 1);
+            .lastAcceptanceID = (histories.length - 1);
         Customer memory customer = customers[
             customerList[_phoneHash].customerId
         ];
@@ -332,7 +332,7 @@ contract Billing is Ownable {
         emit TopUpReceived(_phoneHash, histories[index].ref);
         if (customers[customerList[_phoneHash].customerId].firstTopUp == 0) {
             customers[customerList[_phoneHash].customerId].firstTopUp = block
-            .timestamp;
+                .timestamp;
         }
         histories[index].paidTimestamp = _paidTimestamp;
         histories[index].status = HistoryStatus.Closed;
@@ -345,7 +345,7 @@ contract Billing is Ownable {
      * @return Score The computed customer score
      * @dev Compute the score of a customer `_customer`
      */
-    function process(Customer memory _customer) public view returns (uint8) {
+    function scoring(Customer memory _customer) public view returns (uint8) {
         uint8 topupAmountPoints;
         uint8 firstTopUpAgePoints;
         uint8 nbTopUpPoints;
