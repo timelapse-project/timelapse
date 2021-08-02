@@ -51,7 +51,7 @@ Not applicable because we don't handle any value (ETH) and because we don't call
 
 ## Denial of Service (Block Gas Limit)
 
-Not applicable because we don't call any unknow contracts/addresses and we don't loop ulimited array (instead, we access array values via indexes, stored in mappings) except on the Proposal array (Offering). This exception is mitigated because, functionally, the number of proposals will never be high.
+Not applicable because we don't call any unknow contracts/addresses and we don't loop unlimited array (instead, we access array values via indexes, stored in mappings) except on the Proposal array (Offering). This exception is mitigated because, functionally, the number of proposals will never be high.
 
 [Reference](https://consensys.github.io/smart-contract-best-practices/known_attacks/#dos-with-block-gas-limit)
 
