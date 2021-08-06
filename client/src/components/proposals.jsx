@@ -44,6 +44,9 @@ class Proposals extends Component {
         .call();
       proposalList.push(proposalItem);
     }
+    proposalList = proposalList.sort(function (x, y) {
+      return x.minScoring - y.minScoring;
+    });
     this.setState({
       proposalsCount: proposalsCount,
       proposalList: proposalList,
