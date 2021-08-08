@@ -1,6 +1,6 @@
 # Timelapse
 
-> Timelapse is a solution that manages micro-credit offers for telecommunications operators.
+> Timelapse is a solution that manages micro-credit offers (commonly called **_Airtime Advance_**) for telecommunications operators.
 
 ## Features
 
@@ -37,8 +37,10 @@ The Timelapse architecture is divided into 3 modules:
 
   It is composed of 2 parts, developed in **NodeJS**:
 
-  - [`server.js`](api/server.js): This part is responsible for listening and handling calls (REST endpoint) from Telecom operators, interpreting the request and calling the corresponding functions in the blockchain
-  - [`watcher.js`](api/watcher.js): This part is responsible for listening to the events emitted by smart contracts, interpreting them and calling the corresponding REST services of Telecom operators
+  - [`server.js`](api/server.js): This part is responsible for listening and handling calls (REST endpoint) from Telecom operators, interpreting the request and calling the corresponding functions of the smart contracts (**_Timelapse Core_**)
+  - [`watcher.js`](api/watcher.js): This part is responsible for listening to the events emitted by smart contracts (**_Timelapse Core_**), interpreting them and calling the corresponding REST services of Telecom operators
+
+  As result, REST calls sent by the **_Watcher_** are in fact the asynchronous responses of the REST calls received by the **_Server_** (See [Fig 3](#schema) below for more details of the communication flow).
 
 - **_Timelapse Client_**:
   This module is a decentralized web interface (**dApp**), developed in **ReactJS**, which allows users to access and interact with our smart contracts but in a controlled manner.
@@ -49,11 +51,15 @@ This Github **repository** gather the **Timelapse Core**, the **Timelapse API** 
 
 | ![High Level Architecture](doc/img/Timelapse_TechnicalArchitecture_HL.png) |
 | :------------------------------------------------------------------------: |
-|                   <b>Fig.1 - High Level Architecture</b>                   |
+|                   <b>Fig 1 - High Level Architecture</b>                   |
 
-| ![Low Level Architecture](doc/img/Timelapse_TechnicalArchitecture_LL.png "Title") |
-| :-------------------------------------------------------------------------------: |
-|                       <b>Fig.2 - Low Level Architecture</b>                       |
+| ![Low Level Architecture](doc/img/Timelapse_TechnicalArchitecture_LL.png) |
+| :-----------------------------------------------------------------------: |
+|                   <b>Fig 2 - Low Level Architecture</b>                   |
+
+| ![Asynchronous Communication](doc/img/Timelapse_APIProcess_AsynchronousCommunication_EN.png) |
+| :------------------------------------------------------------------------------------------: |
+|                        <b>Fig 3 - Asynchronous Communication Flow</b>                        |
 
 # Installation
 
